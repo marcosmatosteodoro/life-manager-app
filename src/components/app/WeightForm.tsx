@@ -20,9 +20,10 @@ export function WeightForm({
   onCancel,
 }: WeightFormProps) {
   const [value, setValue] = useState(initial ? String(initial.value) : '');
-  const [date, setDate] = useState(initial?.date ?? '');
+  // Ao criar, data e hora vêm preenchidas com o momento atual.
+  const [date, setDate] = useState(initial?.date ?? currentDate());
   // input type=time usa HH:MM; recorta o HH:MM:SS vindo da API.
-  const [time, setTime] = useState(initial?.time?.slice(0, 5) ?? '');
+  const [time, setTime] = useState(initial?.time?.slice(0, 5) ?? currentTime());
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -80,6 +81,20 @@ export function WeightForm({
       </div>
     </form>
   );
+}
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+/** Data local de hoje no formato YYYY-MM-DD. */
+function currentDate(): string {
+  const now = new Date();
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+}
+
+/** Hora local atual no formato HH:MM. */
+function currentTime(): string {
+  const now = new Date();
+  return `${pad(now.getHours())}:${pad(now.getMinutes())}`;
 }
 
 const inputClass =

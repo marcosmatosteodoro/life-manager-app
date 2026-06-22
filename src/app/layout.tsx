@@ -27,8 +27,11 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      {/* suppressHydrationWarning: extensões de navegador (ex.: tradutores)
+          injetam atributos/elementos antes da hidratação. */}
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <AppShell>{children}</AppShell>
       </body>
     </html>

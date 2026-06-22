@@ -35,7 +35,9 @@ export function TodayStudyBanner({ todayStudy }: TodayStudyBannerProps) {
         ✅
       </span>
       <div>
-        <p className="text-sm font-semibold">Artigo de hoje concluído</p>
+        <p className="text-sm font-semibold">
+          Artigo de hoje: {todayStudy.title}
+        </p>
         <p className="text-sm text-emerald-700">
           Estudo registrado em {formatDateTime(todayStudy.createdAt)} ·{' '}
           {todayStudy.timeRead} min de leitura

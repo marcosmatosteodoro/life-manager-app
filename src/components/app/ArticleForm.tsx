@@ -19,6 +19,7 @@ export function ArticleForm({
   onSubmit,
   onCancel,
 }: ArticleFormProps) {
+  const [title, setTitle] = useState(initial?.title ?? '');
   const [readingTime, setReadingTime] = useState(
     initial ? String(initial.readingTime) : '',
   );
@@ -42,6 +43,7 @@ export function ArticleForm({
     const optionalInt = (v: string) => (v.trim() === '' ? null : Number(v));
     const optionalText = (v: string) => (v.trim() === '' ? null : v);
     onSubmit({
+      title: title.trim(),
       readingTime: Number(readingTime),
       timeRead: Number(timeRead),
       timeWrite: optionalInt(timeWrite),
@@ -53,6 +55,18 @@ export function ArticleForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <Field label="Título" htmlFor="title">
+        <input
+          id="title"
+          type="text"
+          required
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Ex.: The Pragmatic Programmer"
+          className={inputClass}
+        />
+      </Field>
+
       <div className="grid grid-cols-2 gap-3">
         <Field label="Tempo de leitura (min)" htmlFor="readingTime">
           <input

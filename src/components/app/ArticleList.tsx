@@ -37,8 +37,8 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-neutral-900">
-                    {formatDateTime(article.createdAt)}
+                  <span className="truncate font-medium text-neutral-900">
+                    {article.title}
                   </span>
                   {today && (
                     <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-xs font-medium text-white">
@@ -46,6 +46,9 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                     </span>
                   )}
                 </div>
+                <p className="mt-0.5 text-xs text-neutral-400">
+                  {formatDateTime(article.createdAt)}
+                </p>
                 <p className="mt-1 text-sm text-neutral-500">
                   Leitura: {article.timeRead} min
                   {article.timeWrite != null

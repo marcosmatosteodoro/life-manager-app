@@ -1,6 +1,7 @@
 /** Artigo (estudo de inglês) retornado pela API. */
 export interface Article {
   id: number;
+  title: string;
   readingTime: number;
   timeRead: number;
   timeWrite: number | null;
@@ -14,6 +15,7 @@ export interface Article {
 
 /** Payload de criação/edição (edição é parcial). */
 export interface ArticleInput {
+  title: string;
   readingTime: number;
   timeRead: number;
   timeWrite?: number | null;

@@ -13,7 +13,7 @@ type NavItem = {
   Icon: ComponentType<SVGProps<SVGSVGElement>>;
 };
 
-const NAV_ITEMS: NavItem[] = [
+const MAIN_ITEMS: NavItem[] = [
   { href: '/', label: 'Home', Icon: HomeIcon },
   {
     href: '/gerenciamento-de-peso',
@@ -32,44 +32,66 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
+const VAGAS_ITEMS: NavItem[] = [
+  { href: '/vagas/paises', label: 'Países', Icon: GlobeIcon },
+  { href: '/vagas/empresas', label: 'Empresas', Icon: BuildingIcon },
+  { href: '/vagas/aplicacoes', label: 'Aplicações', Icon: SendIcon },
+  { href: '/vagas/buscador', label: 'Buscador de vagas', Icon: SearchIcon },
+  { href: '/vagas/aplicador', label: 'Aplicador de vagas', Icon: BoltIcon },
+];
+
 export function Sidebar() {
   const pathname = usePathname();
   const collapsed = useSidebarStore((state) => state.collapsed);
   const toggle = useSidebarStore((state) => state.toggle);
 
+  function renderItem({ href, label, Icon }: NavItem) {
+    // '/' só fica ativo na rota exata; demais usam prefixo.
+    const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
+    return (
+      <Link
+        key={href}
+        href={href}
+        title={collapsed ? label : undefined}
+        aria-current={active ? 'page' : undefined}
+        className={cn(
+          'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+          collapsed && 'justify-center px-0',
+          active
+            ? 'bg-neutral-900 text-white'
+            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+        )}
+      >
+        <Icon className="h-5 w-5 shrink-0" />
+        {!collapsed && <span className="truncate">{label}</span>}
+      </Link>
+    );
+  }
+
   return (
     <aside
       className={cn(
-        'flex shrink-0 flex-col border-r border-neutral-200 bg-white transition-[width] duration-200 ease-in-out',
+        'flex shrink-0 flex-col overflow-y-auto border-r border-neutral-200 bg-white transition-[width] duration-200 ease-in-out',
         collapsed ? 'w-16' : 'w-64',
       )}
     >
       <nav className="flex flex-col gap-1 px-2 pt-3">
-        {NAV_ITEMS.map(({ href, label, Icon }) => {
-          // '/' só fica ativo na rota exata; demais usam prefixo.
-          const active =
-            href === '/' ? pathname === '/' : pathname.startsWith(href);
-
-          return (
-            <Link
-              key={href}
-              href={href}
-              title={collapsed ? label : undefined}
-              aria-current={active ? 'page' : undefined}
-              className={cn(
-                'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                collapsed && 'justify-center px-0',
-                active
-                  ? 'bg-neutral-900 text-white'
-                  : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
-              )}
-            >
-              <Icon className="h-5 w-5 shrink-0" />
-              {!collapsed && <span className="truncate">{label}</span>}
-            </Link>
-          );
-        })}
+        {MAIN_ITEMS.map(renderItem)}
       </nav>
+
+      <div className="mt-4 px-2">
+        {/* Cabeçalho da seção; vira um divisor quando recolhida. */}
+        {collapsed ? (
+          <div className="mx-2 border-t border-neutral-200" />
+        ) : (
+          <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+            Vagas
+          </p>
+        )}
+        <nav className="flex flex-col gap-1 pt-1">
+          {VAGAS_ITEMS.map(renderItem)}
+        </nav>
+      </div>
 
       {/* Botão de expandir/recolher fixado no final da sidebar. */}
       <div
@@ -167,6 +189,52 @@ function BookIcon(props: SVGProps<SVGSVGElement>) {
     >
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
+    </svg>
+  );
+}
+
+function GlobeIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18" />
+      <path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z" />
+    </svg>
+  );
+}
+
+function BuildingIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <rect x="4" y="3" width="12" height="18" rx="1" />
+      <path d="M16 8h4v13H4" />
+      <path d="M8 7h0M12 7h0M8 11h0M12 11h0M8 15h0M12 15h0" />
+    </svg>
+  );
+}
+
+function SendIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M22 2 11 13" />
+      <path d="M22 2 15 22l-4-9-9-4 20-7Z" />
+    </svg>
+  );
+}
+
+function SearchIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  );
+}
+
+function BoltIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" />
     </svg>
   );
 }

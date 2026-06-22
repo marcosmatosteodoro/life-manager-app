@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Toaster } from '@/components/ui/Toaster';
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
@@ -13,6 +14,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main className="flex-1 p-6">{children}</main>
       </div>
       <Footer />
+      <Toaster />
     </div>
   );
 }

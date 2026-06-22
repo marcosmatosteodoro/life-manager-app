@@ -44,27 +44,7 @@ export function Sidebar() {
         collapsed ? 'w-16' : 'w-64',
       )}
     >
-      <div
-        className={cn(
-          'flex h-12 items-center px-3',
-          collapsed ? 'justify-center' : 'justify-end',
-        )}
-      >
-        <IconButton
-          onClick={toggle}
-          aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
-          aria-expanded={!collapsed}
-        >
-          <ChevronIcon
-            className={cn(
-              'h-5 w-5 transition-transform duration-200',
-              collapsed && 'rotate-180',
-            )}
-          />
-        </IconButton>
-      </div>
-
-      <nav className="flex flex-col gap-1 px-2">
+      <nav className="flex flex-col gap-1 px-2 pt-3">
         {NAV_ITEMS.map(({ href, label, Icon }) => {
           // '/' só fica ativo na rota exata; demais usam prefixo.
           const active =
@@ -90,6 +70,27 @@ export function Sidebar() {
           );
         })}
       </nav>
+
+      {/* Botão de expandir/recolher fixado no final da sidebar. */}
+      <div
+        className={cn(
+          'mt-auto flex h-12 items-center px-3',
+          collapsed ? 'justify-center' : 'justify-end',
+        )}
+      >
+        <IconButton
+          onClick={toggle}
+          aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+          aria-expanded={!collapsed}
+        >
+          <ChevronIcon
+            className={cn(
+              'h-5 w-5 transition-transform duration-200',
+              collapsed && 'rotate-180',
+            )}
+          />
+        </IconButton>
+      </div>
     </aside>
   );
 }

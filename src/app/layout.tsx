@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppShell } from "@/components/app/AppShell";
+import { ServiceWorkerRegister } from "@/components/app/ServiceWorkerRegister";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,6 +17,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Life Manager",
   description: "Gerenciador pessoal — começando pelo controle de peso",
+  // Habilita comportamento de app instalado no iOS.
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Life Manager",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -33,6 +44,7 @@ export default function RootLayout({
           injetam atributos/elementos antes da hidratação. */}
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <AppShell>{children}</AppShell>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

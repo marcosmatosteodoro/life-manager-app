@@ -20,6 +20,11 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Gerenciamento de Peso',
     Icon: ScaleIcon,
   },
+  {
+    href: '/estudando-ingles',
+    label: 'Estudando Inglês',
+    Icon: BookIcon,
+  },
 ];
 
 export function Sidebar() {
@@ -120,6 +125,24 @@ function ScaleIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M5 7h14" />
       <path d="m5 7-3 6a3 3 0 0 0 6 0L5 7Z" />
       <path d="m19 7-3 6a3 3 0 0 0 6 0l-3-6Z" />
+    </svg>
+  );
+}
+
+function BookIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
     </svg>
   );
 }

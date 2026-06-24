@@ -6,11 +6,14 @@ import { toast } from '@/hooks/useToastStore';
 import { useStopwatchStore } from '@/hooks/useStopwatchStore';
 
 export function Stopwatch() {
+  // Assina os campos que afetam o display, para re-renderizar em qualquer
+  // mudança (inclusive reiniciar com o cronômetro parado).
   const running = useStopwatchStore((s) => s.running);
+  const accumulatedMs = useStopwatchStore((s) => s.accumulatedMs);
+  const startedAt = useStopwatchStore((s) => s.startedAt);
   const start = useStopwatchStore((s) => s.start);
   const pause = useStopwatchStore((s) => s.pause);
   const reset = useStopwatchStore((s) => s.reset);
-  const getElapsedMs = useStopwatchStore((s) => s.getElapsedMs);
 
   // Força re-render enquanto está rodando para o display "andar".
   const [, setTick] = useState(0);
@@ -20,7 +23,10 @@ export function Stopwatch() {
     return () => clearInterval(id);
   }, [running]);
 
-  const elapsedMs = getElapsedMs();
+  const elapsedMs =
+    running && startedAt !== null
+      ? accumulatedMs + (Date.now() - startedAt)
+      : accumulatedMs;
   // Float com duas casas decimais (segundos).
   const value = (elapsedMs / 1000).toFixed(2);
   const canCopy = !running && elapsedMs > 0;

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { ComponentType, SVGProps } from 'react';
+import { type ComponentType, type SVGProps, useEffect } from 'react';
 import { IconButton } from '@/components/ui/IconButton';
 import { useSidebarStore } from '@/hooks/useSidebarStore';
 import { cn } from '@/utils/cn';
@@ -44,76 +44,122 @@ export function Sidebar() {
   const pathname = usePathname();
   const collapsed = useSidebarStore((state) => state.collapsed);
   const toggle = useSidebarStore((state) => state.toggle);
+  const mobileOpen = useSidebarStore((state) => state.mobileOpen);
+  const toggleMobile = useSidebarStore((state) => state.toggleMobile);
+  const closeMobile = useSidebarStore((state) => state.closeMobile);
 
-  function renderItem({ href, label, Icon }: NavItem) {
+  // Fecha o drawer mobile sempre que a rota muda.
+  useEffect(() => {
+    closeMobile();
+  }, [pathname, closeMobile]);
+
+  function renderItem(
+    { href, label, Icon }: NavItem,
+    opts: { iconOnly?: boolean; onClick?: () => void } = {},
+  ) {
     // '/' só fica ativo na rota exata; demais usam prefixo.
     const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
     return (
       <Link
         key={href}
         href={href}
-        title={collapsed ? label : undefined}
+        onClick={opts.onClick}
+        title={opts.iconOnly ? label : undefined}
         aria-current={active ? 'page' : undefined}
         className={cn(
           'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-          collapsed && 'justify-center px-0',
+          opts.iconOnly && 'justify-center px-0',
           active
             ? 'bg-neutral-900 text-white'
             : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
         )}
       >
         <Icon className="h-5 w-5 shrink-0" />
-        {!collapsed && <span className="truncate">{label}</span>}
+        {!opts.iconOnly && <span className="truncate">{label}</span>}
       </Link>
     );
   }
 
   return (
-    <aside
-      className={cn(
-        'flex shrink-0 flex-col overflow-y-auto border-r border-neutral-200 bg-white transition-[width] duration-200 ease-in-out',
-        collapsed ? 'w-16' : 'w-64',
-      )}
-    >
-      <nav className="flex flex-col gap-1 px-2 pt-3">
-        {MAIN_ITEMS.map(renderItem)}
-      </nav>
-
-      <div className="mt-4 px-2">
-        {/* Cabeçalho da seção; vira um divisor quando recolhida. */}
-        {collapsed ? (
-          <div className="mx-2 border-t border-neutral-200" />
-        ) : (
-          <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-neutral-400">
-            Vagas
-          </p>
-        )}
-        <nav className="flex flex-col gap-1 pt-1">
-          {VAGAS_ITEMS.map(renderItem)}
-        </nav>
-      </div>
-
-      {/* Botão de expandir/recolher fixado no final da sidebar. */}
-      <div
+    <>
+      {/* ===== Desktop: sidebar no fluxo, recolhível (>= md) ===== */}
+      <aside
         className={cn(
-          'mt-auto flex h-12 items-center px-3',
-          collapsed ? 'justify-center' : 'justify-end',
+          'hidden shrink-0 flex-col overflow-y-auto border-r border-neutral-200 bg-white transition-[width] duration-200 ease-in-out md:flex',
+          collapsed ? 'w-16' : 'w-64',
         )}
       >
-        <IconButton
-          onClick={toggle}
-          aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
-          aria-expanded={!collapsed}
+        <nav className="flex flex-col gap-1 px-2 pt-3">
+          {MAIN_ITEMS.map((item) => renderItem(item, { iconOnly: collapsed }))}
+        </nav>
+
+        <div className="mt-4 px-2">
+          {collapsed ? (
+            <div className="mx-2 border-t border-neutral-200" />
+          ) : (
+            <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+              Vagas
+            </p>
+          )}
+          <nav className="flex flex-col gap-1 pt-1">
+            {VAGAS_ITEMS.map((item) => renderItem(item, { iconOnly: collapsed }))}
+          </nav>
+        </div>
+
+        <div
+          className={cn(
+            'mt-auto flex h-12 items-center px-3',
+            collapsed ? 'justify-center' : 'justify-end',
+          )}
         >
-          <ChevronIcon
-            className={cn(
-              'h-5 w-5 transition-transform duration-200',
-              collapsed && 'rotate-180',
-            )}
-          />
-        </IconButton>
-      </div>
-    </aside>
+          <IconButton
+            onClick={toggle}
+            aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+            aria-expanded={!collapsed}
+          >
+            <ChevronIcon
+              className={cn(
+                'h-5 w-5 transition-transform duration-200',
+                collapsed && 'rotate-180',
+              )}
+            />
+          </IconButton>
+        </div>
+      </aside>
+
+      {/* ===== Mobile: botão flutuante (só a seta embaixo) (< md) ===== */}
+      {!mobileOpen && (
+        <button
+          type="button"
+          onClick={toggleMobile}
+          aria-label="Abrir menu"
+          className="fixed bottom-4 left-4 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-lg transition-transform active:scale-95 md:hidden"
+        >
+          <ChevronIcon className="h-5 w-5 -rotate-90" />
+        </button>
+      )}
+
+      {/* ===== Mobile: drawer em tela cheia (bloqueia o resto) ===== */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-white md:hidden">
+          <div className="flex h-14 items-center justify-between border-b border-neutral-200 px-4">
+            <span className="text-lg font-semibold tracking-tight text-neutral-900">
+              Menu
+            </span>
+            <IconButton onClick={closeMobile} aria-label="Fechar menu">
+              <CloseIcon className="h-5 w-5" />
+            </IconButton>
+          </div>
+          <nav className="flex flex-col gap-1 overflow-y-auto p-3">
+            {MAIN_ITEMS.map((item) => renderItem(item, { onClick: closeMobile }))}
+            <p className="px-3 pb-1 pt-4 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+              Vagas
+            </p>
+            {VAGAS_ITEMS.map((item) => renderItem(item, { onClick: closeMobile }))}
+          </nav>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -235,6 +281,15 @@ function BoltIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
       <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" />
+    </svg>
+  );
+}
+
+function CloseIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
     </svg>
   );
 }

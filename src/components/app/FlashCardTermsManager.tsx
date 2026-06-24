@@ -170,32 +170,44 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                     <span className="mt-2 w-6 shrink-0 text-sm font-medium text-neutral-400">
                       {index + 1}
                     </span>
-                    <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
-                      <input
-                        aria-label="Termo"
-                        value={isEditing ? draftTerm : card.term}
-                        readOnly={!isEditing}
-                        onChange={(e) => setDraftTerm(e.target.value)}
-                        className={cn(
-                          baseInput,
-                          isEditing
-                            ? 'border-neutral-300 focus:border-neutral-900'
-                            : 'border-transparent bg-neutral-50',
-                        )}
-                      />
-                      <input
-                        aria-label="Tradução"
-                        value={isEditing ? draftValue : (card.value ?? '')}
-                        readOnly={!isEditing}
-                        placeholder={isEditing ? 'Tradução (opcional)' : ''}
-                        onChange={(e) => setDraftValue(e.target.value)}
-                        className={cn(
-                          baseInput,
-                          isEditing
-                            ? 'border-neutral-300 focus:border-neutral-900'
-                            : 'border-transparent bg-neutral-50',
-                        )}
-                      />
+                    <div className="flex flex-1 flex-col gap-2">
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <input
+                          aria-label="Termo"
+                          value={isEditing ? draftTerm : card.term}
+                          readOnly={!isEditing}
+                          onChange={(e) => setDraftTerm(e.target.value)}
+                          className={cn(
+                            baseInput,
+                            isEditing
+                              ? 'border-neutral-300 focus:border-neutral-900'
+                              : 'border-transparent bg-neutral-50',
+                          )}
+                        />
+                        <input
+                          aria-label="Tradução"
+                          value={isEditing ? draftValue : (card.value ?? '')}
+                          readOnly={!isEditing}
+                          placeholder={isEditing ? 'Tradução (opcional)' : ''}
+                          onChange={(e) => setDraftValue(e.target.value)}
+                          className={cn(
+                            baseInput,
+                            isEditing
+                              ? 'border-neutral-300 focus:border-neutral-900'
+                              : 'border-transparent bg-neutral-50',
+                          )}
+                        />
+                      </div>
+                      <div className="flex items-center gap-3 px-1 text-xs">
+                        <span className="font-medium text-emerald-600">
+                          ✓ {card.correctAnswers} acerto
+                          {card.correctAnswers === 1 ? '' : 's'}
+                        </span>
+                        <span className="font-medium text-red-600">
+                          ✗ {card.wrongAnswers} erro
+                          {card.wrongAnswers === 1 ? '' : 's'}
+                        </span>
+                      </div>
                     </div>
                     <div className="flex shrink-0 gap-1">
                       {isEditing ? (

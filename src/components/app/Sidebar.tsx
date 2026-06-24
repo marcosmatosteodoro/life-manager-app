@@ -72,8 +72,9 @@ export function Sidebar() {
     { href, label, Icon }: NavItem,
     opts: { iconOnly?: boolean; onClick?: () => void } = {},
   ) {
-    // '/' só fica ativo na rota exata; demais usam prefixo.
-    const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
+    // Ativo só no match exato ou em sub-rota (href + '/'), nunca em prefixo
+    // parcial — evita que '/diario' acenda junto com '/diario-de-gratidao'.
+    const active = pathname === href || pathname.startsWith(`${href}/`);
     return (
       <Link
         key={href}

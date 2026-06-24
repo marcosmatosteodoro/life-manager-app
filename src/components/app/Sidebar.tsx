@@ -30,6 +30,11 @@ const MAIN_ITEMS: NavItem[] = [
     label: 'Consistência',
     Icon: CheckIcon,
   },
+  {
+    href: '/cronometro',
+    label: 'Cronômetro',
+    Icon: ClockIcon,
+  },
 ];
 
 const VAGAS_ITEMS: NavItem[] = [
@@ -281,6 +286,15 @@ function BoltIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
       <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" />
+    </svg>
+  );
+}
+
+function ClockIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
     </svg>
   );
 }

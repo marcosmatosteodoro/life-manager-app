@@ -59,9 +59,9 @@ export function FlashCardGroupManager() {
     if (!submitting) setFormOpen(false);
   }
 
-  function openGroup(_group: FlashCardGroup) {
-    // Revisão dos flashcards ainda não implementada.
-    window.alert('Não implementado');
+  function openGroup(group: FlashCardGroup) {
+    // Inicia a sessão de estudo (modo Card) do grupo.
+    router.push(`/revisar/${group.id}/estudar`);
   }
 
   function notImplemented() {

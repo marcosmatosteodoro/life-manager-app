@@ -1,3 +1,4 @@
+import type { FlashCard } from './flashCard.types';
 import { apiRequest } from './http';
 import type {
   FlashCardGroup,
@@ -14,6 +15,11 @@ export const flashCardGroupService = {
 
   get(id: number): Promise<FlashCardGroup> {
     return apiRequest<FlashCardGroup>(`/flash-card-group/${id}`);
+  },
+
+  /** Flashcards do grupo ordenados para a revisão. */
+  review(id: number): Promise<FlashCard[]> {
+    return apiRequest<FlashCard[]>(`/flash-card-group/${id}/review`);
   },
 
   create(input: FlashCardGroupInput): Promise<FlashCardGroup> {

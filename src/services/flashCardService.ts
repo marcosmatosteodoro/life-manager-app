@@ -24,4 +24,12 @@ export const flashCardService = {
   remove(id: number): Promise<void> {
     return apiRequest<void>(`/flash-card/${id}`, { method: 'DELETE' });
   },
+
+  /** Registra acerto (true) ou erro (false) — ajusta score e lastReview. */
+  review(id: number, correctAnswers: boolean): Promise<FlashCard> {
+    return apiRequest<FlashCard>(`/flash-card/${id}/review`, {
+      method: 'PATCH',
+      body: JSON.stringify({ correctAnswers }),
+    });
+  },
 };

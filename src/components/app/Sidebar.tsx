@@ -45,6 +45,11 @@ const MAIN_ITEMS: NavItem[] = [
     label: 'Diário de Gratidão',
     Icon: HeartIcon,
   },
+  {
+    href: '/revisar',
+    label: 'Revisar',
+    Icon: CardsIcon,
+  },
 ];
 
 const VAGAS_ITEMS: NavItem[] = [
@@ -297,6 +302,15 @@ function BoltIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
       <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" />
+    </svg>
+  );
+}
+
+function CardsIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <rect x="3" y="7" width="13" height="14" rx="2" />
+      <path d="M8 7V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-2" />
     </svg>
   );
 }

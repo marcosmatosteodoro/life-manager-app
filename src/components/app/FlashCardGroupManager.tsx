@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
@@ -16,6 +17,7 @@ import { FlashCardGroupList } from './FlashCardGroupList';
 type LoadState = 'loading' | 'loaded' | 'error';
 
 export function FlashCardGroupManager() {
+  const router = useRouter();
   const [groups, setGroups] = useState<FlashCardGroup[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -125,7 +127,9 @@ export function FlashCardGroupManager() {
           <FlashCardGroupList
             groups={groups}
             onOpen={openGroup}
-            onManageTerms={notImplemented}
+            onManageTerms={(group) =>
+              router.push(`/revisar/${group.id}/termos`)
+            }
             onAbsorb={notImplemented}
             onEdit={openEdit}
             onDelete={setDeleting}

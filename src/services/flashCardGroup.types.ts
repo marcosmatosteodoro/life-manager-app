@@ -1,3 +1,5 @@
+import type { FlashCard } from './flashCard.types';
+
 /** Grupo de flashcards retornado pela API. */
 export interface FlashCardGroup {
   id: number;
@@ -7,6 +9,8 @@ export interface FlashCardGroup {
   creatorId: number | null;
   /** Quantidade de flashcards (calculada em runtime no back). */
   flashCardsCount?: number;
+  /** Flashcards do grupo (vêm nas leituras do grupo). */
+  flashCards?: FlashCard[];
 }
 
 export interface FlashCardGroupInput {

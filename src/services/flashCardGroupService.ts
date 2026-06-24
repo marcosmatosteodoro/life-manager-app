@@ -12,6 +12,10 @@ export const flashCardGroupService = {
     return apiRequest<FlashCardGroupListResponse>('/flash-card-group');
   },
 
+  get(id: number): Promise<FlashCardGroup> {
+    return apiRequest<FlashCardGroup>(`/flash-card-group/${id}`);
+  },
+
   create(input: FlashCardGroupInput): Promise<FlashCardGroup> {
     return apiRequest<FlashCardGroup>('/flash-card-group', {
       method: 'POST',

@@ -31,6 +31,11 @@ const MAIN_ITEMS: NavItem[] = [
     Icon: CheckIcon,
   },
   {
+    href: '/revisar',
+    label: 'Revisar',
+    Icon: CardsIcon,
+  },
+  {
     href: '/cronometro',
     label: 'Cronômetro',
     Icon: ClockIcon,
@@ -44,11 +49,6 @@ const MAIN_ITEMS: NavItem[] = [
     href: '/diario-de-gratidao',
     label: 'Diário de Gratidão',
     Icon: HeartIcon,
-  },
-  {
-    href: '/revisar',
-    label: 'Revisar',
-    Icon: CardsIcon,
   },
 ];
 

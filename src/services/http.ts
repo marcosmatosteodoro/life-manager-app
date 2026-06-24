@@ -1,4 +1,7 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
+// Remove barras finais para evitar URLs com "//" ao concatenar com o path.
+const API_URL = (
+  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080'
+).replace(/\/+$/, '');
 
 /** Erro de API com as mensagens que o backend devolveu (prontas para exibir). */
 export class ApiError extends Error {

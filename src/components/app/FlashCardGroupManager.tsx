@@ -62,6 +62,10 @@ export function FlashCardGroupManager() {
     window.alert('Não implementado');
   }
 
+  function notImplemented() {
+    window.alert('Funcionalidade não implementada');
+  }
+
   async function handleSubmit(input: { name: string }) {
     setSubmitting(true);
     try {
@@ -121,6 +125,8 @@ export function FlashCardGroupManager() {
           <FlashCardGroupList
             groups={groups}
             onOpen={openGroup}
+            onManageTerms={notImplemented}
+            onAbsorb={notImplemented}
             onEdit={openEdit}
             onDelete={setDeleting}
           />

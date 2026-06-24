@@ -1,12 +1,14 @@
 'use client';
 
-import { Button } from '@/components/ui/Button';
+import { DropdownMenu } from '@/components/ui/DropdownMenu';
 import type { FlashCardGroup } from '@/services/flashCardGroup.types';
 import { formatDateTime } from '@/utils/date';
 
 interface FlashCardGroupListProps {
   groups: FlashCardGroup[];
   onOpen: (group: FlashCardGroup) => void;
+  onManageTerms: (group: FlashCardGroup) => void;
+  onAbsorb: (group: FlashCardGroup) => void;
   onEdit: (group: FlashCardGroup) => void;
   onDelete: (group: FlashCardGroup) => void;
 }
@@ -14,6 +16,8 @@ interface FlashCardGroupListProps {
 export function FlashCardGroupList({
   groups,
   onOpen,
+  onManageTerms,
+  onAbsorb,
   onEdit,
   onDelete,
 }: FlashCardGroupListProps) {
@@ -51,26 +55,16 @@ export function FlashCardGroupList({
                 {formatDateTime(group.createdAt)}
               </p>
             </div>
-            <div className="flex shrink-0 gap-1">
-              <Button
-                variant="ghost"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEdit(group);
-                }}
-              >
-                Editar
-              </Button>
-              <Button
-                variant="ghost"
-                className="text-red-600 hover:bg-red-50 hover:text-red-700"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(group);
-                }}
-              >
-                Excluir
-              </Button>
+            <div className="shrink-0">
+              <DropdownMenu
+                ariaLabel={`Ações de ${group.name}`}
+                items={[
+                  { label: 'Gerenciar termos', onClick: () => onManageTerms(group) },
+                  { label: 'Absorver lista', onClick: () => onAbsorb(group) },
+                  { label: 'Editar', onClick: () => onEdit(group) },
+                  { label: 'Excluir', onClick: () => onDelete(group), danger: true },
+                ]}
+              />
             </div>
           </div>
         </li>

@@ -35,6 +35,16 @@ const MAIN_ITEMS: NavItem[] = [
     label: 'Cronômetro',
     Icon: ClockIcon,
   },
+  {
+    href: '/diario',
+    label: 'Diário',
+    Icon: JournalIcon,
+  },
+  {
+    href: '/diario-de-gratidao',
+    label: 'Diário de Gratidão',
+    Icon: HeartIcon,
+  },
 ];
 
 const VAGAS_ITEMS: NavItem[] = [
@@ -286,6 +296,24 @@ function BoltIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
       <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" />
+    </svg>
+  );
+}
+
+function JournalIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2V5Z" />
+      <path d="M9 3v18" />
+      <path d="M13 8h3M13 12h3" />
+    </svg>
+  );
+}
+
+function HeartIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 6 4.5 4.5 0 0 0 2 8.5c0 2.2 1.5 4 3 5.5l7 7 7-7Z" />
     </svg>
   );
 }

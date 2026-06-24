@@ -20,11 +20,12 @@ export function ArticleForm({
   onCancel,
 }: ArticleFormProps) {
   const [title, setTitle] = useState(initial?.title ?? '');
+  const [link, setLink] = useState(initial?.link ?? '');
   const [readingTime, setReadingTime] = useState(
     initial ? String(initial.readingTime) : '',
   );
   const [timeRead, setTimeRead] = useState(
-    initial ? String(initial.timeRead) : '',
+    initial?.timeRead != null ? String(initial.timeRead) : '',
   );
   const [timeWrite, setTimeWrite] = useState(
     initial?.timeWrite != null ? String(initial.timeWrite) : '',
@@ -44,8 +45,9 @@ export function ArticleForm({
     const optionalText = (v: string) => (v.trim() === '' ? null : v);
     onSubmit({
       title: title.trim(),
+      link: optionalText(link),
       readingTime: Number(readingTime),
-      timeRead: Number(timeRead),
+      timeRead: optionalInt(timeRead),
       timeWrite: optionalInt(timeWrite),
       score: optionalInt(score),
       summary: optionalText(summary),
@@ -63,6 +65,17 @@ export function ArticleForm({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Ex.: The Pragmatic Programmer"
+          className={inputClass}
+        />
+      </Field>
+
+      <Field label="Link (opcional)" htmlFor="link">
+        <input
+          id="link"
+          type="url"
+          value={link}
+          onChange={(e) => setLink(e.target.value)}
+          placeholder="https://..."
           className={inputClass}
         />
       </Field>
@@ -85,10 +98,9 @@ export function ArticleForm({
             id="timeRead"
             type="number"
             min="1"
-            required
             value={timeRead}
             onChange={(e) => setTimeRead(e.target.value)}
-            placeholder="Ex.: 7"
+            placeholder="Opcional"
             className={inputClass}
           />
         </Field>

@@ -1,6 +1,9 @@
 'use client';
 
-import type { Article } from '@/services/article.types';
+import {
+  ARTICLE_STATUS_LABELS,
+  type Article,
+} from '@/services/article.types';
 import { formatDateTime } from '@/utils/date';
 
 interface TodayStudyBannerProps {
@@ -39,8 +42,11 @@ export function TodayStudyBanner({ todayStudy }: TodayStudyBannerProps) {
           Artigo de hoje: {todayStudy.title}
         </p>
         <p className="text-sm text-emerald-700">
-          Estudo registrado em {formatDateTime(todayStudy.createdAt)} ·{' '}
-          {todayStudy.timeRead} min de leitura
+          {ARTICLE_STATUS_LABELS[todayStudy.status]} · registrado em{' '}
+          {formatDateTime(todayStudy.createdAt)}
+          {todayStudy.timeRead !== null
+            ? ` · ${todayStudy.timeRead} min de leitura`
+            : ''}
           {todayStudy.score !== null ? ` · nota ${todayStudy.score}` : ''}.
         </p>
       </div>

@@ -175,7 +175,7 @@ export function Sidebar() {
 
       {/* ===== Mobile: drawer em tela cheia (bloqueia o resto) ===== */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-white md:hidden">
+        <div className="animate-slide-in-left fixed inset-0 z-50 flex flex-col bg-white md:hidden">
           <div className="flex h-14 items-center justify-between border-b border-neutral-200 px-4">
             <span className="text-lg font-semibold tracking-tight text-neutral-900">
               Menu

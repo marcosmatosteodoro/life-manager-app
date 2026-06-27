@@ -134,22 +134,44 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
 
         {loadState === 'loaded' && current && !finished && (
           <div className="flex flex-col items-center gap-6">
-            {/* Card grande, clicável para virar */}
-            <button
-              type="button"
-              onClick={() => setShowValue((v) => !v)}
-              className="flex min-h-64 w-full flex-col items-center justify-center rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-sm transition-colors hover:border-neutral-300"
-            >
-              <span className="mb-3 text-xs font-medium uppercase tracking-wide text-neutral-400">
-                {showValue ? 'Tradução' : 'Termo'}
-              </span>
-              <span className="text-3xl font-semibold text-neutral-900">
-                {showValue ? (current.value ?? '—') : current.term}
-              </span>
-              <span className="mt-4 text-xs text-neutral-400">
-                Clique para virar
-              </span>
-            </button>
+            {/* Card grande com efeito de virar (flip 3D no eixo Y) */}
+            <div className="w-full [perspective:1200px]">
+              <button
+                type="button"
+                aria-label="Virar card"
+                onClick={() => setShowValue((v) => !v)}
+                className={cn(
+                  'relative h-64 w-full rounded-2xl transition-transform duration-500 [transform-style:preserve-3d]',
+                  showValue && '[transform:rotateY(180deg)]',
+                )}
+              >
+                {/* Frente: termo */}
+                <span className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-sm [backface-visibility:hidden]">
+                  <span className="mb-3 text-xs font-medium uppercase tracking-wide text-neutral-400">
+                    Termo
+                  </span>
+                  <span className="text-3xl font-semibold break-words text-neutral-900">
+                    {current.term}
+                  </span>
+                  <span className="mt-4 text-xs text-neutral-400">
+                    Clique para virar
+                  </span>
+                </span>
+
+                {/* Verso: tradução (já rotacionado 180°) */}
+                <span className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                  <span className="mb-3 text-xs font-medium uppercase tracking-wide text-neutral-400">
+                    Tradução
+                  </span>
+                  <span className="text-3xl font-semibold break-words text-neutral-900">
+                    {current.value ?? '—'}
+                  </span>
+                  <span className="mt-4 text-xs text-neutral-400">
+                    Clique para virar
+                  </span>
+                </span>
+              </button>
+            </div>
 
             {/* Erro (x vermelho) e acerto (v verde) */}
             <div className="flex items-center justify-center gap-6">

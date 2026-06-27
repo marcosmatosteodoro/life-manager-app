@@ -166,7 +166,7 @@ export function Sidebar() {
           type="button"
           onClick={toggleMobile}
           aria-label="Abrir menu"
-          className="fixed bottom-4 left-4 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-lg transition-transform active:scale-95 md:hidden"
+          className="fixed bottom-4 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-lg transition-transform active:scale-95 md:hidden"
         >
           <ChevronIcon className="h-5 w-5 -rotate-90" />
         </button>
@@ -183,11 +183,21 @@ export function Sidebar() {
               <CloseIcon className="h-5 w-5" />
             </IconButton>
           </div>
-          <div className="flex flex-col overflow-y-auto p-3">
+          <div className="flex flex-col overflow-y-auto p-3 pb-20">
             {NAV_GROUPS.map((group, i) =>
               renderGroup(group, i, { onClick: closeMobile }),
             )}
           </div>
+
+          {/* Seta flutuante embaixo à direita para fechar (além do X no topo). */}
+          <button
+            type="button"
+            onClick={closeMobile}
+            aria-label="Fechar menu"
+            className="fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-lg transition-transform active:scale-95"
+          >
+            <ChevronIcon className="h-5 w-5 rotate-90" />
+          </button>
         </div>
       )}
     </>

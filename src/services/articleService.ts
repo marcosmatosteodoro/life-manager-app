@@ -29,4 +29,14 @@ export const articleService = {
   remove(id: number): Promise<void> {
     return apiRequest<void>(`/article/${id}`, { method: 'DELETE' });
   },
+
+  /**
+   * Corrige o resumo do artigo via IA: o back preenche summaryCorrected (HTML)
+   * e score, e retorna o artigo atualizado. Sem corpo — usa o resumo salvo.
+   */
+  correctSummary(id: number): Promise<Article> {
+    return apiRequest<Article>(`/article/${id}/correct-summary`, {
+      method: 'POST',
+    });
+  },
 };

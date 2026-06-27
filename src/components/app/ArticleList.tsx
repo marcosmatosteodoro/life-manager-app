@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/Button';
+import { SafeHtml } from '@/components/ui/SafeHtml';
 import {
   ARTICLE_STATUS_LABELS,
   type Article,
@@ -94,6 +95,18 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                   <p className="mt-2 line-clamp-2 text-sm text-neutral-600">
                     {article.summary}
                   </p>
+                )}
+                {article.summaryCorrected && (
+                  <div className="mt-2">
+                    <span className="text-xs font-medium text-neutral-500">
+                      Resumo corrigido
+                    </span>
+                    {/* HTML do corretor — renderizado já sanitizado. */}
+                    <SafeHtml
+                      html={article.summaryCorrected}
+                      className="mt-1 text-sm text-neutral-700 [&_li]:list-disc [&_p]:mb-2 [&_ul]:my-1 [&_ul]:pl-5"
+                    />
+                  </div>
                 )}
               </div>
 

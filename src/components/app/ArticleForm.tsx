@@ -2,6 +2,7 @@
 
 import { type FormEvent, type ReactNode, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { SafeHtml } from '@/components/ui/SafeHtml';
 import type { Article, ArticleInput } from '@/services/article.types';
 
 interface ArticleFormProps {
@@ -9,6 +10,8 @@ interface ArticleFormProps {
   initial?: Article | null;
   submitting: boolean;
   onSubmit: (input: ArticleInput) => void;
+  /** Dispara a correção via IA; devolve o artigo atualizado (ou null em erro). */
+  onCorrect: (id: number) => Promise<Article | null>;
   onCancel: () => void;
 }
 
@@ -17,8 +20,10 @@ export function ArticleForm({
   initial,
   submitting,
   onSubmit,
+  onCorrect,
   onCancel,
 }: ArticleFormProps) {
+  const [correcting, setCorrecting] = useState(false);
   const [title, setTitle] = useState(initial?.title ?? '');
   const [link, setLink] = useState(initial?.link ?? '');
   const [readingTime, setReadingTime] = useState(
@@ -53,6 +58,27 @@ export function ArticleForm({
       summary: optionalText(summary),
       summaryCorrected: optionalText(summaryCorrected),
     });
+  }
+
+  // A correção usa o resumo SALVO no back. Por isso só liberamos quando o
+  // artigo já existe, há resumo, e o campo não tem alterações pendentes.
+  const summaryDirty = (initial?.summary ?? '') !== summary;
+  const canCorrect =
+    !!initial && summary.trim() !== '' && !summaryDirty && !submitting;
+
+  async function handleCorrect() {
+    if (!initial) return;
+    setCorrecting(true);
+    try {
+      const updated = await onCorrect(initial.id);
+      if (updated) {
+        // Preenche os campos editáveis; o usuário ainda pode ajustar à mão.
+        setSummaryCorrected(updated.summaryCorrected ?? '');
+        setScore(updated.score != null ? String(updated.score) : '');
+      }
+    } finally {
+      setCorrecting(false);
+    }
   }
 
   return (
@@ -138,16 +164,51 @@ export function ArticleForm({
         />
       </Field>
 
-      <Field label="Resumo corrigido" htmlFor="summaryCorrected">
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center justify-between gap-2">
+          <label
+            htmlFor="summaryCorrected"
+            className="text-sm font-medium text-neutral-700"
+          >
+            Resumo corrigido
+          </label>
+          {initial && (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => void handleCorrect()}
+              disabled={!canCorrect || correcting}
+              className="px-2.5 py-1 text-xs"
+            >
+              {correcting ? 'Corrigindo…' : 'Corrigir resumo (IA)'}
+            </Button>
+          )}
+        </div>
         <textarea
           id="summaryCorrected"
           rows={3}
           value={summaryCorrected}
           onChange={(e) => setSummaryCorrected(e.target.value)}
-          placeholder="Opcional"
+          placeholder="Use a correção por IA ou escreva manualmente"
           className={inputClass}
         />
-      </Field>
+        {initial && summaryDirty && summary.trim() !== '' && (
+          <p className="text-xs text-amber-700">
+            Salve o resumo antes de corrigir para usar a versão atual.
+          </p>
+        )}
+        {summaryCorrected.trim() !== '' && (
+          <div className="mt-1">
+            <span className="text-xs font-medium text-neutral-500">
+              Pré-visualização
+            </span>
+            <SafeHtml
+              html={summaryCorrected}
+              className="mt-1 rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-700 [&_li]:list-disc [&_p]:mb-2 [&_ul]:my-1 [&_ul]:pl-5"
+            />
+          </div>
+        )}
+      </div>
 
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="secondary" type="button" onClick={onCancel} disabled={submitting}>

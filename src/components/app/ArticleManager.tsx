@@ -82,6 +82,23 @@ export function ArticleManager() {
     }
   }
 
+  /**
+   * Dispara a correção via IA do artigo (o back salva summaryCorrected + score).
+   * Atualiza o artigo na lista e devolve-o para o form refletir nos campos.
+   * Retorna null em caso de erro (mensagem já exibida no toast).
+   */
+  async function handleCorrect(id: number): Promise<Article | null> {
+    try {
+      const updated = await articleService.correctSummary(id);
+      setArticles((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
+      toast.success('Resumo corrigido com sucesso.');
+      return updated;
+    } catch (error) {
+      toast.errors(toMessages(error));
+      return null;
+    }
+  }
+
   async function confirmDelete() {
     if (!deleting) return;
     setDeleteInProgress(true);
@@ -145,6 +162,7 @@ export function ArticleManager() {
           initial={editing}
           submitting={submitting}
           onSubmit={handleSubmit}
+          onCorrect={handleCorrect}
           onCancel={closeForm}
         />
       </Modal>

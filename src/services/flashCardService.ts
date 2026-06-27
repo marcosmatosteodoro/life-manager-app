@@ -32,4 +32,11 @@ export const flashCardService = {
       body: JSON.stringify({ correctAnswers }),
     });
   },
+
+  /** Traduz o termo (en→pt) e salva; reusa a tradução já salva no banco. */
+  translate(id: number): Promise<FlashCard> {
+    return apiRequest<FlashCard>(`/flash-card/${id}/translate`, {
+      method: 'POST',
+    });
+  },
 };

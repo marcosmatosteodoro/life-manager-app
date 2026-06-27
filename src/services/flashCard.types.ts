@@ -3,6 +3,8 @@ export interface FlashCard {
   id: number;
   term: string;
   value: string | null;
+  /** Tradução automática (en→pt) salva no banco; reusada nas próximas vezes. */
+  translation: string | null;
   picture: string | null;
   correctAnswers: number;
   wrongAnswers: number;

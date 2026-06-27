@@ -20,6 +20,8 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
   const [index, setIndex] = useState(0);
   const [showValue, setShowValue] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const [showTranslation, setShowTranslation] = useState(false);
 
   const load = useCallback(async () => {
     setLoadState('loading');
@@ -28,6 +30,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
       setCards(rows);
       setIndex(0);
       setShowValue(false);
+      setShowTranslation(false);
       setLoadState('loaded');
     } catch (error) {
       setLoadError(toMessages(error));
@@ -49,11 +52,31 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
       await flashCardService.review(current.id, correct);
       // Próxima palavra.
       setShowValue(false);
+      setShowTranslation(false);
       setIndex((i) => i + 1);
     } catch (error) {
       toast.errors(toMessages(error));
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function translate() {
+    if (!current || translating) return;
+    // Se já tem tradução salva, só revela (sem nova chamada).
+    if (current.translation) {
+      setShowTranslation(true);
+      return;
+    }
+    setTranslating(true);
+    try {
+      const updated = await flashCardService.translate(current.id);
+      setCards((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+      setShowTranslation(true);
+    } catch (error) {
+      toast.errors(toMessages(error));
+    } finally {
+      setTranslating(false);
     }
   }
 
@@ -154,6 +177,26 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
               >
                 ✓
               </button>
+            </div>
+
+            {/* Traduzir: busca a tradução (en→pt) e a salva; depois reusa */}
+            <div className="flex w-full flex-col items-center gap-2">
+              <Button
+                variant="secondary"
+                disabled={translating}
+                onClick={() => void translate()}
+              >
+                {translating ? 'Traduzindo…' : 'Traduzir'}
+              </Button>
+
+              {showTranslation && current.translation && (
+                <p className="text-center text-sm text-neutral-600">
+                  <span className="text-neutral-400">Tradução: </span>
+                  <span className="font-medium text-neutral-900">
+                    {current.translation}
+                  </span>
+                </p>
+              )}
             </div>
           </div>
         )}

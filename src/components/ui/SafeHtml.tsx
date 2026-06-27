@@ -7,9 +7,9 @@ interface SafeHtmlProps {
   className?: string;
 }
 
-// Tags permitidas — espelham o que o corretor de resumo é instruído a gerar.
+// Tags permitidas — cobrem o corretor de resumo e o feedback (que usa títulos).
 // Qualquer outra (ex.: <script>, <img>, eventos) é removida na sanitização.
-const ALLOWED_TAGS = ['p', 'br', 'strong', 'em', 'ul', 'li'];
+const ALLOWED_TAGS = ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li', 'h3', 'h4'];
 
 /**
  * Renderiza HTML confiável apenas após sanitizar (defesa contra XSS).

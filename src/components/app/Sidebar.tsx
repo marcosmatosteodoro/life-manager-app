@@ -15,6 +15,7 @@ type NavItem = {
 
 const MAIN_ITEMS: NavItem[] = [
   { href: '/', label: 'Home', Icon: HomeIcon },
+  { href: '/feedback', label: 'Feedback', Icon: SparklesIcon },
   {
     href: '/gerenciamento-de-peso',
     label: 'Gerenciamento de Peso',
@@ -199,6 +200,24 @@ function HomeIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M3 10.5 12 3l9 7.5" />
       <path d="M5 9.5V21h14V9.5" />
       <path d="M9.5 21v-6h5v6" />
+    </svg>
+  );
+}
+
+function SparklesIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8L12 3Z" />
+      <path d="M18 14l.9 2.3 2.3.9-2.3.9L18 20.4l-.9-2.3-2.3-.9 2.3-.9L18 14Z" />
     </svg>
   );
 }

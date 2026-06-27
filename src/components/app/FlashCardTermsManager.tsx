@@ -124,6 +124,13 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
     }
   }
 
+  // Aviso em tempo de escrita: termo já existente (comparação case-insensitive).
+  const normalizedNewTerm = newTerm.trim().toLowerCase();
+  const duplicateIndex = normalizedNewTerm
+    ? cards.findIndex((c) => c.term.trim().toLowerCase() === normalizedNewTerm)
+    : -1;
+  const duplicateTerm = duplicateIndex >= 0 ? cards[duplicateIndex] : null;
+
   return (
     <section className="mx-auto w-full max-w-3xl">
       <Link
@@ -256,7 +263,13 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                     value={newTerm}
                     onChange={(e) => setNewTerm(e.target.value)}
                     placeholder="Termo"
-                    className={cn(baseInput, 'border-neutral-300 focus:border-neutral-900')}
+                    aria-invalid={duplicateTerm ? true : undefined}
+                    className={cn(
+                      baseInput,
+                      duplicateTerm
+                        ? 'border-amber-400 focus:border-amber-500'
+                        : 'border-neutral-300 focus:border-neutral-900',
+                    )}
                   />
                   <input
                     aria-label="Nova tradução"
@@ -272,6 +285,11 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                   </Button>
                 </div>
               </div>
+              {duplicateTerm && (
+                <p className="mt-2 pl-9 text-xs text-amber-700">
+                  {`"${duplicateTerm.term}" já existe na lista (posição ${duplicateIndex + 1}). Você ainda pode adicionar se quiser.`}
+                </p>
+              )}
             </form>
           </div>
         )}

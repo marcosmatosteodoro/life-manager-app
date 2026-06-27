@@ -101,6 +101,10 @@ export function HomeDashboard() {
     0,
   );
 
+  // Ofensiva: dias seguidos com pelo menos um artigo (mín. 0).
+  const studyDays = new Set(data.articles.map((a) => localDay(a.createdAt)));
+  const streak = studyStreak(studyDays);
+
   // ----- Pendências de hoje (chamam o usuário à ação) -----
   const tasks: { label: string; href: string }[] = [];
   if (habitsPending > 0) {
@@ -129,6 +133,12 @@ export function HomeDashboard() {
       {/* Visão geral */}
       <h2 className="text-sm font-semibold text-neutral-700">Visão geral</h2>
       <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <StatCard
+          href="/estudando-ingles"
+          title="Ofensiva"
+          value={`🔥 ${streak}`}
+          hint={`dia${streak === 1 ? '' : 's'} seguido${streak === 1 ? '' : 's'} estudando`}
+        />
         <StatCard
           href="/gerenciamento-de-peso"
           title="Peso atual"
@@ -233,8 +243,36 @@ function startOfWeek(): string {
   const d = new Date();
   const daysSinceMonday = (d.getDay() + 6) % 7; // 0=Dom..6=Sáb → dias após segunda
   d.setDate(d.getDate() - daysSinceMonday);
+  return dayStr(d);
+}
+
+/** Data local (YYYY-MM-DD) de uma Date. */
+function dayStr(d: Date): string {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+/** Data local (YYYY-MM-DD) de um timestamp ISO. */
+function localDay(iso: string): string {
+  return dayStr(new Date(iso));
+}
+
+/**
+ * Conta dias seguidos com estudo a partir de hoje (mín. 0). Se hoje ainda não
+ * tem estudo mas ontem teve, a ofensiva continua válida (conta a partir de ontem).
+ */
+function studyStreak(days: Set<string>): number {
+  const cursor = new Date();
+  if (!days.has(dayStr(cursor))) {
+    cursor.setDate(cursor.getDate() - 1);
+    if (!days.has(dayStr(cursor))) return 0;
+  }
+  let streak = 0;
+  while (days.has(dayStr(cursor))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
 }
 
 function toMessages(error: unknown): string[] {

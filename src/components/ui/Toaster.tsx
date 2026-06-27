@@ -9,7 +9,7 @@ export function Toaster() {
   const toasts = useToastStore((state) => state.toasts);
 
   return (
-    <div className="pointer-events-none fixed top-4 right-4 z-50 flex w-full max-w-sm flex-col gap-2">
+    <div className="pointer-events-none fixed top-4 right-4 z-50 flex w-full max-w-[80vw] flex-col gap-2 sm:max-w-sm">
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} />
       ))}
@@ -35,7 +35,9 @@ function ToastItem({ toast }: { toast: Toast }) {
           : 'border-red-200 bg-red-50 text-red-800',
       )}
     >
-      <span className="whitespace-pre-line">{toast.message}</span>
+      <span className="min-w-0 break-words whitespace-pre-line">
+        {toast.message}
+      </span>
       <button
         type="button"
         onClick={() => dismiss(toast.id)}

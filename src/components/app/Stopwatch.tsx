@@ -27,14 +27,16 @@ export function Stopwatch() {
     running && startedAt !== null
       ? accumulatedMs + (Date.now() - startedAt)
       : accumulatedMs;
-  // Float com duas casas decimais (segundos).
-  const value = (elapsedMs / 1000).toFixed(2);
+  // Display adaptativo: segundos < 1min, min:seg < 1h, senão horas:min.
+  const { value, unit } = formatElapsed(elapsedMs);
+  // Cópia sempre em minutos inteiros (para colar nos campos de tempo do app).
+  const copyMinutes = String(Math.round(elapsedMs / 60000));
   const canCopy = !running && elapsedMs > 0;
 
   async function copyValue() {
     try {
-      await navigator.clipboard.writeText(value);
-      toast.success(`Valor copiado: ${value}`);
+      await navigator.clipboard.writeText(copyMinutes);
+      toast.success(`Valor copiado: ${copyMinutes} min`);
     } catch {
       toast.error('Não foi possível copiar o valor.');
     }
@@ -61,7 +63,7 @@ export function Stopwatch() {
             {value}
           </span>
         )}
-        <span className="text-sm text-neutral-400">segundos</span>
+        <span className="text-sm text-neutral-400">{unit}</span>
       </div>
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
@@ -95,9 +97,34 @@ export function Stopwatch() {
 
       {canCopy && (
         <p className="mt-4 text-xs text-neutral-400">
-          Clique no número para copiar.
+          Clique no número para copiar (em minutos).
         </p>
       )}
     </section>
   );
+}
+
+/**
+ * Formata o tempo decorrido para exibição:
+ * - < 1 min: segundos com centésimos (ex.: "45.32");
+ * - < 1 h: minutos e segundos (ex.: "2:05");
+ * - >= 1 h: horas e minutos (ex.: "1:23").
+ */
+function formatElapsed(ms: number): { value: string; unit: string } {
+  const totalSeconds = ms / 1000;
+  if (totalSeconds < 60) {
+    return { value: totalSeconds.toFixed(2), unit: 'segundos' };
+  }
+  if (totalSeconds < 3600) {
+    const m = Math.floor(totalSeconds / 60);
+    const s = Math.floor(totalSeconds % 60);
+    return { value: `${m}:${pad(s)}`, unit: 'minutos : segundos' };
+  }
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  return { value: `${h}:${pad(m)}`, unit: 'horas : minutos' };
+}
+
+function pad(n: number): string {
+  return String(n).padStart(2, '0');
 }

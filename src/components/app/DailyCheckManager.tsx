@@ -68,7 +68,7 @@ export function DailyCheckManager() {
   return (
     <section className="mx-auto w-full max-w-2xl">
       <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
-        Consistência
+        Hábitos
       </h1>
 
       {loadState === 'loading' && (

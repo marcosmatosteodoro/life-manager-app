@@ -26,9 +26,9 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: 'Estudos',
     items: [
-      { href: '/estudando-ingles', label: 'Estudando Inglês', Icon: BookIcon },
-      { href: '/consistencia', label: 'Consistência', Icon: CheckIcon },
-      { href: '/revisar', label: 'Revisar', Icon: CardsIcon },
+      { href: '/estudando-ingles', label: 'Artigos', Icon: BookIcon },
+      { href: '/consistencia', label: 'Hábitos', Icon: CheckIcon },
+      { href: '/revisar', label: 'Flashcards', Icon: CardsIcon },
     ],
   },
   {
@@ -37,13 +37,13 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/diario', label: 'Diário', Icon: JournalIcon },
       {
         href: '/diario-de-gratidao',
-        label: 'Diário de Gratidão',
+        label: 'Gratidão',
         Icon: HeartIcon,
       },
       { href: '/feedback', label: 'Feedback', Icon: SparklesIcon },
       {
         href: '/gerenciamento-de-peso',
-        label: 'Gerenciamento de Peso',
+        label: 'Peso',
         Icon: ScaleIcon,
       },
     ],
@@ -53,9 +53,9 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: '/vagas/paises', label: 'Países', Icon: GlobeIcon },
       { href: '/vagas/empresas', label: 'Empresas', Icon: BuildingIcon },
-      { href: '/vagas/aplicacoes', label: 'Aplicações', Icon: SendIcon },
-      { href: '/vagas/buscador', label: 'Buscador de vagas', Icon: SearchIcon },
-      { href: '/vagas/aplicador', label: 'Aplicador de vagas', Icon: BoltIcon },
+      { href: '/vagas/aplicacoes', label: 'Candidaturas', Icon: SendIcon },
+      { href: '/vagas/buscador', label: 'Buscar vagas', Icon: SearchIcon },
+      { href: '/vagas/aplicador', label: 'Aplicador', Icon: BoltIcon },
     ],
   },
 ];

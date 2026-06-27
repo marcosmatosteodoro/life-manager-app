@@ -151,7 +151,7 @@ export function HomeDashboard() {
         />
         <StatCard
           href="/consistencia"
-          title="Consistência"
+          title="Hábitos"
           value={`${habitsDone}/${habitsTotal}`}
           hint="hábitos hoje"
         />

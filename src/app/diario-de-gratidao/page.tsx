@@ -4,7 +4,7 @@ export default function DiarioDeGratidaoPage() {
   return (
     <DiaryManager
       type="GRATITUDE"
-      title="Diário de Gratidão"
+      title="Gratidão"
       createLabel="Nova gratidão"
       todayPendingMessage="Você ainda não registrou sua gratidão hoje."
     />

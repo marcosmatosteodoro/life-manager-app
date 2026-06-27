@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { Loading } from '@/components/ui/Loading';
 import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/hooks/useToastStore';
 import { ApiError, companyService } from '@/services/companyService';
@@ -120,9 +121,7 @@ export function CompanyManager() {
       )}
 
       <div className="mt-6">
-        {loadState === 'loading' && (
-          <p className="text-sm text-neutral-500">Carregando...</p>
-        )}
+        {loadState === 'loading' && <Loading />}
         {loadState === 'error' && (
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             <p className="whitespace-pre-line">{loadError.join('\n')}</p>

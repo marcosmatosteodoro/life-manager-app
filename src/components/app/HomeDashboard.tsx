@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Loading } from '@/components/ui/Loading';
 import { articleService } from '@/services/articleService';
 import {
   ARTICLE_STATUS_LABELS,
@@ -64,7 +65,7 @@ export function HomeDashboard() {
   }, [load]);
 
   if (loadState === 'loading') {
-    return <p className="text-sm text-neutral-500">Carregando...</p>;
+    return <Loading />;
   }
 
   if (loadState === 'error' || !data) {

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Loading } from '@/components/ui/Loading';
 import { SafeHtml } from '@/components/ui/SafeHtml';
 import { toast } from '@/hooks/useToastStore';
 import {
@@ -98,9 +99,7 @@ export function FeedbackManager() {
         <aside className="md:col-span-1">
           <h2 className="text-sm font-semibold text-neutral-700">Histórico</h2>
 
-          {loadState === 'loading' && (
-            <p className="mt-2 text-sm text-neutral-500">Carregando…</p>
-          )}
+          {loadState === 'loading' && <Loading className="min-h-0 py-8" />}
 
           {loadState === 'error' && (
             <div className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">

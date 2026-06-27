@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Loading } from '@/components/ui/Loading';
 import { toast } from '@/hooks/useToastStore';
 import { ApiError, dailyCheckService } from '@/services/dailyCheckService';
 import type { DailyCheck, DailyCheckSkill } from '@/services/dailyCheck.types';
@@ -71,9 +72,7 @@ export function DailyCheckManager() {
         Hábitos
       </h1>
 
-      {loadState === 'loading' && (
-        <p className="mt-6 text-sm text-neutral-500">Carregando...</p>
-      )}
+      {loadState === 'loading' && <Loading />}
 
       {loadState === 'error' && (
         <div className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">

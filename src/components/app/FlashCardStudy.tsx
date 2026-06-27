@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { Loading } from '@/components/ui/Loading';
 import { toast } from '@/hooks/useToastStore';
 import type { FlashCard } from '@/services/flashCard.types';
 import { ApiError, flashCardService } from '@/services/flashCardService';
@@ -74,9 +75,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
       </div>
 
       <div className="mt-6">
-        {loadState === 'loading' && (
-          <p className="text-sm text-neutral-500">Carregando...</p>
-        )}
+        {loadState === 'loading' && <Loading />}
 
         {loadState === 'error' && (
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">

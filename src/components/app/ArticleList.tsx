@@ -49,7 +49,7 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="truncate font-medium text-neutral-900">
+                  <span className="font-medium break-words text-neutral-900">
                     {article.title}
                   </span>
                   <span

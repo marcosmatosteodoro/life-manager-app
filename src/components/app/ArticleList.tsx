@@ -46,7 +46,7 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                 : 'border-neutral-200',
             )}
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="truncate font-medium text-neutral-900">
@@ -110,7 +110,7 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                 )}
               </div>
 
-              <div className="flex shrink-0 gap-1">
+              <div className="flex justify-end gap-1 sm:shrink-0">
                 <Button variant="ghost" onClick={() => onEdit(article)}>
                   Editar
                 </Button>

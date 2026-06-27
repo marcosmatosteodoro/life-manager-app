@@ -18,11 +18,11 @@ interface TodayStudyBannerProps {
 export function TodayStudyBanner({ todayStudy }: TodayStudyBannerProps) {
   if (!todayStudy) {
     return (
-      <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800">
-        <span aria-hidden className="text-xl">
+      <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800">
+        <span aria-hidden className="shrink-0 text-xl">
           📚
         </span>
-        <div>
+        <div className="min-w-0">
           <p className="text-sm font-semibold">Falta estudar hoje</p>
           <p className="text-sm text-amber-700">
             Você ainda não registrou um estudo de inglês hoje.
@@ -33,12 +33,12 @@ export function TodayStudyBanner({ todayStudy }: TodayStudyBannerProps) {
   }
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800">
-      <span aria-hidden className="text-xl">
+    <div className="flex items-start gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800">
+      <span aria-hidden className="shrink-0 text-xl">
         ✅
       </span>
-      <div>
-        <p className="text-sm font-semibold">
+      <div className="min-w-0">
+        <p className="text-sm font-semibold break-words">
           Artigo de hoje: {todayStudy.title}
         </p>
         <p className="text-sm text-emerald-700">

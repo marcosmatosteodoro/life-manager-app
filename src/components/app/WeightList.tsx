@@ -36,13 +36,13 @@ export function WeightList({
           <li
             key={weight.id}
             className={cn(
-              'flex items-center justify-between gap-4 rounded-lg border bg-white px-4 py-3 transition-colors',
+              'flex flex-col gap-2 rounded-lg border bg-white px-4 py-3 transition-colors sm:flex-row sm:items-center sm:justify-between sm:gap-4',
               highlighted
                 ? 'border-neutral-900 ring-1 ring-neutral-900'
                 : 'border-neutral-200',
             )}
           >
-            <div className="flex items-baseline gap-3">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="text-lg font-semibold text-neutral-900">
                 {weight.value.toFixed(2)} kg
               </span>
@@ -57,7 +57,7 @@ export function WeightList({
               )}
             </div>
 
-            <div className="flex shrink-0 gap-1">
+            <div className="flex justify-end gap-1 sm:shrink-0">
               <Button variant="ghost" onClick={() => onEdit(weight)}>
                 Editar
               </Button>

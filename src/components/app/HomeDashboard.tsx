@@ -16,7 +16,7 @@ import type { FlashCardGroup } from '@/services/flashCardGroup.types';
 import { ApiError } from '@/services/http';
 import { weightService } from '@/services/weightService';
 import type { Weight } from '@/services/weight.types';
-import { isToday, todayDate } from '@/utils/date';
+import { isToday } from '@/utils/date';
 import { DAILY_CHECK_SKILLS } from './dailyCheckSkills';
 
 type LoadState = 'loading' | 'loaded' | 'error';
@@ -88,7 +88,9 @@ export function HomeDashboard() {
   const todayStudy = data.articles.find((a) => isToday(a.createdAt)) ?? null;
   const studyPending = !todayStudy || todayStudy.status !== 'COMPLETED';
 
-  const loggedWeightToday = data.weights.some((w) => w.date === todayDate());
+  // Peso é semanal: conta como feito se houver registro nesta semana.
+  const weekStart = startOfWeek();
+  const loggedWeightThisWeek = data.weights.some((w) => w.date >= weekStart);
   const sortedWeights = [...data.weights].sort((a, b) =>
     a.date.localeCompare(b.date),
   );
@@ -107,9 +109,9 @@ export function HomeDashboard() {
       href: '/consistencia',
     });
   }
-  if (!loggedWeightToday) {
+  if (!loggedWeightThisWeek) {
     tasks.push({
-      label: 'Registre seu peso de hoje',
+      label: 'Registre o peso desta semana',
       href: '/gerenciamento-de-peso',
     });
   }
@@ -131,7 +133,11 @@ export function HomeDashboard() {
           href="/gerenciamento-de-peso"
           title="Peso atual"
           value={latestWeight ? `${latestWeight.value} kg` : '—'}
-          hint={loggedWeightToday ? 'registrado hoje' : 'sem registro hoje'}
+          hint={
+            loggedWeightThisWeek
+              ? 'registrado nesta semana'
+              : 'sem registro nesta semana'
+          }
         />
         <StatCard
           href="/consistencia"
@@ -220,6 +226,15 @@ function StatCard({
       {hint && <span className="mt-0.5 text-xs text-neutral-500">{hint}</span>}
     </Link>
   );
+}
+
+/** Início da semana atual (segunda-feira) no formato YYYY-MM-DD local. */
+function startOfWeek(): string {
+  const d = new Date();
+  const daysSinceMonday = (d.getDay() + 6) % 7; // 0=Dom..6=Sáb → dias após segunda
+  d.setDate(d.getDate() - daysSinceMonday);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
 function toMessages(error: unknown): string[] {

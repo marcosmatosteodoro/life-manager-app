@@ -9,6 +9,8 @@ import type { Company } from '@/services/company.types';
 
 interface ApplyFormProps {
   initial?: Apply | null;
+  /** Valores iniciais ao criar (ex.: vindos de uma vaga do buscador). */
+  prefill?: Partial<Apply>;
   companies: Company[];
   submitting: boolean;
   onSubmit: (input: ApplyInput) => void;
@@ -28,21 +30,26 @@ function currentDate(): string {
 
 export function ApplyForm({
   initial,
+  prefill,
   companies,
   submitting,
   onSubmit,
   onCancel,
 }: ApplyFormProps) {
-  const [name, setName] = useState(initial?.name ?? '');
+  const [name, setName] = useState(initial?.name ?? prefill?.name ?? '');
   const [companyId, setCompanyId] = useState(
-    initial ? String(initial.companyId) : '',
+    initial?.companyId != null ? String(initial.companyId) : '',
   );
   const [status, setStatus] = useState<ApplyStatus>(
-    initial?.status ?? 'APPLIED',
+    initial?.status ?? prefill?.status ?? 'APPLIED',
   );
-  const [date, setDate] = useState(initial?.date ?? currentDate());
-  const [link, setLink] = useState(initial?.link ?? '');
-  const [description, setDescription] = useState(initial?.description ?? '');
+  const [date, setDate] = useState(
+    initial?.date ?? prefill?.date ?? currentDate(),
+  );
+  const [link, setLink] = useState(initial?.link ?? prefill?.link ?? '');
+  const [description, setDescription] = useState(
+    initial?.description ?? prefill?.description ?? '',
+  );
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();

@@ -13,52 +13,51 @@ type NavItem = {
   Icon: ComponentType<SVGProps<SVGSVGElement>>;
 };
 
-const MAIN_ITEMS: NavItem[] = [
-  { href: '/', label: 'Home', Icon: HomeIcon },
-  { href: '/feedback', label: 'Feedback', Icon: SparklesIcon },
-  {
-    href: '/gerenciamento-de-peso',
-    label: 'Gerenciamento de Peso',
-    Icon: ScaleIcon,
-  },
-  {
-    href: '/estudando-ingles',
-    label: 'Estudando Inglês',
-    Icon: BookIcon,
-  },
-  {
-    href: '/consistencia',
-    label: 'Consistência',
-    Icon: CheckIcon,
-  },
-  {
-    href: '/revisar',
-    label: 'Revisar',
-    Icon: CardsIcon,
-  },
-  {
-    href: '/cronometro',
-    label: 'Cronômetro',
-    Icon: ClockIcon,
-  },
-  {
-    href: '/diario',
-    label: 'Diário',
-    Icon: JournalIcon,
-  },
-  {
-    href: '/diario-de-gratidao',
-    label: 'Diário de Gratidão',
-    Icon: HeartIcon,
-  },
-];
+// Grupo de navegação; `label` ausente = itens soltos (sem cabeçalho).
+type NavGroup = { label?: string; items: NavItem[] };
 
-const VAGAS_ITEMS: NavItem[] = [
-  { href: '/vagas/paises', label: 'Países', Icon: GlobeIcon },
-  { href: '/vagas/empresas', label: 'Empresas', Icon: BuildingIcon },
-  { href: '/vagas/aplicacoes', label: 'Aplicações', Icon: SendIcon },
-  { href: '/vagas/buscador', label: 'Buscador de vagas', Icon: SearchIcon },
-  { href: '/vagas/aplicador', label: 'Aplicador de vagas', Icon: BoltIcon },
+const NAV_GROUPS: NavGroup[] = [
+  {
+    items: [
+      { href: '/', label: 'Home', Icon: HomeIcon },
+      { href: '/cronometro', label: 'Cronômetro', Icon: ClockIcon },
+    ],
+  },
+  {
+    label: 'Estudos',
+    items: [
+      { href: '/estudando-ingles', label: 'Estudando Inglês', Icon: BookIcon },
+      { href: '/consistencia', label: 'Consistência', Icon: CheckIcon },
+      { href: '/revisar', label: 'Revisar', Icon: CardsIcon },
+    ],
+  },
+  {
+    label: 'Sobre mim',
+    items: [
+      { href: '/diario', label: 'Diário', Icon: JournalIcon },
+      {
+        href: '/diario-de-gratidao',
+        label: 'Diário de Gratidão',
+        Icon: HeartIcon,
+      },
+      { href: '/feedback', label: 'Feedback', Icon: SparklesIcon },
+      {
+        href: '/gerenciamento-de-peso',
+        label: 'Gerenciamento de Peso',
+        Icon: ScaleIcon,
+      },
+    ],
+  },
+  {
+    label: 'Vagas',
+    items: [
+      { href: '/vagas/paises', label: 'Países', Icon: GlobeIcon },
+      { href: '/vagas/empresas', label: 'Empresas', Icon: BuildingIcon },
+      { href: '/vagas/aplicacoes', label: 'Aplicações', Icon: SendIcon },
+      { href: '/vagas/buscador', label: 'Buscador de vagas', Icon: SearchIcon },
+      { href: '/vagas/aplicador', label: 'Aplicador de vagas', Icon: BoltIcon },
+    ],
+  },
 ];
 
 export function Sidebar() {
@@ -102,6 +101,29 @@ export function Sidebar() {
     );
   }
 
+  function renderGroup(
+    group: NavGroup,
+    index: number,
+    opts: { iconOnly?: boolean; onClick?: () => void } = {},
+  ) {
+    return (
+      <div key={group.label ?? index} className={index === 0 ? '' : 'mt-4'}>
+        {group.label &&
+          (opts.iconOnly ? (
+            // Recolhido: só um divisor entre grupos (sem texto).
+            <div className="mx-2 border-t border-neutral-200" />
+          ) : (
+            <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+              {group.label}
+            </p>
+          ))}
+        <nav className="flex flex-col gap-1 pt-1">
+          {group.items.map((item) => renderItem(item, opts))}
+        </nav>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* ===== Desktop: sidebar no fluxo, recolhível (>= md) ===== */}
@@ -111,21 +133,10 @@ export function Sidebar() {
           collapsed ? 'w-16' : 'w-64',
         )}
       >
-        <nav className="flex flex-col gap-1 px-2 pt-3">
-          {MAIN_ITEMS.map((item) => renderItem(item, { iconOnly: collapsed }))}
-        </nav>
-
-        <div className="mt-4 px-2">
-          {collapsed ? (
-            <div className="mx-2 border-t border-neutral-200" />
-          ) : (
-            <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-neutral-400">
-              Vagas
-            </p>
+        <div className="flex flex-col px-2 pt-3">
+          {NAV_GROUPS.map((group, i) =>
+            renderGroup(group, i, { iconOnly: collapsed }),
           )}
-          <nav className="flex flex-col gap-1 pt-1">
-            {VAGAS_ITEMS.map((item) => renderItem(item, { iconOnly: collapsed }))}
-          </nav>
         </div>
 
         <div
@@ -172,13 +183,11 @@ export function Sidebar() {
               <CloseIcon className="h-5 w-5" />
             </IconButton>
           </div>
-          <nav className="flex flex-col gap-1 overflow-y-auto p-3">
-            {MAIN_ITEMS.map((item) => renderItem(item, { onClick: closeMobile }))}
-            <p className="px-3 pb-1 pt-4 text-xs font-semibold uppercase tracking-wide text-neutral-400">
-              Vagas
-            </p>
-            {VAGAS_ITEMS.map((item) => renderItem(item, { onClick: closeMobile }))}
-          </nav>
+          <div className="flex flex-col overflow-y-auto p-3">
+            {NAV_GROUPS.map((group, i) =>
+              renderGroup(group, i, { onClick: closeMobile }),
+            )}
+          </div>
         </div>
       )}
     </>

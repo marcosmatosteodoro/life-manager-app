@@ -11,6 +11,7 @@ import {
   flashCardGroupService,
 } from '@/services/flashCardGroupService';
 import type { FlashCardGroup } from '@/services/flashCardGroup.types';
+import { FlashCardGroupAbsorbModal } from './FlashCardGroupAbsorbModal';
 import { FlashCardGroupForm } from './FlashCardGroupForm';
 import { FlashCardGroupList } from './FlashCardGroupList';
 
@@ -28,6 +29,10 @@ export function FlashCardGroupManager() {
 
   const [deleting, setDeleting] = useState<FlashCardGroup | null>(null);
   const [deleteInProgress, setDeleteInProgress] = useState(false);
+
+  // Grupo que vai absorver outro (destino); null = modal fechado.
+  const [absorbing, setAbsorbing] = useState<FlashCardGroup | null>(null);
+  const [absorbInProgress, setAbsorbInProgress] = useState(false);
 
   const load = useCallback(async () => {
     setLoadState('loading');
@@ -64,10 +69,6 @@ export function FlashCardGroupManager() {
     router.push(`/revisar/${group.id}/estudar`);
   }
 
-  function notImplemented() {
-    window.alert('Funcionalidade não implementada');
-  }
-
   async function handleSubmit(input: { name: string }) {
     setSubmitting(true);
     try {
@@ -102,6 +103,21 @@ export function FlashCardGroupManager() {
     }
   }
 
+  async function confirmAbsorb(sourceId: number) {
+    if (!absorbing) return;
+    setAbsorbInProgress(true);
+    try {
+      await flashCardGroupService.absorb(absorbing.id, sourceId);
+      toast.success('Lista absorvida com sucesso.');
+      setAbsorbing(null);
+      await load();
+    } catch (error) {
+      toast.errors(toMessages(error));
+    } finally {
+      setAbsorbInProgress(false);
+    }
+  }
+
   return (
     <section className="mx-auto w-full max-w-2xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -130,7 +146,7 @@ export function FlashCardGroupManager() {
             onManageTerms={(group) =>
               router.push(`/revisar/${group.id}/termos`)
             }
-            onAbsorb={notImplemented}
+            onAbsorb={setAbsorbing}
             onEdit={openEdit}
             onDelete={setDeleting}
           />
@@ -164,6 +180,18 @@ export function FlashCardGroupManager() {
         onConfirm={() => void confirmDelete()}
         onCancel={() => {
           if (!deleteInProgress) setDeleting(null);
+        }}
+      />
+
+      <FlashCardGroupAbsorbModal
+        key={absorbing?.id ?? 'closed'}
+        open={absorbing !== null}
+        target={absorbing}
+        candidates={groups.filter((group) => group.id !== absorbing?.id)}
+        submitting={absorbInProgress}
+        onConfirm={(sourceId) => void confirmAbsorb(sourceId)}
+        onCancel={() => {
+          if (!absorbInProgress) setAbsorbing(null);
         }}
       />
     </section>

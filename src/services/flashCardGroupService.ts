@@ -39,4 +39,15 @@ export const flashCardGroupService = {
   remove(id: number): Promise<void> {
     return apiRequest<void>(`/flash-card-group/${id}`, { method: 'DELETE' });
   },
+
+  /**
+   * Absorve outro grupo neste (destino = targetId): move os flashcards do
+   * grupo de origem (sourceId) para o destino e exclui o grupo de origem.
+   */
+  absorb(targetId: number, sourceId: number): Promise<FlashCardGroup> {
+    return apiRequest<FlashCardGroup>(`/flash-card-group/${targetId}/absorb`, {
+      method: 'POST',
+      body: JSON.stringify({ sourceId }),
+    });
+  },
 };

@@ -124,38 +124,8 @@ export function HomeDashboard() {
 
   return (
     <section className="mx-auto w-full max-w-3xl">
-      <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
-        Início
-      </h1>
-
-      {/* Pendências de hoje */}
-      <h2 className="mt-6 text-sm font-semibold text-neutral-700">
-        Pendências de hoje
-      </h2>
-      {tasks.length === 0 ? (
-        <p className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          Tudo em dia por hoje! 🎉
-        </p>
-      ) : (
-        <ul className="mt-2 flex flex-col gap-2">
-          {tasks.map((task) => (
-            <li key={task.href}>
-              <Link
-                href={task.href}
-                className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900 transition-colors hover:bg-amber-100"
-              >
-                <span>{task.label}</span>
-                <span aria-hidden>→</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-
       {/* Visão geral */}
-      <h2 className="mt-8 text-sm font-semibold text-neutral-700">
-        Visão geral
-      </h2>
+      <h2 className="text-sm font-semibold text-neutral-700">Visão geral</h2>
       <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <StatCard
           href="/gerenciamento-de-peso"
@@ -188,6 +158,30 @@ export function HomeDashboard() {
           hint="vagas aplicadas"
         />
       </div>
+
+      {/* Pendências de hoje */}
+      <h2 className="mt-8 text-sm font-semibold text-neutral-700">
+        Pendências de hoje
+      </h2>
+      {tasks.length === 0 ? (
+        <p className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          Tudo em dia por hoje! 🎉
+        </p>
+      ) : (
+        <ul className="mt-2 flex flex-col gap-2">
+          {tasks.map((task) => (
+            <li key={task.href}>
+              <Link
+                href={task.href}
+                className="flex items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900 transition-colors hover:bg-amber-100"
+              >
+                <span>{task.label}</span>
+                <span aria-hidden>→</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
 
       {/* CTA Feedback */}
       <Link

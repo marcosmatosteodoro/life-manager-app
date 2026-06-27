@@ -1,0 +1,86 @@
+'use client';
+
+import { cn } from '@/utils/cn';
+
+// Altura fixa por enquanto (metros). Fácil de tornar configurável depois.
+const HEIGHT_M = 1.77;
+
+// Limites de IMC para a faixa de peso "normal" (OMS).
+const HEALTHY_MIN_BMI = 18.5;
+const HEALTHY_MAX_BMI = 24.9;
+
+interface BmiCardProps {
+  /** Peso mais recente (kg). */
+  weightKg: number;
+}
+
+/** Card informativo: IMC do peso atual, classificação e faixa/meta saudável. */
+export function BmiCard({ weightKg }: BmiCardProps) {
+  const bmi = weightKg / (HEIGHT_M * HEIGHT_M);
+  const { label, badge } = classify(bmi);
+
+  const minHealthy = HEALTHY_MIN_BMI * HEIGHT_M * HEIGHT_M;
+  const maxHealthy = HEALTHY_MAX_BMI * HEIGHT_M * HEIGHT_M;
+
+  let goal: string;
+  if (weightKg > maxHealthy) {
+    goal = `Faltam ${fmt(weightKg - maxHealthy)} kg para entrar na faixa saudável.`;
+  } else if (weightKg < minHealthy) {
+    goal = `Você está ${fmt(minHealthy - weightKg)} kg abaixo da faixa saudável.`;
+  } else {
+    goal = 'Você está dentro da faixa de peso saudável. 🎉';
+  }
+
+  return (
+    <div className="rounded-lg border border-neutral-200 bg-white p-4">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span className="text-xs font-medium uppercase tracking-wide text-neutral-400">
+          IMC
+        </span>
+        <span className="text-2xl font-semibold text-neutral-900">
+          {fmt(bmi)}
+        </span>
+        <span
+          className={cn(
+            'rounded-full px-2 py-0.5 text-xs font-medium',
+            badge,
+          )}
+        >
+          {label}
+        </span>
+      </div>
+
+      <p className="mt-2 text-sm text-neutral-600">{goal}</p>
+
+      <p className="mt-1 text-xs text-neutral-400">
+        Altura {fmt(HEIGHT_M)} m · faixa saudável {fmt(minHealthy)}–
+        {fmt(maxHealthy)} kg (IMC {fmt(HEALTHY_MIN_BMI)}–{fmt(HEALTHY_MAX_BMI)}).
+      </p>
+    </div>
+  );
+}
+
+/** Classificação do IMC (OMS) com cor do selo. */
+function classify(bmi: number): { label: string; badge: string } {
+  if (bmi < 18.5) {
+    return { label: 'Abaixo do peso', badge: 'bg-amber-50 text-amber-700' };
+  }
+  if (bmi < 25) {
+    return { label: 'Peso normal', badge: 'bg-emerald-50 text-emerald-700' };
+  }
+  if (bmi < 30) {
+    return { label: 'Sobrepeso', badge: 'bg-amber-50 text-amber-700' };
+  }
+  if (bmi < 35) {
+    return { label: 'Obesidade grau I', badge: 'bg-red-50 text-red-700' };
+  }
+  if (bmi < 40) {
+    return { label: 'Obesidade grau II', badge: 'bg-red-50 text-red-700' };
+  }
+  return { label: 'Obesidade grau III', badge: 'bg-red-50 text-red-700' };
+}
+
+/** Formata número com 1 casa e vírgula decimal (pt-BR). */
+function fmt(n: number): string {
+  return n.toFixed(1).replace('.', ',');
+}

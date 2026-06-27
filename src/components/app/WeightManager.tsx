@@ -8,6 +8,7 @@ import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/hooks/useToastStore';
 import { ApiError, weightService } from '@/services/weightService';
 import type { Weight, WeightInput } from '@/services/weight.types';
+import { BmiCard } from './BmiCard';
 import { WeightForm } from './WeightForm';
 import { WeightList } from './WeightList';
 
@@ -99,6 +100,12 @@ export function WeightManager() {
         </h1>
         <Button onClick={openCreate}>Registrar novo peso</Button>
       </div>
+
+      {loadState === 'loaded' && weights[0] && (
+        <div className="mt-6">
+          <BmiCard weightKg={weights[0].value} />
+        </div>
+      )}
 
       <div className="mt-6">
         {loadState === 'loading' && <Loading />}

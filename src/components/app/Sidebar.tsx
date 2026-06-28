@@ -22,6 +22,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/', label: 'Home', Icon: HomeIcon },
       { href: '/cronometro', label: 'Cronômetro', Icon: ClockIcon },
       { href: '/pomodoro', label: 'Pomodoro', Icon: PomodoroIcon },
+      { href: '/conversores', label: 'Conversores', Icon: SwapIcon },
     ],
   },
   {
@@ -387,6 +388,17 @@ function PomodoroIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M12 5c-4.4 0-8 3.4-8 7.5S7.6 21 12 21s8-3.9 8-8.5S16.4 5 12 5Z" />
       <path d="M12 5c0-1.5 1-2.5 2.5-2.5" />
       <path d="M12 5c0-1.5-1-2.5-2.5-2.5" />
+    </svg>
+  );
+}
+
+function SwapIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M7 4 3 8l4 4" />
+      <path d="M3 8h13a4 4 0 0 1 0 8h-1" />
+      <path d="m17 20 4-4-4-4" />
+      <path d="M21 16H8a4 4 0 0 1 0-8h1" />
     </svg>
   );
 }

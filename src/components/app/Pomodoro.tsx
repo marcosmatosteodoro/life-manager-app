@@ -25,6 +25,12 @@ export function Pomodoro() {
 
   const [, setTick] = useState(0);
 
+  // Carrega o estado salvo (localStorage) após montar — resiste ao reload sem
+  // causar mismatch de hidratação (o SSR usa o estado padrão).
+  useEffect(() => {
+    void usePomodoroStore.persist.rehydrate();
+  }, []);
+
   // Enquanto roda: re-renderiza e troca de fase quando o tempo zera.
   useEffect(() => {
     if (!running) return;

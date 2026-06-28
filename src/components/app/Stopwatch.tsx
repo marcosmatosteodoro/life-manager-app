@@ -16,6 +16,12 @@ export function Stopwatch() {
   const pause = useStopwatchStore((s) => s.pause);
   const reset = useStopwatchStore((s) => s.reset);
 
+  // Carrega o estado salvo (localStorage) após montar — resiste ao reload sem
+  // causar mismatch de hidratação (o SSR usa o estado padrão).
+  useEffect(() => {
+    void useStopwatchStore.persist.rehydrate();
+  }, []);
+
   // Força re-render enquanto está rodando para o display "andar".
   const [, setTick] = useState(0);
   useEffect(() => {

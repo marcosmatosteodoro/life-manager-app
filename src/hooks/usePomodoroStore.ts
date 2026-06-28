@@ -40,8 +40,12 @@ interface PomodoroState {
 
 /**
  * Pomodoro global. O tempo é derivado de timestamps (continua correto ao trocar
- * de rota). Só o `mode` é persistido entre reloads (igual à escolha do usuário);
- * o timer reinicia ao recarregar, como o cronômetro.
+ * de rota e **após recarregar a página**): modo, fase e timer são persistidos no
+ * localStorage e a contagem é retomada do relógio real.
+ *
+ * `skipHydration: true` evita mismatch de hidratação no Next: o store nasce no
+ * estado padrão (igual ao SSR) e carrega o salvo via `rehydrate()` no `useEffect`
+ * do componente.
  */
 export const usePomodoroStore = create<PomodoroState>()(
   persist(
@@ -90,8 +94,15 @@ export const usePomodoroStore = create<PomodoroState>()(
     }),
     {
       name: 'lm_pomodoro',
-      // Persiste só o modo entre reloads; o timer reinicia (igual ao cronômetro).
-      partialize: (state) => ({ mode: state.mode }),
+      skipHydration: true,
+      // Persiste modo, fase e timer para resistir ao reload.
+      partialize: (state) => ({
+        mode: state.mode,
+        phase: state.phase,
+        running: state.running,
+        startedAt: state.startedAt,
+        accumulatedMs: state.accumulatedMs,
+      }),
     },
   ),
 );

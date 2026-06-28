@@ -6,6 +6,8 @@ export interface Company {
   name: string;
   website: string;
   countryId: number;
+  /** Anotações livres sobre a empresa. */
+  observation: string | null;
   country?: Country;
   createdAt: string;
   updatedAt: string;
@@ -16,6 +18,7 @@ export interface CompanyInput {
   name: string;
   website: string;
   countryId: number;
+  observation?: string | null;
 }
 
 export interface CompanyListResponse {

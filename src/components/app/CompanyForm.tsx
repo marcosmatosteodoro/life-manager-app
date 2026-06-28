@@ -26,6 +26,7 @@ export function CompanyForm({
   const [countryId, setCountryId] = useState(
     initial ? String(initial.countryId) : '',
   );
+  const [observation, setObservation] = useState(initial?.observation ?? '');
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -33,6 +34,7 @@ export function CompanyForm({
       name: name.trim(),
       website: website.trim(),
       countryId: Number(countryId),
+      observation: observation.trim() ? observation.trim() : null,
     });
   }
 
@@ -46,17 +48,6 @@ export function CompanyForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Ex.: Acme Corp"
-          className={inputClass}
-        />
-      </Field>
-      <Field label="Website" htmlFor="website">
-        <input
-          id="website"
-          type="url"
-          required
-          value={website}
-          onChange={(e) => setWebsite(e.target.value)}
-          placeholder="https://acme.com"
           className={inputClass}
         />
       </Field>
@@ -77,6 +68,27 @@ export function CompanyForm({
             </option>
           ))}
         </select>
+      </Field>
+      <Field label="Website" htmlFor="website">
+        <input
+          id="website"
+          type="url"
+          required
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+          placeholder="https://acme.com"
+          className={inputClass}
+        />
+      </Field>
+      <Field label="Observação" htmlFor="observation">
+        <textarea
+          id="observation"
+          rows={3}
+          value={observation}
+          onChange={(e) => setObservation(e.target.value)}
+          placeholder="Anotações (opcional): contato, etapas do processo, etc."
+          className={`${inputClass} resize-y`}
+        />
       </Field>
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="secondary" type="button" onClick={onCancel} disabled={submitting}>

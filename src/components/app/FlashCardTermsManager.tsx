@@ -22,6 +22,11 @@ type LoadState = 'loading' | 'loaded' | 'error';
 const baseInput =
   'w-full rounded-md border px-3 py-2 text-sm text-neutral-900 outline-none transition-colors';
 
+/** Limpa o termo antes de enviar: remove dois-pontos no final (ex.: "give up:"). */
+function cleanTerm(raw: string): string {
+  return raw.trim().replace(/:+$/, '').trim();
+}
+
 export function FlashCardTermsManager({ groupId }: { groupId: number }) {
   const [groupName, setGroupName] = useState('');
   const [cards, setCards] = useState<FlashCard[]>([]);
@@ -75,7 +80,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
     setSavingEdit(true);
     try {
       await flashCardService.update(card.id, {
-        term: draftTerm.trim(),
+        term: cleanTerm(draftTerm),
         value: draftValue.trim() ? draftValue.trim() : null,
       });
       toast.success('Termo atualizado com sucesso.');
@@ -108,7 +113,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
     setAdding(true);
     try {
       await flashCardService.create({
-        term: newTerm.trim(),
+        term: cleanTerm(newTerm),
         value: newValue.trim() ? newValue.trim() : null,
         flashCardGroupId: groupId,
       });
@@ -126,7 +131,8 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
   }
 
   // Aviso em tempo de escrita: termo já existente (comparação case-insensitive).
-  const normalizedNewTerm = newTerm.trim().toLowerCase();
+  // Usa o termo já limpo (sem ":" no final) para casar com o que será enviado.
+  const normalizedNewTerm = cleanTerm(newTerm).toLowerCase();
   const duplicateIndex = normalizedNewTerm
     ? cards.findIndex((c) => c.term.trim().toLowerCase() === normalizedNewTerm)
     : -1;

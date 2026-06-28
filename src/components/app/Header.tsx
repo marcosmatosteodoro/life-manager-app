@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { LogoutButton } from './LogoutButton';
+import { RunningTimersIndicator } from './RunningTimersIndicator';
 
 /** Cabeçalho com o logo + nome do app linkando para a página principal. */
 export function Header() {
@@ -22,7 +23,10 @@ export function Header() {
           Life Manager
         </span>
       </Link>
-      <LogoutButton />
+      <div className="flex items-center gap-2">
+        <RunningTimersIndicator />
+        <LogoutButton />
+      </div>
     </header>
   );
 }

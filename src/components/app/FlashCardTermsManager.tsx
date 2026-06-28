@@ -47,6 +47,9 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
   const [newValue, setNewValue] = useState('');
   const [adding, setAdding] = useState(false);
   const newTermRef = useRef<HTMLInputElement>(null);
+  const addFormRef = useRef<HTMLFormElement>(null);
+  // Rola até o formulário de adicionar só uma vez, no primeiro carregamento.
+  const didInitialScroll = useRef(false);
 
   const load = useCallback(async () => {
     setLoadState('loading');
@@ -64,6 +67,15 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
   useEffect(() => {
     void load();
   }, [load]);
+
+  // Ao terminar de carregar pela 1ª vez, começa embaixo (no "Adicionar termo"),
+  // que é onde o usuário quer estar para seguir adicionando.
+  useEffect(() => {
+    if (loadState !== 'loaded' || didInitialScroll.current) return;
+    didInitialScroll.current = true;
+    addFormRef.current?.scrollIntoView({ block: 'end' });
+    newTermRef.current?.focus({ preventScroll: true });
+  }, [loadState]);
 
   function startEdit(card: FlashCard) {
     setEditingId(card.id);
@@ -253,6 +265,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
 
             {/* Adicionar termo — permanece na tela para adicionar vários. */}
             <form
+              ref={addFormRef}
               onSubmit={addTerm}
               className="rounded-lg border border-dashed border-neutral-300 bg-white p-3"
             >

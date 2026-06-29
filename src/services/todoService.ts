@@ -8,6 +8,11 @@ export const todoService = {
     return apiRequest<TodoListResponse>('/todo');
   },
 
+  /** Todas as tags distintas já usadas (para autocomplete no formulário). */
+  tags(): Promise<string[]> {
+    return apiRequest<string[]>('/todo/tags');
+  },
+
   get(id: number): Promise<Todo> {
     return apiRequest<Todo>(`/todo/${id}`);
   },

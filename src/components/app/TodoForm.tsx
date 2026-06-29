@@ -6,9 +6,12 @@ import { Field, inputClass } from '@/components/ui/Field';
 import { toast } from '@/hooks/useToastStore';
 import { WEEKDAYS, type Todo, type TodoInput } from '@/services/todo.types';
 import { cn } from '@/utils/cn';
+import { todayDate } from '@/utils/date';
 
 interface TodoFormProps {
   initial?: Todo | null;
+  /** Tags existentes para o autocomplete do campo de tag. */
+  tags?: string[];
   submitting: boolean;
   onSubmit: (input: TodoInput) => void;
   onCancel: () => void;
@@ -16,13 +19,17 @@ interface TodoFormProps {
 
 export function TodoForm({
   initial,
+  tags = [],
   submitting,
   onSubmit,
   onCancel,
 }: TodoFormProps) {
   const [name, setName] = useState(initial?.name ?? '');
   const [description, setDescription] = useState(initial?.description ?? '');
-  const [startDate, setStartDate] = useState(initial?.startDate ?? '');
+  // Novo afazer começa com início = hoje.
+  const [startDate, setStartDate] = useState(
+    initial?.startDate ?? todayDate(),
+  );
   const [endDate, setEndDate] = useState(initial?.endDate ?? '');
   const [days, setDays] = useState<number[]>(initial?.days ?? []);
   const [tag, setTag] = useState(initial?.tag ?? '');
@@ -124,14 +131,21 @@ export function TodoForm({
       </div>
 
       <Field label="Tag (opcional)" htmlFor="tag">
+        {/* Autocomplete: sugere tags existentes; texto novo vira tag nova. */}
         <input
           id="tag"
           type="text"
+          list="todo-tags"
           value={tag}
           onChange={(e) => setTag(e.target.value)}
-          placeholder="Ex.: saúde"
+          placeholder="Escolha uma existente ou digite uma nova"
           className={inputClass}
         />
+        <datalist id="todo-tags">
+          {tags.map((t) => (
+            <option key={t} value={t} />
+          ))}
+        </datalist>
       </Field>
 
       <div className="mt-2 flex justify-end gap-2">

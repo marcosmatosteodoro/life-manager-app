@@ -28,12 +28,17 @@ export function TodoManager() {
   const [deleteInProgress, setDeleteInProgress] = useState(false);
 
   const [checksTodo, setChecksTodo] = useState<Todo | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
 
   const load = useCallback(async () => {
     setLoadState('loading');
     try {
-      const { rows } = await todoService.list();
+      const [{ rows }, tagList] = await Promise.all([
+        todoService.list(),
+        todoService.tags(),
+      ]);
       setTodos(rows);
+      setTags(tagList);
       setLoadState('loaded');
     } catch (error) {
       setLoadError(toMessages(error));
@@ -143,6 +148,7 @@ export function TodoManager() {
         <TodoForm
           key={editing?.id ?? 'new'}
           initial={editing}
+          tags={tags}
           submitting={submitting}
           onSubmit={handleSubmit}
           onCancel={closeForm}

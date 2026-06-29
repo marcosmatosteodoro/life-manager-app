@@ -32,11 +32,11 @@ export function Modal({ open, title, onClose, children }: ModalProps) {
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="flex max-h-[90vh] w-full max-w-md flex-col rounded-xl bg-white shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-semibold text-neutral-900">{title}</h2>
-        <div className="mt-4">{children}</div>
+        <h2 className="shrink-0 px-6 pt-6 text-lg font-semibold text-neutral-900">{title}</h2>
+        <div className="overflow-y-auto px-6 pb-6 pt-4">{children}</div>
       </div>
     </div>
   );

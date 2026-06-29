@@ -10,20 +10,19 @@ import {
   type Article,
 } from '@/services/article.types';
 import { applyService } from '@/services/applyService';
-import { dailyCheckService } from '@/services/dailyCheckService';
-import type { DailyCheck } from '@/services/dailyCheck.types';
+import { todoCheckService } from '@/services/todoCheckService';
+import type { TodoCheck } from '@/services/todo.types';
 import { flashCardGroupService } from '@/services/flashCardGroupService';
 import type { FlashCardGroup } from '@/services/flashCardGroup.types';
 import { ApiError } from '@/services/http';
 import { weightService } from '@/services/weightService';
 import type { Weight } from '@/services/weight.types';
 import { isToday } from '@/utils/date';
-import { DAILY_CHECK_SKILLS } from './dailyCheckSkills';
 
 type LoadState = 'loading' | 'loaded' | 'error';
 
 interface DashboardData {
-  today: DailyCheck;
+  todayChecks: TodoCheck[];
   articles: Article[];
   weights: Weight[];
   groups: FlashCardGroup[];
@@ -38,16 +37,16 @@ export function HomeDashboard() {
   const load = useCallback(async () => {
     setLoadState('loading');
     try {
-      const [today, articlesRes, weightsRes, groupsRes, appliesRes] =
+      const [todayChecks, articlesRes, weightsRes, groupsRes, appliesRes] =
         await Promise.all([
-          dailyCheckService.today(),
+          todoCheckService.today(),
           articleService.list(),
           weightService.list(),
           flashCardGroupService.list(),
           applyService.list(),
         ]);
       setData({
-        today,
+        todayChecks,
         articles: articlesRes.rows,
         weights: weightsRes.rows,
         groups: groupsRes.rows,
@@ -80,11 +79,9 @@ export function HomeDashboard() {
   }
 
   // ----- Derivados -----
-  const habitsTotal = DAILY_CHECK_SKILLS.length;
-  const habitsDone = DAILY_CHECK_SKILLS.filter(
-    (s) => data.today[s.key],
-  ).length;
-  const habitsPending = habitsTotal - habitsDone;
+  const todosTotal = data.todayChecks.length;
+  const todosDone = data.todayChecks.filter((c) => c.checked).length;
+  const todosPending = todosTotal - todosDone;
 
   const todayStudy = data.articles.find((a) => isToday(a.createdAt)) ?? null;
   const studyPending = !todayStudy || todayStudy.status !== 'COMPLETED';
@@ -108,10 +105,10 @@ export function HomeDashboard() {
 
   // ----- Pendências de hoje (chamam o usuário à ação) -----
   const tasks: { label: string; href: string }[] = [];
-  if (habitsPending > 0) {
+  if (todosPending > 0) {
     tasks.push({
-      label: `Complete seus hábitos de hoje — faltam ${habitsPending} de ${habitsTotal}`,
-      href: '/consistencia',
+      label: `Conclua seus afazeres de hoje — faltam ${todosPending} de ${todosTotal}`,
+      href: '/afazeres',
     });
   }
   if (!loggedWeightThisWeek) {
@@ -151,10 +148,10 @@ export function HomeDashboard() {
           }
         />
         <StatCard
-          href="/consistencia"
-          title="Hábitos"
-          value={`${habitsDone}/${habitsTotal}`}
-          hint="hábitos hoje"
+          href="/afazeres"
+          title="Afazeres"
+          value={`${todosDone}/${todosTotal}`}
+          hint="afazeres hoje"
         />
         <StatCard
           href="/estudando-ingles"

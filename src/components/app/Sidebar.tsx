@@ -22,6 +22,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/', label: 'Home', Icon: HomeIcon },
       { href: '/cronometro', label: 'Cronômetro', Icon: ClockIcon },
       { href: '/pomodoro', label: 'Pomodoro', Icon: PomodoroIcon },
+      { href: '/afazeres', label: 'Afazeres', Icon: ListCheckIcon },
       { href: '/conversores', label: 'Conversores', Icon: SwapIcon },
     ],
   },
@@ -29,7 +30,6 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Estudos',
     items: [
       { href: '/estudando-ingles', label: 'Artigos', Icon: BookIcon },
-      { href: '/consistencia', label: 'Hábitos', Icon: CheckIcon },
       { href: '/revisar', label: 'Flashcards', Icon: CardsIcon },
     ],
   },
@@ -264,24 +264,6 @@ function ScaleIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-function CheckIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.8}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      <path d="M9 11l3 3L22 4" />
-      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-    </svg>
-  );
-}
-
 function BookIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
@@ -388,6 +370,17 @@ function PomodoroIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M12 5c-4.4 0-8 3.4-8 7.5S7.6 21 12 21s8-3.9 8-8.5S16.4 5 12 5Z" />
       <path d="M12 5c0-1.5 1-2.5 2.5-2.5" />
       <path d="M12 5c0-1.5-1-2.5-2.5-2.5" />
+    </svg>
+  );
+}
+
+function ListCheckIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="m3 7 2 2 3-3" />
+      <path d="m3 17 2 2 3-3" />
+      <path d="M12 7h9" />
+      <path d="M12 17h9" />
     </svg>
   );
 }

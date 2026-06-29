@@ -33,6 +33,16 @@ export const flashCardService = {
     });
   },
 
+  /** Review em bloco (modo combinação): um item por key, com as contagens. */
+  reviewBlock(
+    items: { id: number; correctAnswers: number; wrongAnswers: number }[],
+  ): Promise<FlashCard[]> {
+    return apiRequest<FlashCard[]>('/flash-card/reviews/block', {
+      method: 'PATCH',
+      body: JSON.stringify(items),
+    });
+  },
+
   /** Traduz o termo (en→pt) e salva; reusa a tradução já salva no banco. */
   translate(id: number): Promise<FlashCard> {
     return apiRequest<FlashCard>(`/flash-card/${id}/translate`, {

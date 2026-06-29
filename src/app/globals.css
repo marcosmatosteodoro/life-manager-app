@@ -41,6 +41,26 @@ body {
   animation: slide-in-left 250ms ease-out;
 }
 
+/* Erro na combinação de flashcards (treme). */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@utility animate-shake {
+  animation: shake 400ms ease-in-out;
+}
+
 /* Acessibilidade: respeita quem prefere menos movimento. */
 @media (prefers-reduced-motion: reduce) {
   *,

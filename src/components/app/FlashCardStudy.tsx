@@ -9,8 +9,10 @@ import type { FlashCard } from '@/services/flashCard.types';
 import { ApiError, flashCardService } from '@/services/flashCardService';
 import { flashCardGroupService } from '@/services/flashCardGroupService';
 import { cn } from '@/utils/cn';
+import { FlashCardMatch } from './FlashCardMatch';
 
 type LoadState = 'loading' | 'loaded' | 'error';
+type StudyMode = 'classico' | 'combinacao';
 
 export function FlashCardStudy({ groupId }: { groupId: number }) {
   const [cards, setCards] = useState<FlashCard[]>([]);
@@ -22,6 +24,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
   const [saving, setSaving] = useState(false);
   const [translating, setTranslating] = useState(false);
   const [showTranslation, setShowTranslation] = useState(false);
+  const [mode, setMode] = useState<StudyMode>('classico');
 
   const load = useCallback(async () => {
     setLoadState('loading');
@@ -90,12 +93,37 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
         >
           ← Voltar
         </Link>
-        {loadState === 'loaded' && cards.length > 0 && !finished && (
-          <span className="text-sm font-medium text-neutral-500">
-            {index + 1} / {cards.length}
-          </span>
-        )}
+        {loadState === 'loaded' &&
+          mode === 'classico' &&
+          cards.length > 0 &&
+          !finished && (
+            <span className="text-sm font-medium text-neutral-500">
+              {index + 1} / {cards.length}
+            </span>
+          )}
       </div>
+
+      {/* Seletor de modo */}
+      {loadState === 'loaded' && cards.length > 0 && (
+        <div className="mt-4 flex gap-1 self-center rounded-lg border border-neutral-200 bg-neutral-50 p-1">
+          {(['classico', 'combinacao'] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setMode(m)}
+              aria-pressed={mode === m}
+              className={cn(
+                'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                mode === m
+                  ? 'bg-neutral-900 text-white'
+                  : 'text-neutral-600 hover:text-neutral-900',
+              )}
+            >
+              {m === 'classico' ? 'Um a um' : 'Combinação'}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="mt-6">
         {loadState === 'loading' && <Loading />}
@@ -115,7 +143,14 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
           </p>
         )}
 
-        {loadState === 'loaded' && finished && cards.length > 0 && (
+        {loadState === 'loaded' && mode === 'combinacao' && cards.length > 0 && (
+          <FlashCardMatch cards={cards} onExit={() => setMode('classico')} />
+        )}
+
+        {loadState === 'loaded' &&
+          mode === 'classico' &&
+          finished &&
+          cards.length > 0 && (
           <div className="flex flex-col items-center gap-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-16 text-center">
             <span aria-hidden className="text-4xl">
               🎉
@@ -132,7 +167,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
           </div>
         )}
 
-        {loadState === 'loaded' && current && !finished && (
+        {loadState === 'loaded' && mode === 'classico' && current && !finished && (
           <div className="flex flex-col items-center gap-6">
             {/* Card grande com efeito de virar (flip 3D no eixo Y) */}
             <div className="w-full [perspective:1200px]">

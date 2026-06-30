@@ -98,7 +98,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
       <div className="flex items-center justify-between">
         <Link
           href="/revisar"
-          className="text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+          className="text-sm text-fg-muted transition-colors hover:text-fg"
         >
           ← Voltar
         </Link>
@@ -106,7 +106,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
           mode === 'classico' &&
           cards.length > 0 &&
           !finished && (
-            <span className="text-sm font-medium text-neutral-500">
+            <span className="text-sm font-medium text-fg-muted">
               {index + 1} / {cards.length}
             </span>
           )}
@@ -114,7 +114,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
 
       {/* Seletor de modo */}
       {loadState === 'loaded' && cards.length > 0 && (
-        <div className="mt-4 flex gap-1 self-center rounded-lg border border-neutral-200 bg-neutral-50 p-1">
+        <div className="mt-4 flex gap-1 self-center rounded-lg border border-edge bg-surface-muted p-1">
           {(['classico', 'combinacao'] as const).map((m) => (
             <button
               key={m}
@@ -124,8 +124,8 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
               className={cn(
                 'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
                 mode === m
-                  ? 'bg-neutral-900 text-white'
-                  : 'text-neutral-600 hover:text-neutral-900',
+                  ? 'bg-surface-inverse text-surface'
+                  : 'text-fg-muted hover:text-fg',
               )}
             >
               {m === 'classico' ? 'Um a um' : 'Combinação'}
@@ -147,7 +147,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
         )}
 
         {loadState === 'loaded' && cards.length === 0 && (
-          <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-16 text-center text-sm text-neutral-500">
+          <p className="rounded-lg border border-dashed border-edge-strong px-4 py-16 text-center text-sm text-fg-muted">
             Nenhum card para estudar neste grupo.
           </p>
         )}
@@ -195,27 +195,27 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
                 )}
               >
                 {/* Frente: termo */}
-                <span className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-sm [backface-visibility:hidden]">
-                  <span className="mb-3 text-xs font-medium uppercase tracking-wide text-neutral-400">
+                <span className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-edge bg-surface p-6 text-center shadow-sm [backface-visibility:hidden]">
+                  <span className="mb-3 text-xs font-medium uppercase tracking-wide text-fg-subtle">
                     Termo
                   </span>
-                  <span className="text-3xl font-semibold break-words text-neutral-900">
+                  <span className="text-3xl font-semibold break-words text-fg">
                     {current.term}
                   </span>
-                  <span className="mt-4 text-xs text-neutral-400">
+                  <span className="mt-4 text-xs text-fg-subtle">
                     Clique para virar
                   </span>
                 </span>
 
                 {/* Verso: tradução (já rotacionado 180°) */}
-                <span className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-neutral-200 bg-white p-6 text-center shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                  <span className="mb-3 text-xs font-medium uppercase tracking-wide text-neutral-400">
+                <span className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-edge bg-surface p-6 text-center shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                  <span className="mb-3 text-xs font-medium uppercase tracking-wide text-fg-subtle">
                     Tradução
                   </span>
-                  <span className="text-3xl font-semibold break-words text-neutral-900">
+                  <span className="text-3xl font-semibold break-words text-fg">
                     {current.value ?? '—'}
                   </span>
-                  <span className="mt-4 text-xs text-neutral-400">
+                  <span className="mt-4 text-xs text-fg-subtle">
                     Clique para virar
                   </span>
                 </span>
@@ -261,9 +261,9 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
               </Button>
 
               {showTranslation && current.translation && (
-                <p className="text-center text-sm text-neutral-600">
-                  <span className="text-neutral-400">Tradução: </span>
-                  <span className="font-medium text-neutral-900">
+                <p className="text-center text-sm text-fg-muted">
+                  <span className="text-fg-subtle">Tradução: </span>
+                  <span className="font-medium text-fg">
                     {current.translation}
                   </span>
                 </p>

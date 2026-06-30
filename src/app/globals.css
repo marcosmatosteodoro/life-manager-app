@@ -1,22 +1,69 @@
 @import "tailwindcss";
 
+/* Dark mode por classe (.dark no <html>), não por prefers-color-scheme.
+   :where(...) mantém especificidade zero (não aumenta o peso dos seletores). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Tokens semânticos. Light referencia a paleta neutra real do Tailwind
+   (paridade exata com o visual atual); .dark remapeia num único lugar. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-white);
+  --foreground: var(--color-neutral-900);
+
+  --surface: var(--color-white); /* card, header */
+  --surface-muted: var(--color-neutral-50); /* fundo do app */
+  --surface-subtle: var(--color-neutral-100); /* hover, chip */
+  --surface-inverse: var(--color-neutral-900); /* botão primário */
+
+  --fg: var(--color-neutral-900); /* texto primário */
+  --fg-soft: var(--color-neutral-700); /* texto forte 2º */
+  --fg-muted: var(--color-neutral-500); /* secundário */
+  --fg-subtle: var(--color-neutral-400); /* placeholder */
+
+  --edge: var(--color-neutral-200); /* borda/divisor padrão */
+  --edge-strong: var(--color-neutral-300);
+  --edge-inverse: var(--color-neutral-900);
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+
+  --surface: #171717;
+  --surface-muted: #0a0a0a;
+  --surface-subtle: #262626;
+  --surface-inverse: #ededed;
+
+  --fg: #ededed;
+  --fg-soft: #d4d4d4;
+  --fg-muted: #a3a3a3;
+  --fg-subtle: #6b6b6b;
+
+  --edge: #2a2a2a;
+  --edge-strong: #3a3a3a;
+  --edge-inverse: #ededed;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-inverse: var(--surface-inverse);
+
+  --color-fg: var(--fg);
+  --color-fg-soft: var(--fg-soft);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+
+  --color-edge: var(--edge);
+  --color-edge-strong: var(--edge-strong);
+  --color-edge-inverse: var(--edge-inverse);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

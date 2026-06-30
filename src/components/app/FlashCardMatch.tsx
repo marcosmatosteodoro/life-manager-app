@@ -68,7 +68,7 @@ export function FlashCardMatch({
 
   if (keyIds.length < 2) {
     return (
-      <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-16 text-center text-sm text-neutral-500">
+      <p className="rounded-lg border border-dashed border-edge-strong px-4 py-16 text-center text-sm text-fg-muted">
         Cadastre ao menos 2 termos com tradução neste grupo para jogar a
         combinação.
       </p>
@@ -146,7 +146,7 @@ export function FlashCardMatch({
     <div className="flex min-h-[70vh] flex-col">
       {/* Mensagens no topo */}
       <div className="flex items-center justify-between text-sm">
-        <span className="font-medium text-neutral-500">
+        <span className="font-medium text-fg-muted">
           {matched.size} / {keyIds.length} pares
         </span>
         <span className="font-medium text-red-600">
@@ -193,14 +193,14 @@ export function FlashCardMatch({
                     'animate-shake border-red-300 bg-red-50 text-red-700',
                   !isWrong &&
                     isSelected &&
-                    'border-neutral-900 bg-neutral-900 text-white',
+                    'border-edge-inverse bg-surface-inverse text-surface',
                   !isWrong &&
                     isMatched &&
                     'border-emerald-200 bg-emerald-50 text-emerald-700 opacity-50',
                   !isWrong &&
                     !isSelected &&
                     !isMatched &&
-                    'border-neutral-200 bg-white text-neutral-900 hover:border-neutral-400',
+                    'border-edge bg-surface text-fg hover:border-edge-strong',
                 )}
               >
                 {tile.text}

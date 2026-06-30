@@ -93,8 +93,8 @@ export function Sidebar() {
           'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
           opts.iconOnly && 'justify-center px-0',
           active
-            ? 'bg-neutral-900 text-white'
-            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+            ? 'bg-surface-inverse text-surface'
+            : 'text-fg-muted hover:bg-surface-subtle hover:text-fg',
         )}
       >
         <Icon className="h-5 w-5 shrink-0" />
@@ -113,9 +113,9 @@ export function Sidebar() {
         {group.label &&
           (opts.iconOnly ? (
             // Recolhido: só um divisor entre grupos (sem texto).
-            <div className="mx-2 border-t border-neutral-200" />
+            <div className="mx-2 border-t border-edge" />
           ) : (
-            <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+            <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-fg-subtle">
               {group.label}
             </p>
           ))}
@@ -131,7 +131,7 @@ export function Sidebar() {
       {/* ===== Desktop: sidebar no fluxo, recolhível (>= md) ===== */}
       <aside
         className={cn(
-          'hidden shrink-0 flex-col overflow-y-auto border-r border-neutral-200 bg-white transition-[width] duration-200 ease-in-out md:flex',
+          'hidden shrink-0 flex-col overflow-y-auto border-r border-edge bg-surface transition-[width] duration-200 ease-in-out md:flex',
           collapsed ? 'w-16' : 'w-64',
         )}
       >
@@ -168,7 +168,7 @@ export function Sidebar() {
           type="button"
           onClick={toggleMobile}
           aria-label="Abrir menu"
-          className="fixed bottom-4 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-lg transition-transform active:scale-95 md:hidden"
+          className="fixed bottom-4 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-edge bg-surface text-fg-soft shadow-lg transition-transform active:scale-95 md:hidden"
         >
           <ChevronIcon className="h-5 w-5 -rotate-90" />
         </button>
@@ -176,9 +176,9 @@ export function Sidebar() {
 
       {/* ===== Mobile: drawer em tela cheia (bloqueia o resto) ===== */}
       {mobileOpen && (
-        <div className="animate-slide-in-left fixed inset-0 z-50 flex flex-col bg-white md:hidden">
-          <div className="flex h-14 items-center justify-between border-b border-neutral-200 px-4">
-            <span className="text-lg font-semibold tracking-tight text-neutral-900">
+        <div className="animate-slide-in-left fixed inset-0 z-50 flex flex-col bg-surface md:hidden">
+          <div className="flex h-14 items-center justify-between border-b border-edge px-4">
+            <span className="text-lg font-semibold tracking-tight text-fg">
               Menu
             </span>
             <IconButton onClick={closeMobile} aria-label="Fechar menu">
@@ -196,7 +196,7 @@ export function Sidebar() {
             type="button"
             onClick={closeMobile}
             aria-label="Fechar menu"
-            className="fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-700 shadow-lg transition-transform active:scale-95"
+            className="fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-edge bg-surface text-fg-soft shadow-lg transition-transform active:scale-95"
           >
             <ChevronIcon className="h-5 w-5 rotate-90" />
           </button>

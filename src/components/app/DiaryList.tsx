@@ -14,7 +14,7 @@ interface DiaryListProps {
 export function DiaryList({ entries, onEdit, onDelete }: DiaryListProps) {
   if (entries.length === 0) {
     return (
-      <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-10 text-center text-sm text-neutral-500">
+      <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
         Nenhum registro ainda.
       </p>
     );
@@ -30,25 +30,25 @@ export function DiaryList({ entries, onEdit, onDelete }: DiaryListProps) {
           <li
             key={entry.id}
             className={cn(
-              'rounded-lg border bg-white px-4 py-3 transition-colors',
+              'rounded-lg border bg-surface px-4 py-3 transition-colors',
               isToday
-                ? 'border-neutral-900 ring-1 ring-neutral-900'
-                : 'border-neutral-200',
+                ? 'border-edge-inverse ring-1 ring-fg'
+                : 'border-edge',
             )}
           >
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-neutral-900">
+                  <span className="text-sm font-medium text-fg">
                     {formatDate(entry.day)}
                   </span>
                   {isToday && (
-                    <span className="rounded-full bg-neutral-900 px-2 py-0.5 text-xs font-medium text-white">
+                    <span className="rounded-full bg-surface-inverse px-2 py-0.5 text-xs font-medium text-surface">
                       Hoje
                     </span>
                   )}
                 </div>
-                <p className="mt-1 whitespace-pre-line text-sm text-neutral-600">
+                <p className="mt-1 whitespace-pre-line text-sm text-fg-muted">
                   {entry.description}
                 </p>
               </div>

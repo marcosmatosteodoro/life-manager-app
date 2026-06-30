@@ -23,7 +23,7 @@ export function FlashCardGroupList({
 }: FlashCardGroupListProps) {
   if (groups.length === 0) {
     return (
-      <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-10 text-center text-sm text-neutral-500">
+      <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
         Nenhum grupo criado ainda.
       </p>
     );
@@ -43,13 +43,13 @@ export function FlashCardGroupList({
                 onOpen(group);
               }
             }}
-            className="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-neutral-200 bg-white px-4 py-3 transition-colors hover:border-neutral-400 hover:bg-neutral-50"
+            className="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-edge bg-surface px-4 py-3 transition-colors hover:border-edge-strong hover:bg-surface-muted"
           >
             <div className="min-w-0">
-              <p className="truncate font-medium text-neutral-900">
+              <p className="truncate font-medium text-fg">
                 {group.name}
               </p>
-              <p className="mt-0.5 text-sm text-neutral-500">
+              <p className="mt-0.5 text-sm text-fg-muted">
                 {group.flashCardsCount ?? 0} flashcard
                 {(group.flashCardsCount ?? 0) === 1 ? '' : 's'} · criado em{' '}
                 {formatDateTime(group.createdAt)}

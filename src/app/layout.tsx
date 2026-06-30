@@ -26,8 +26,16 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
 };
+
+// Aplica o tema salvo ANTES do primeiro paint (evita flash claro→escuro).
+// Lê o mesmo localStorage do useThemeStore (persist serializa { state: {...} }).
+// Conteúdo estático, sem input do usuário — sem risco de injeção.
+const themeInitScript = `(function(){try{var v=localStorage.getItem("lm_theme");if(v&&JSON.parse(v).state.theme==="dark"){document.documentElement.classList.add("dark")}}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -41,7 +49,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       {/* suppressHydrationWarning: extensões de navegador (ex.: tradutores)
-          injetam atributos/elementos antes da hidratação. */}
+          injetam atributos/elementos antes da hidratação; e a classe .dark é
+          adicionada pelo script abaixo antes da hidratação do React. */}
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <AppShell>{children}</AppShell>
         <ServiceWorkerRegister />

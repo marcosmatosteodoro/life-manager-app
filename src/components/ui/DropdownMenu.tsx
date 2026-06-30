@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { IconButton } from '@/components/ui/IconButton';
 import { cn } from '@/utils/cn';
 
@@ -14,9 +14,12 @@ export interface DropdownItem {
 export function DropdownMenu({
   items,
   ariaLabel = 'Ações',
+  icon,
 }: {
   items: DropdownItem[];
   ariaLabel?: string;
+  /** Ícone do gatilho. Padrão: kebab (3 pontinhos). */
+  icon?: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -50,13 +53,13 @@ export function DropdownMenu({
           setOpen((o) => !o);
         }}
       >
-        <DotsIcon className="h-5 w-5" />
+        {icon ?? <DotsIcon className="h-5 w-5" />}
       </IconButton>
 
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-20 mt-1 w-52 overflow-hidden rounded-md border border-neutral-200 bg-white py-1 shadow-lg"
+          className="absolute right-0 top-full z-20 mt-1 w-52 overflow-hidden rounded-md border border-edge bg-surface py-1 shadow-lg"
         >
           {items.map((item) => (
             <button
@@ -72,7 +75,7 @@ export function DropdownMenu({
                 'block w-full px-3 py-2 text-left text-sm transition-colors',
                 item.danger
                   ? 'text-red-600 hover:bg-red-50'
-                  : 'text-neutral-700 hover:bg-neutral-100',
+                  : 'text-fg-soft hover:bg-surface-subtle',
               )}
             >
               {item.label}

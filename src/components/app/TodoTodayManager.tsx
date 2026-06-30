@@ -55,14 +55,14 @@ export function TodoTodayManager() {
   return (
     <section className="mx-auto w-full max-w-2xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-fg">
           Afazeres
         </h1>
         <Link href="/afazeres/gerenciar">
           <Button variant="secondary">Gerenciar</Button>
         </Link>
       </div>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-fg-muted">
         Marque o que você fez hoje.
         {loadState === 'loaded' && checks.length > 0
           ? ` ${doneCount}/${checks.length} concluído${doneCount === 1 ? '' : 's'}.`
@@ -86,7 +86,7 @@ export function TodoTodayManager() {
         )}
 
         {loadState === 'loaded' && checks.length === 0 && (
-          <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-10 text-center text-sm text-neutral-500">
+          <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
             Nenhum afazer para hoje. Crie um em{' '}
             <Link
               href="/afazeres/gerenciar"
@@ -104,10 +104,10 @@ export function TodoTodayManager() {
               <li key={check.id}>
                 <label
                   className={cn(
-                    'flex cursor-pointer items-center gap-3 rounded-lg border bg-white px-4 py-3 transition-colors',
+                    'flex cursor-pointer items-center gap-3 rounded-lg border bg-surface px-4 py-3 transition-colors',
                     check.checked
                       ? 'border-emerald-300 bg-emerald-50'
-                      : 'border-neutral-200 hover:border-neutral-300',
+                      : 'border-edge hover:border-edge-strong',
                   )}
                 >
                   <input
@@ -115,7 +115,7 @@ export function TodoTodayManager() {
                     checked={check.checked}
                     disabled={savingId === check.id}
                     onChange={(e) => void toggle(check, e.target.checked)}
-                    className="h-5 w-5 rounded border-neutral-300 accent-emerald-600"
+                    className="h-5 w-5 rounded border-edge-strong accent-emerald-600"
                   />
                   <div className="min-w-0">
                     <span
@@ -123,13 +123,13 @@ export function TodoTodayManager() {
                         'block truncate font-medium',
                         check.checked
                           ? 'text-emerald-900 line-through'
-                          : 'text-neutral-900',
+                          : 'text-fg',
                       )}
                     >
                       {check.todo?.name ?? 'Afazer'}
                     </span>
                     {check.todo?.tag && (
-                      <span className="text-xs text-neutral-400">
+                      <span className="text-xs text-fg-subtle">
                         {check.todo.tag}
                       </span>
                     )}

@@ -102,13 +102,13 @@ export function TodoManager() {
     <section className="mx-auto w-full max-w-2xl">
       <Link
         href="/afazeres"
-        className="text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+        className="text-sm text-fg-muted transition-colors hover:text-fg"
       >
         ← Voltar para hoje
       </Link>
 
       <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-fg">
           Gerenciar afazeres
         </h1>
         <Button onClick={openCreate}>Novo afazer</Button>

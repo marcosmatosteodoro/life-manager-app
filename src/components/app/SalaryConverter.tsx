@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 const inputClass =
-  'w-full rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900';
+  'w-full rounded-md border border-edge-strong px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-edge-inverse';
 
 const num = new Intl.NumberFormat('pt-BR', {
   minimumFractionDigits: 2,
@@ -35,18 +35,18 @@ export function SalaryConverter() {
   const netMonthly = netAnnual != null ? netAnnual / 12 : null;
 
   return (
-    <div className="rounded-lg border border-neutral-200 bg-white p-4">
-      <h2 className="text-sm font-semibold text-neutral-900">
+    <div className="rounded-lg border border-edge bg-surface p-4">
+      <h2 className="text-sm font-semibold text-fg">
         💰 Conversor de salário
       </h2>
-      <p className="mt-0.5 text-xs text-neutral-500">
+      <p className="mt-0.5 text-xs text-fg-muted">
         De anual (como as vagas costumam anunciar) para mensal, semanal e por
         hora. Valores na mesma moeda que você informar.
       </p>
 
       <div className="mt-4 flex flex-col gap-3 sm:flex-row">
         <label className="flex flex-1 flex-col gap-1.5">
-          <span className="text-sm font-medium text-neutral-700">
+          <span className="text-sm font-medium text-fg-soft">
             Salário anual
           </span>
           <input
@@ -57,7 +57,7 @@ export function SalaryConverter() {
           />
         </label>
         <label className="flex flex-col gap-1.5 sm:w-32">
-          <span className="text-sm font-medium text-neutral-700">
+          <span className="text-sm font-medium text-fg-soft">
             Horas/semana
           </span>
           <input
@@ -76,9 +76,9 @@ export function SalaryConverter() {
       </dl>
 
       {/* Líquido aproximado */}
-      <div className="mt-5 border-t border-neutral-100 pt-4">
+      <div className="mt-5 border-t border-edge pt-4">
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-neutral-700">
+          <span className="text-sm font-medium text-fg-soft">
             Desconto estimado (impostos etc.) %
           </span>
           <input
@@ -88,7 +88,7 @@ export function SalaryConverter() {
             className={`${inputClass} sm:w-32`}
           />
         </label>
-        <p className="mt-1 text-xs text-neutral-400">
+        <p className="mt-1 text-xs text-fg-subtle">
           Estimativa simples: aplica a porcentagem sobre o bruto. Impostos reais
           variam por país/faixa.
         </p>
@@ -103,9 +103,9 @@ export function SalaryConverter() {
 
 function Stat({ label, value }: { label: string; value: number | null }) {
   return (
-    <div className="rounded-md bg-neutral-50 px-3 py-2">
-      <dt className="text-xs text-neutral-500">{label}</dt>
-      <dd className="text-base font-semibold text-neutral-900 tabular-nums">
+    <div className="rounded-md bg-surface-muted px-3 py-2">
+      <dt className="text-xs text-fg-muted">{label}</dt>
+      <dd className="text-base font-semibold text-fg tabular-nums">
         {value != null ? num.format(value) : '—'}
       </dd>
     </div>

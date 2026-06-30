@@ -20,7 +20,7 @@ import { cn } from '@/utils/cn';
 type LoadState = 'loading' | 'loaded' | 'error';
 
 const baseInput =
-  'w-full rounded-md border px-3 py-2 text-sm text-neutral-900 outline-none transition-colors';
+  'w-full rounded-md border px-3 py-2 text-sm text-fg outline-none transition-colors';
 
 /** Limpa o termo antes de enviar: remove dois-pontos no final (ex.: "give up:"). */
 function cleanTerm(raw: string): string {
@@ -154,12 +154,12 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
     <section className="mx-auto w-full max-w-3xl">
       <Link
         href="/revisar"
-        className="text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+        className="text-sm text-fg-muted transition-colors hover:text-fg"
       >
         ← Voltar para grupos
       </Link>
 
-      <h1 className="mt-2 text-2xl font-semibold tracking-tight text-neutral-900">
+      <h1 className="mt-2 text-2xl font-semibold tracking-tight text-fg">
         {loadState === 'loaded' ? groupName : 'Gerenciar termos'}
       </h1>
 
@@ -178,7 +178,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
         {loadState === 'loaded' && (
           <div className="flex flex-col gap-3">
             {cards.length === 0 && (
-              <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-8 text-center text-sm text-neutral-500">
+              <p className="rounded-lg border border-dashed border-edge-strong px-4 py-8 text-center text-sm text-fg-muted">
                 Nenhum termo ainda. Adicione o primeiro abaixo.
               </p>
             )}
@@ -188,10 +188,10 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
               return (
                 <div
                   key={card.id}
-                  className="rounded-lg border border-neutral-200 bg-white p-3"
+                  className="rounded-lg border border-edge bg-surface p-3"
                 >
                   <div className="flex items-start gap-3">
-                    <span className="mt-2 w-6 shrink-0 text-sm font-medium text-neutral-400">
+                    <span className="mt-2 w-6 shrink-0 text-sm font-medium text-fg-subtle">
                       {index + 1}
                     </span>
                     <div className="flex flex-1 flex-col gap-2">
@@ -204,8 +204,8 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                           className={cn(
                             baseInput,
                             isEditing
-                              ? 'border-neutral-300 focus:border-neutral-900'
-                              : 'border-transparent bg-neutral-50',
+                              ? 'border-edge-strong focus:border-edge-inverse'
+                              : 'border-transparent bg-surface-muted',
                           )}
                         />
                         <input
@@ -217,8 +217,8 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                           className={cn(
                             baseInput,
                             isEditing
-                              ? 'border-neutral-300 focus:border-neutral-900'
-                              : 'border-transparent bg-neutral-50',
+                              ? 'border-edge-strong focus:border-edge-inverse'
+                              : 'border-transparent bg-surface-muted',
                           )}
                         />
                       </div>
@@ -267,10 +267,10 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
             <form
               ref={addFormRef}
               onSubmit={addTerm}
-              className="rounded-lg border border-dashed border-neutral-300 bg-white p-3"
+              className="rounded-lg border border-dashed border-edge-strong bg-surface p-3"
             >
               <div className="flex items-start gap-3">
-                <span className="mt-2 w-6 shrink-0 text-center text-sm font-medium text-neutral-400">
+                <span className="mt-2 w-6 shrink-0 text-center text-sm font-medium text-fg-subtle">
                   +
                 </span>
                 <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
@@ -286,7 +286,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                       baseInput,
                       duplicateTerm
                         ? 'border-amber-400 focus:border-amber-500'
-                        : 'border-neutral-300 focus:border-neutral-900',
+                        : 'border-edge-strong focus:border-edge-inverse',
                     )}
                   />
                   <input
@@ -294,7 +294,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                     value={newValue}
                     onChange={(e) => setNewValue(e.target.value)}
                     placeholder="Tradução (opcional)"
-                    className={cn(baseInput, 'border-neutral-300 focus:border-neutral-900')}
+                    className={cn(baseInput, 'border-edge-strong focus:border-edge-inverse')}
                   />
                 </div>
                 <div className="shrink-0">

@@ -168,7 +168,7 @@ export function ArticleForm({
         <div className="flex items-center justify-between gap-2">
           <label
             htmlFor="summaryCorrected"
-            className="text-sm font-medium text-neutral-700"
+            className="text-sm font-medium text-fg-soft"
           >
             Resumo corrigido
           </label>
@@ -199,12 +199,12 @@ export function ArticleForm({
         )}
         {summaryCorrected.trim() !== '' && (
           <div className="mt-1">
-            <span className="text-xs font-medium text-neutral-500">
+            <span className="text-xs font-medium text-fg-muted">
               Pré-visualização
             </span>
             <SafeHtml
               html={summaryCorrected}
-              className="mt-1 rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-700 [&_li]:list-disc [&_p]:mb-2 [&_ul]:my-1 [&_ul]:pl-5"
+              className="mt-1 rounded-md border border-edge bg-surface-muted px-3 py-2 text-sm text-fg-soft [&_li]:list-disc [&_p]:mb-2 [&_ul]:my-1 [&_ul]:pl-5"
             />
           </div>
         )}
@@ -223,7 +223,7 @@ export function ArticleForm({
 }
 
 const inputClass =
-  'w-full rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900';
+  'w-full rounded-md border border-edge-strong px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-edge-inverse';
 
 function Field({
   label,
@@ -236,7 +236,7 @@ function Field({
 }) {
   return (
     <label htmlFor={htmlFor} className="flex flex-col gap-1.5">
-      <span className="text-sm font-medium text-neutral-700">{label}</span>
+      <span className="text-sm font-medium text-fg-soft">{label}</span>
       {children}
     </label>
   );

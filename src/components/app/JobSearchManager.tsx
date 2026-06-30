@@ -27,7 +27,7 @@ type LoadState = 'loading' | 'loaded' | 'error';
 type SearchState = 'idle' | 'searching' | 'done' | 'error';
 
 const inputClass =
-  'rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900';
+  'rounded-md border border-edge-strong px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-edge-inverse';
 
 export function JobSearchManager() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -115,10 +115,10 @@ export function JobSearchManager() {
 
   return (
     <section className="mx-auto w-full max-w-3xl">
-      <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+      <h1 className="text-2xl font-semibold tracking-tight text-fg">
         Buscar vagas
       </h1>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-fg-muted">
         Vagas remotas ranqueadas pela sua stack. Salve as que aplicar como
         candidatura.
       </p>
@@ -135,10 +135,10 @@ export function JobSearchManager() {
       {loadState === 'loaded' && (
         <>
           {/* Filtros */}
-          <div className="mt-6 flex flex-col gap-4 rounded-lg border border-neutral-200 bg-white p-4">
+          <div className="mt-6 flex flex-col gap-4 rounded-lg border border-edge bg-surface p-4">
             <div className="flex flex-wrap items-end gap-4">
               <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-700">
+                <span className="text-sm font-medium text-fg-soft">
                   Período
                 </span>
                 <select
@@ -157,7 +157,7 @@ export function JobSearchManager() {
               </label>
 
               <label className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-700">
+                <span className="text-sm font-medium text-fg-soft">
                   País
                 </span>
                 <select
@@ -175,14 +175,14 @@ export function JobSearchManager() {
               </label>
 
               <fieldset className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-neutral-700">
+                <span className="text-sm font-medium text-fg-soft">
                   Provedores
                 </span>
                 <div className="flex items-center gap-3 py-2">
                   {JOB_PROVIDER_OPTIONS.map((o) => (
                     <label
                       key={o.value}
-                      className="flex items-center gap-1.5 text-sm text-neutral-700"
+                      className="flex items-center gap-1.5 text-sm text-fg-soft"
                     >
                       <input
                         type="checkbox"
@@ -202,7 +202,7 @@ export function JobSearchManager() {
                 {searchState === 'searching' ? 'Buscando…' : 'Buscar'}
               </Button>
             </div>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-fg-subtle">
               Apenas vagas remotas. Sinais de contratação internacional sobem no
               ranking (heurística).
             </p>
@@ -217,14 +217,14 @@ export function JobSearchManager() {
             )}
 
             {searchState === 'done' && rows.length === 0 && (
-              <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-10 text-center text-sm text-neutral-500">
+              <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
                 Nenhuma vaga encontrada com esses filtros.
               </p>
             )}
 
             {searchState === 'done' && rows.length > 0 && (
               <>
-                <p className="mb-2 text-sm text-neutral-500">
+                <p className="mb-2 text-sm text-fg-muted">
                   {rows.length} vaga{rows.length === 1 ? '' : 's'} encontrada
                   {rows.length === 1 ? '' : 's'}.
                 </p>
@@ -252,7 +252,7 @@ export function JobSearchManager() {
         }}
       >
         {companies.length === 0 ? (
-          <p className="text-sm text-neutral-600">
+          <p className="text-sm text-fg-muted">
             Você precisa cadastrar uma empresa antes de salvar.{' '}
             <Link href="/vagas/empresas" className="font-medium underline">
               Criar empresa
@@ -289,26 +289,26 @@ function JobCard({ job, onSave }: { job: JobRow; onSave: () => void }) {
       : null;
 
   return (
-    <li className="rounded-lg border border-neutral-200 bg-white p-4">
+    <li className="rounded-lg border border-edge bg-surface p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <a
             href={job.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-neutral-900 hover:underline"
+            className="font-medium text-fg hover:underline"
           >
             {job.title}
           </a>
-          <p className="mt-0.5 text-sm text-neutral-500">
+          <p className="mt-0.5 text-sm text-fg-muted">
             {[job.company, job.location].filter(Boolean).join(' · ') || '—'}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
-          <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium uppercase text-neutral-500">
+          <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium uppercase text-fg-muted">
             {job.source}
           </span>
-          <span className="text-xs text-neutral-400">score {job.score}</span>
+          <span className="text-xs text-fg-subtle">score {job.score}</span>
         </div>
       </div>
 
@@ -328,7 +328,7 @@ function JobCard({ job, onSave }: { job: JobRow; onSave: () => void }) {
         ))}
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-x-3 text-xs text-neutral-400">
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 text-xs text-fg-subtle">
         <span className="uppercase">{job.countryCode}</span>
         {salary && <span>{salary}</span>}
         {job.postedAt && <span>{formatDateTime(job.postedAt)}</span>}

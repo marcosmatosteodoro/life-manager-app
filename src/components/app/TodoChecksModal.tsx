@@ -103,7 +103,7 @@ export function TodoChecksModal({ todo }: { todo: Todo }) {
       )}
 
       {loadState === 'loaded' && checks.length === 0 && (
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-fg-muted">
           Nenhum check ainda. Adicione uma data acima.
         </p>
       )}
@@ -113,16 +113,16 @@ export function TodoChecksModal({ todo }: { todo: Todo }) {
           {checks.map((check) => (
             <li
               key={check.id}
-              className="flex items-center justify-between gap-3 rounded-md border border-neutral-200 px-3 py-2"
+              className="flex items-center justify-between gap-3 rounded-md border border-edge px-3 py-2"
             >
               <label className="flex cursor-pointer items-center gap-2">
                 <input
                   type="checkbox"
                   checked={check.checked}
                   onChange={(e) => void toggle(check, e.target.checked)}
-                  className="h-4 w-4 rounded border-neutral-300 accent-emerald-600"
+                  className="h-4 w-4 rounded border-edge-strong accent-emerald-600"
                 />
-                <span className="text-sm text-neutral-800 tabular-nums">
+                <span className="text-sm text-fg tabular-nums">
                   {formatDate(check.date)}
                 </span>
               </label>

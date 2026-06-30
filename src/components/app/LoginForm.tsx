@@ -8,7 +8,7 @@ import { toast } from "@/hooks/useToastStore";
 import { ApiError, authService } from "@/services/authService";
 
 const inputClass =
-  "w-full rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900 focus:ring-2 focus:ring-neutral-900/10";
+  "w-full rounded-md border border-edge-strong px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-edge-inverse focus:ring-2 focus:ring-fg/10";
 
 export function LoginForm() {
   const router = useRouter();
@@ -32,10 +32,10 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-neutral-50 to-neutral-200 p-4">
-      <div className="grid w-full max-w-3xl overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-lg shadow-neutral-900/5 md:grid-cols-2">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-surface-muted to-edge p-4">
+      <div className="grid w-full max-w-3xl overflow-hidden rounded-2xl border border-edge bg-surface shadow-lg shadow-fg/5 md:grid-cols-2">
         {/* Ilustração — só no desktop */}
-        <div className="relative hidden bg-neutral-50 md:block">
+        <div className="relative hidden bg-surface-muted md:block">
           <Image
             src="/login.png"
             alt=""
@@ -59,17 +59,17 @@ export function LoginForm() {
               className="h-12 w-12 rounded-xl object-contain"
             />
             <div>
-              <h1 className="text-xl font-semibold tracking-tight text-neutral-900">
+              <h1 className="text-xl font-semibold tracking-tight text-fg">
                 Life Manager
               </h1>
-              <p className="mt-1 text-sm text-neutral-500">
+              <p className="mt-1 text-sm text-fg-muted">
                 Entre para continuar.
               </p>
             </div>
           </div>
 
           <label className="mt-2 flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-700">
+            <span className="text-sm font-medium text-fg-soft">
               Usuário
             </span>
             <input
@@ -83,7 +83,7 @@ export function LoginForm() {
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-neutral-700">Senha</span>
+            <span className="text-sm font-medium text-fg-soft">Senha</span>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -98,7 +98,7 @@ export function LoginForm() {
                 onClick={() => setShowPassword((v) => !v)}
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
                 aria-pressed={showPassword}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-neutral-400 transition-colors hover:text-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900"
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-fg-subtle transition-colors hover:text-fg-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fg"
               >
                 {showPassword ? <EyeOffIcon /> : <EyeIcon />}
               </button>

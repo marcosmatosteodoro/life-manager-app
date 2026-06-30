@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import { usePomodoroStore } from '@/hooks/usePomodoroStore';
 import { useStopwatchStore } from '@/hooks/useStopwatchStore';
+import { useThemeStore } from '@/hooks/useThemeStore';
 import { cn } from '@/utils/cn';
 
 /**
@@ -21,6 +22,9 @@ export function RunningTimersIndicator() {
   useEffect(() => {
     void useStopwatchStore.persist.rehydrate();
     void usePomodoroStore.persist.rehydrate();
+    // Sincroniza o estado React do tema com o localStorage (o visual já foi
+    // aplicado antes do paint pelo script inline do layout).
+    void useThemeStore.persist.rehydrate();
   }, []);
 
   if (!stopwatchRunning && !pomodoroRunning) return null;

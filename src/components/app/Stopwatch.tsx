@@ -54,18 +54,18 @@ export function Stopwatch() {
 
   return (
     <section className="mx-auto flex w-full max-w-md flex-col">
-      <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+      <h1 className="text-2xl font-semibold tracking-tight text-fg">
         Cronômetro
       </h1>
 
-      <div className="mt-8 flex flex-col items-center rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm">
+      <div className="mt-8 flex flex-col items-center rounded-2xl border border-edge bg-surface p-8 shadow-sm">
         {/* Pílula de status */}
         <span
           className={cn(
             'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium',
             status === 'running' && 'bg-emerald-50 text-emerald-700',
             status === 'paused' && 'bg-amber-50 text-amber-700',
-            status === 'idle' && 'bg-neutral-100 text-neutral-500',
+            status === 'idle' && 'bg-surface-subtle text-fg-muted',
           )}
         >
           <span
@@ -73,7 +73,7 @@ export function Stopwatch() {
               'h-1.5 w-1.5 rounded-full',
               status === 'running' && 'animate-pulse bg-emerald-500',
               status === 'paused' && 'bg-amber-500',
-              status === 'idle' && 'bg-neutral-400',
+              status === 'idle' && 'bg-fg-subtle',
             )}
           />
           {status === 'running'
@@ -90,16 +90,16 @@ export function Stopwatch() {
               type="button"
               onClick={copyValue}
               title="Clique para copiar (em minutos)"
-              className="rounded-xl px-4 py-2 font-mono text-6xl font-semibold tabular-nums tracking-tight text-neutral-900 transition-colors hover:bg-neutral-100"
+              className="rounded-xl px-4 py-2 font-mono text-6xl font-semibold tabular-nums tracking-tight text-fg transition-colors hover:bg-surface-subtle"
             >
               {value}
             </button>
           ) : (
-            <span className="px-4 py-2 font-mono text-6xl font-semibold tabular-nums tracking-tight text-neutral-900">
+            <span className="px-4 py-2 font-mono text-6xl font-semibold tabular-nums tracking-tight text-fg">
               {value}
             </span>
           )}
-          <span className="mt-1 text-xs uppercase tracking-wide text-neutral-400">
+          <span className="mt-1 text-xs uppercase tracking-wide text-fg-subtle">
             {unit}
           </span>
         </div>
@@ -141,7 +141,7 @@ export function Stopwatch() {
         </div>
 
         {canCopy && (
-          <p className="mt-4 text-xs text-neutral-400">
+          <p className="mt-4 text-xs text-fg-subtle">
             Clique no número para copiar (em minutos).
           </p>
         )}

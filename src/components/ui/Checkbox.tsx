@@ -13,17 +13,17 @@ export function Checkbox({ label, className, ...props }: CheckboxProps) {
   return (
     <label
       className={cn(
-        'flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 transition-colors hover:bg-neutral-50',
+        'flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 transition-colors hover:bg-surface-muted',
         props.disabled && 'cursor-not-allowed opacity-60',
         className,
       )}
     >
       <input
         type="checkbox"
-        className="h-4 w-4 rounded border-neutral-300 text-neutral-900 accent-neutral-900"
+        className="h-4 w-4 rounded border-edge-strong text-fg accent-fg"
         {...props}
       />
-      <span className="text-sm text-neutral-800">{label}</span>
+      <span className="text-sm text-fg">{label}</span>
     </label>
   );
 }

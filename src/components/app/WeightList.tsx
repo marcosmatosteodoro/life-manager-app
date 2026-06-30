@@ -22,7 +22,7 @@ export function WeightList({
 }: WeightListProps) {
   if (weights.length === 0) {
     return (
-      <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-10 text-center text-sm text-neutral-500">
+      <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
         Nenhum peso registrado ainda.
       </p>
     );
@@ -36,22 +36,22 @@ export function WeightList({
           <li
             key={weight.id}
             className={cn(
-              'flex flex-col gap-2 rounded-lg border bg-white px-4 py-3 transition-colors sm:flex-row sm:items-center sm:justify-between sm:gap-4',
+              'flex flex-col gap-2 rounded-lg border bg-surface px-4 py-3 transition-colors sm:flex-row sm:items-center sm:justify-between sm:gap-4',
               highlighted
-                ? 'border-neutral-900 ring-1 ring-neutral-900'
-                : 'border-neutral-200',
+                ? 'border-edge-inverse ring-1 ring-fg'
+                : 'border-edge',
             )}
           >
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="text-lg font-semibold text-neutral-900">
+              <span className="text-lg font-semibold text-fg">
                 {weight.value.toFixed(2)} kg
               </span>
-              <span className="text-sm text-neutral-500">
+              <span className="text-sm text-fg-muted">
                 {formatDate(weight.date)}
                 {weight.time ? ` às ${weight.time.slice(0, 5)}` : ''}
               </span>
               {highlighted && (
-                <span className="rounded-full bg-neutral-900 px-2 py-0.5 text-xs font-medium text-white">
+                <span className="rounded-full bg-surface-inverse px-2 py-0.5 text-xs font-medium text-surface">
                   Mais recente
                 </span>
               )}

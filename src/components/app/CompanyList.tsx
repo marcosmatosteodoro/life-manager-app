@@ -14,7 +14,7 @@ interface CompanyListProps {
 export function CompanyList({ companies, onEdit, onDelete }: CompanyListProps) {
   if (companies.length === 0) {
     return (
-      <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-10 text-center text-sm text-neutral-500">
+      <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
         Nenhuma empresa cadastrada ainda.
       </p>
     );
@@ -46,7 +46,7 @@ function CompanyRow({
   const [open, setOpen] = useState(false);
 
   return (
-    <li className="rounded-lg border border-neutral-200 bg-white">
+    <li className="rounded-lg border border-edge bg-surface">
       <div className="flex items-start justify-between gap-3 px-4 py-3">
         <div className="flex min-w-0 items-start gap-2">
           {/* Setinha: abre/fecha as observações (mesma seta, gira ao abrir) */}
@@ -55,7 +55,7 @@ function CompanyRow({
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-label={open ? 'Ocultar observações' : 'Ver observações'}
-            className="mt-0.5 rounded-md p-0.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
+            className="mt-0.5 rounded-md p-0.5 text-fg-subtle transition-colors hover:bg-surface-subtle hover:text-fg-soft"
           >
             <ChevronDownIcon
               className={cn(
@@ -67,13 +67,13 @@ function CompanyRow({
 
           {/* Título / país / link */}
           <div className="min-w-0">
-            <p className="truncate font-medium text-neutral-900">
+            <p className="truncate font-medium text-fg">
               {company.name}
             </p>
-            <p className="mt-0.5 truncate text-sm text-neutral-500">
+            <p className="mt-0.5 truncate text-sm text-fg-muted">
               {company.country ? company.country.name : '—'}
             </p>
-            <p className="mt-0.5 truncate text-sm text-neutral-500">
+            <p className="mt-0.5 truncate text-sm text-fg-muted">
               <a
                 href={company.website}
                 target="_blank"
@@ -108,11 +108,11 @@ function CompanyRow({
         )}
       >
         <div className="overflow-hidden">
-          <p className="border-t border-neutral-100 py-3 text-sm whitespace-pre-line text-neutral-600">
+          <p className="border-t border-edge py-3 text-sm whitespace-pre-line text-fg-muted">
             {company.observation?.trim() ? (
               company.observation
             ) : (
-              <span className="text-neutral-400">Sem observações.</span>
+              <span className="text-fg-subtle">Sem observações.</span>
             )}
           </p>
         </div>

@@ -41,7 +41,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   if (!authChecked) return null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-neutral-50 text-neutral-900">
+    <div className="flex min-h-screen flex-col bg-surface-muted text-fg">
       <Header />
       <div className="flex flex-1">
         <Sidebar />

@@ -44,12 +44,12 @@ export function FlashCardGroupAbsorbModal({
       onClose={onCancel}
     >
       {candidates.length === 0 ? (
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-fg-muted">
           Não há outras listas para absorver.
         </p>
       ) : (
         <>
-          <p className="text-sm text-neutral-600">
+          <p className="text-sm text-fg-muted">
             Escolha a lista a ser absorvida. Os flashcards dela serão movidos
             para <span className="font-medium">{target.name}</span> e a lista
             escolhida será excluída.
@@ -68,14 +68,14 @@ export function FlashCardGroupAbsorbModal({
                     className={cn(
                       'flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 text-left transition-colors',
                       selected
-                        ? 'border-neutral-900 bg-neutral-50'
-                        : 'border-neutral-200 hover:border-neutral-400',
+                        ? 'border-edge-inverse bg-surface-muted'
+                        : 'border-edge hover:border-edge-strong',
                     )}
                   >
-                    <span className="truncate text-sm font-medium text-neutral-900">
+                    <span className="truncate text-sm font-medium text-fg">
                       {group.name}
                     </span>
-                    <span className="shrink-0 text-xs text-neutral-500">
+                    <span className="shrink-0 text-xs text-fg-muted">
                       {count} flashcard{count === 1 ? '' : 's'}
                     </span>
                   </button>

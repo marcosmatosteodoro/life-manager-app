@@ -32,12 +32,12 @@ export function BmiCard({ weightKg }: BmiCardProps) {
   }
 
   return (
-    <div className="rounded-lg border border-neutral-200 bg-white p-4">
+    <div className="rounded-lg border border-edge bg-surface p-4">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="text-xs font-medium uppercase tracking-wide text-neutral-400">
+        <span className="text-xs font-medium uppercase tracking-wide text-fg-subtle">
           IMC
         </span>
-        <span className="text-2xl font-semibold text-neutral-900">
+        <span className="text-2xl font-semibold text-fg">
           {fmt(bmi)}
         </span>
         <span
@@ -50,9 +50,9 @@ export function BmiCard({ weightKg }: BmiCardProps) {
         </span>
       </div>
 
-      <p className="mt-2 text-sm text-neutral-600">{goal}</p>
+      <p className="mt-2 text-sm text-fg-muted">{goal}</p>
 
-      <p className="mt-1 text-xs text-neutral-400">
+      <p className="mt-1 text-xs text-fg-subtle">
         Altura {fmt(HEIGHT_M)} m · faixa saudável {fmt(minHealthy)}–
         {fmt(maxHealthy)} kg (IMC {fmt(HEALTHY_MIN_BMI)}–{fmt(HEALTHY_MAX_BMI)}).
       </p>

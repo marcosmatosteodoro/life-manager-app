@@ -21,7 +21,7 @@ const periodLabel = (p: FeedbackPeriod) =>
 
 // Estilo da prosa renderizada (HTML do feedback).
 const proseClass =
-  'text-sm leading-relaxed text-neutral-700 [&_h3]:mb-1 [&_h3]:mt-4 [&_h3]:font-semibold [&_h3]:text-neutral-900 [&_li]:mb-0.5 [&_p]:mb-2 [&_ul]:my-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:my-1 [&_ol]:list-decimal [&_ol]:pl-5';
+  'text-sm leading-relaxed text-fg-soft [&_h3]:mb-1 [&_h3]:mt-4 [&_h3]:font-semibold [&_h3]:text-fg [&_li]:mb-0.5 [&_p]:mb-2 [&_ul]:my-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:my-1 [&_ol]:list-decimal [&_ol]:pl-5';
 
 export function FeedbackManager() {
   const [history, setHistory] = useState<Feedback[]>([]);
@@ -65,22 +65,22 @@ export function FeedbackManager() {
 
   return (
     <section className="mx-auto w-full max-w-4xl">
-      <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+      <h1 className="text-2xl font-semibold tracking-tight text-fg">
         Feedback
       </h1>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-fg-muted">
         Gere uma análise do seu período com base nos seus dados (peso, estudos,
         consistência, revisões, diário e vagas).
       </p>
 
       {/* Gerador */}
-      <div className="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-neutral-200 bg-white p-4">
+      <div className="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-edge bg-surface p-4">
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-neutral-700">Período</span>
+          <span className="text-sm font-medium text-fg-soft">Período</span>
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value as FeedbackPeriod)}
-            className="rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900"
+            className="rounded-md border border-edge-strong px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-edge-inverse"
           >
             {FEEDBACK_PERIOD_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
@@ -97,7 +97,7 @@ export function FeedbackManager() {
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {/* Histórico */}
         <aside className="md:col-span-1">
-          <h2 className="text-sm font-semibold text-neutral-700">Histórico</h2>
+          <h2 className="text-sm font-semibold text-fg-soft">Histórico</h2>
 
           {loadState === 'loading' && <Loading className="min-h-0 py-8" />}
 
@@ -115,7 +115,7 @@ export function FeedbackManager() {
           )}
 
           {loadState === 'loaded' && history.length === 0 && (
-            <p className="mt-2 text-sm text-neutral-500">
+            <p className="mt-2 text-sm text-fg-muted">
               Nenhum feedback ainda. Gere o primeiro acima.
             </p>
           )}
@@ -133,14 +133,14 @@ export function FeedbackManager() {
                       className={cn(
                         'w-full rounded-md border px-3 py-2 text-left transition-colors',
                         active
-                          ? 'border-neutral-900 bg-neutral-50'
-                          : 'border-neutral-200 hover:border-neutral-400',
+                          ? 'border-edge-inverse bg-surface-muted'
+                          : 'border-edge hover:border-edge-strong',
                       )}
                     >
-                      <span className="block text-sm font-medium text-neutral-900">
+                      <span className="block text-sm font-medium text-fg">
                         {periodLabel(f.period)}
                       </span>
-                      <span className="block text-xs text-neutral-500">
+                      <span className="block text-xs text-fg-muted">
                         {formatDateTime(f.createdAt)}
                       </span>
                     </button>
@@ -154,19 +154,19 @@ export function FeedbackManager() {
         {/* Feedback selecionado */}
         <div className="md:col-span-2">
           {selected ? (
-            <article className="rounded-lg border border-neutral-200 bg-white p-5">
-              <header className="mb-3 flex flex-wrap items-baseline gap-2 border-b border-neutral-100 pb-3">
-                <span className="text-sm font-semibold text-neutral-900">
+            <article className="rounded-lg border border-edge bg-surface p-5">
+              <header className="mb-3 flex flex-wrap items-baseline gap-2 border-b border-edge pb-3">
+                <span className="text-sm font-semibold text-fg">
                   {periodLabel(selected.period)}
                 </span>
-                <span className="text-xs text-neutral-500">
+                <span className="text-xs text-fg-muted">
                   {formatDateTime(selected.createdAt)}
                 </span>
               </header>
               <SafeHtml html={selected.response} className={proseClass} />
             </article>
           ) : (
-            <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-16 text-center text-sm text-neutral-500">
+            <p className="rounded-lg border border-dashed border-edge-strong px-4 py-16 text-center text-sm text-fg-muted">
               Gere um feedback ou selecione um do histórico para visualizar.
             </p>
           )}

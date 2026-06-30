@@ -8,10 +8,10 @@ import { TimezoneConverter } from './TimezoneConverter';
 export function ConvertersView() {
   return (
     <section className="mx-auto w-full max-w-2xl">
-      <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+      <h1 className="text-2xl font-semibold tracking-tight text-fg">
         Conversores
       </h1>
-      <p className="mt-1 text-sm text-neutral-500">
+      <p className="mt-1 text-sm text-fg-muted">
         Ferramentas rápidas para avaliar vagas: moeda, fuso horário e salário.
       </p>
 

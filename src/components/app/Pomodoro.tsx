@@ -62,11 +62,11 @@ export function Pomodoro() {
 
   return (
     <section className="mx-auto flex w-full max-w-md flex-col">
-      <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+      <h1 className="text-2xl font-semibold tracking-tight text-fg">
         Pomodoro
       </h1>
 
-      <div className="mt-8 flex flex-col items-center rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm">
+      <div className="mt-8 flex flex-col items-center rounded-2xl border border-edge bg-surface p-8 shadow-sm">
         {/* Fase atual */}
         <span
           className={cn(
@@ -85,7 +85,7 @@ export function Pomodoro() {
         </span>
 
         {/* Contagem regressiva */}
-        <span className="mt-6 font-mono text-6xl font-semibold tabular-nums tracking-tight text-neutral-900">
+        <span className="mt-6 font-mono text-6xl font-semibold tabular-nums tracking-tight text-fg">
           {formatMs(remainingMs)}
         </span>
 
@@ -101,8 +101,8 @@ export function Pomodoro() {
               className={cn(
                 'rounded-md border px-3 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50',
                 mode === option
-                  ? 'border-neutral-900 bg-neutral-900 text-white'
-                  : 'border-neutral-300 text-neutral-700 hover:bg-neutral-100',
+                  ? 'border-edge-inverse bg-surface-inverse text-surface'
+                  : 'border-edge-strong text-fg-soft hover:bg-surface-subtle',
               )}
             >
               {option}
@@ -139,7 +139,7 @@ export function Pomodoro() {
           )}
         </div>
 
-        <p className="mt-4 text-xs text-neutral-400">
+        <p className="mt-4 text-xs text-fg-subtle">
           Toca um som ao trocar de foco/pausa. Trocar o modo reinicia o ciclo.
         </p>
       </div>

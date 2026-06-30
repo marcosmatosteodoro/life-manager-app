@@ -104,7 +104,7 @@ export function TodoForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <span className="text-sm font-medium text-neutral-700">
+        <span className="text-sm font-medium text-fg-soft">
           Dias da semana
         </span>
         <div className="flex flex-wrap gap-1.5">
@@ -119,8 +119,8 @@ export function TodoForm({
                 className={cn(
                   'rounded-md border px-3 py-1.5 text-sm font-medium transition-colors',
                   active
-                    ? 'border-neutral-900 bg-neutral-900 text-white'
-                    : 'border-neutral-300 text-neutral-700 hover:bg-neutral-100',
+                    ? 'border-edge-inverse bg-surface-inverse text-surface'
+                    : 'border-edge-strong text-fg-soft hover:bg-surface-subtle',
                 )}
               >
                 {w.short}

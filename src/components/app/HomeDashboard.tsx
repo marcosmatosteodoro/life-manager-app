@@ -129,7 +129,7 @@ export function HomeDashboard() {
   return (
     <section className="mx-auto w-full max-w-3xl">
       {/* Visão geral */}
-      <h2 className="text-sm font-semibold text-neutral-700">Visão geral</h2>
+      <h2 className="text-sm font-semibold text-fg-soft">Visão geral</h2>
       <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <StatCard
           href="/estudando-ingles"
@@ -174,7 +174,7 @@ export function HomeDashboard() {
       </div>
 
       {/* Pendências de hoje */}
-      <h2 className="mt-8 text-sm font-semibold text-neutral-700">
+      <h2 className="mt-8 text-sm font-semibold text-fg-soft">
         Pendências de hoje
       </h2>
       {tasks.length === 0 ? (
@@ -200,7 +200,7 @@ export function HomeDashboard() {
       {/* CTA Feedback */}
       <Link
         href="/feedback"
-        className="mt-8 flex items-center justify-between gap-3 rounded-lg bg-neutral-900 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-700"
+        className="mt-8 flex items-center justify-between gap-3 rounded-lg bg-surface-inverse px-4 py-3 text-sm font-medium text-surface transition-colors hover:bg-fg-soft"
       >
         <span>Gerar um feedback do seu período</span>
         <span aria-hidden>→</span>
@@ -223,15 +223,15 @@ function StatCard({
   return (
     <Link
       href={href}
-      className="flex flex-col rounded-lg border border-neutral-200 bg-white p-4 transition-colors hover:border-neutral-400 hover:bg-neutral-50"
+      className="flex flex-col rounded-lg border border-edge bg-surface p-4 transition-colors hover:border-edge-strong hover:bg-surface-muted"
     >
-      <span className="text-xs font-medium uppercase tracking-wide text-neutral-400">
+      <span className="text-xs font-medium uppercase tracking-wide text-fg-subtle">
         {title}
       </span>
-      <span className="mt-1 truncate text-lg font-semibold text-neutral-900">
+      <span className="mt-1 truncate text-lg font-semibold text-fg">
         {value}
       </span>
-      {hint && <span className="mt-0.5 text-xs text-neutral-500">{hint}</span>}
+      {hint && <span className="mt-0.5 text-xs text-fg-muted">{hint}</span>}
     </Link>
   );
 }

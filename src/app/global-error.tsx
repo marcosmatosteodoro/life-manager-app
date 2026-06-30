@@ -33,24 +33,24 @@ export default function GlobalError({
     >
       <body className="min-h-full">
         <section className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center px-4 text-center">
-          <span className="text-5xl font-semibold tracking-tight text-neutral-300">
+          <span className="text-5xl font-semibold tracking-tight text-fg-subtle">
             500
           </span>
-          <h1 className="mt-4 text-xl font-semibold text-neutral-900">
+          <h1 className="mt-4 text-xl font-semibold text-fg">
             Algo deu errado
           </h1>
-          <p className="mt-2 text-sm text-neutral-500">
+          <p className="mt-2 text-sm text-fg-muted">
             Ocorreu um erro inesperado no aplicativo. Tente novamente.
           </p>
           {error.digest && (
-            <p className="mt-1 text-xs text-neutral-400">
+            <p className="mt-1 text-xs text-fg-subtle">
               Código de referência: {error.digest}
             </p>
           )}
           <button
             type="button"
             onClick={() => unstable_retry()}
-            className="mt-6 inline-flex items-center justify-center rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-700"
+            className="mt-6 inline-flex items-center justify-center rounded-md bg-surface-inverse px-4 py-2 text-sm font-medium text-surface transition-colors hover:bg-fg-soft"
           >
             Tentar novamente
           </button>

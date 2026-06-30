@@ -98,7 +98,7 @@ function currentTime(): string {
 }
 
 const inputClass =
-  'w-full rounded-md border border-neutral-300 px-3 py-2 text-sm text-neutral-900 outline-none transition-colors focus:border-neutral-900';
+  'w-full rounded-md border border-edge-strong px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-edge-inverse';
 
 function Field({
   label,
@@ -111,7 +111,7 @@ function Field({
 }) {
   return (
     <label htmlFor={htmlFor} className="flex flex-col gap-1.5">
-      <span className="text-sm font-medium text-neutral-700">{label}</span>
+      <span className="text-sm font-medium text-fg-soft">{label}</span>
       {children}
     </label>
   );

@@ -111,7 +111,7 @@ export function DiaryManager({
   return (
     <section className="mx-auto w-full max-w-2xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-fg">
           {title}
         </h1>
         <Button onClick={openCreate}>{createLabel}</Button>

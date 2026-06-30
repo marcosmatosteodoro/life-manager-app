@@ -26,7 +26,7 @@ const STATUS_CLASSES: Record<Article['status'], string> = {
 export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
   if (articles.length === 0) {
     return (
-      <p className="rounded-lg border border-dashed border-neutral-300 px-4 py-10 text-center text-sm text-neutral-500">
+      <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
         Nenhum estudo registrado ainda.
       </p>
     );
@@ -40,16 +40,16 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
           <li
             key={article.id}
             className={cn(
-              'rounded-lg border bg-white px-4 py-3 transition-colors',
+              'rounded-lg border bg-surface px-4 py-3 transition-colors',
               today
                 ? 'border-emerald-300 ring-1 ring-emerald-300'
-                : 'border-neutral-200',
+                : 'border-edge',
             )}
           >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium break-words text-neutral-900">
+                  <span className="font-medium break-words text-fg">
                     {article.title}
                   </span>
                   <span
@@ -66,7 +66,7 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                     </span>
                   )}
                 </div>
-                <p className="mt-0.5 text-xs text-neutral-400">
+                <p className="mt-0.5 text-xs text-fg-subtle">
                   {formatDateTime(article.createdAt)}
                   {article.link ? (
                     <>
@@ -75,14 +75,14 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                         href={article.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-neutral-500 hover:underline"
+                        className="text-fg-muted hover:underline"
                       >
                         link
                       </a>
                     </>
                   ) : null}
                 </p>
-                <p className="mt-1 text-sm text-neutral-500">
+                <p className="mt-1 text-sm text-fg-muted">
                   {article.timeRead != null
                     ? `Leitura: ${article.timeRead} min`
                     : 'Leitura: —'}
@@ -92,19 +92,19 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                   {article.score != null ? ` · Nota: ${article.score}` : ''}
                 </p>
                 {article.summary && (
-                  <p className="mt-2 line-clamp-2 text-sm text-neutral-600">
+                  <p className="mt-2 line-clamp-2 text-sm text-fg-muted">
                     {article.summary}
                   </p>
                 )}
                 {article.summaryCorrected && (
                   <div className="mt-2">
-                    <span className="text-xs font-medium text-neutral-500">
+                    <span className="text-xs font-medium text-fg-muted">
                       Resumo corrigido
                     </span>
                     {/* HTML do corretor — renderizado já sanitizado. */}
                     <SafeHtml
                       html={article.summaryCorrected}
-                      className="mt-1 text-sm text-neutral-700 [&_li]:list-disc [&_p]:mb-2 [&_ul]:my-1 [&_ul]:pl-5"
+                      className="mt-1 text-sm text-fg-soft [&_li]:list-disc [&_p]:mb-2 [&_ul]:my-1 [&_ul]:pl-5"
                     />
                   </div>
                 )}

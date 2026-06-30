@@ -1,5 +1,5 @@
 // Service worker do Life Manager — instalável + suporte offline básico.
-const CACHE = 'life-manager-v1';
+const CACHE = 'life-manager-v2';
 // Precache mínimo (apenas a home) para evitar falha atômica do addAll.
 const PRECACHE_URLS = ['/'];
 

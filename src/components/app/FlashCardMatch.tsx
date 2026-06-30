@@ -47,9 +47,12 @@ function buildTiles(cards: FlashCard[]): Tile[] {
 
 export function FlashCardMatch({
   cards,
+  onReplay,
   onExit,
 }: {
   cards: FlashCard[];
+  /** Busca um novo sorteio no back (remonta o jogo). Sem ele, reembaralha os mesmos cards. */
+  onReplay?: () => void;
   onExit?: () => void;
 }) {
   const [tiles, setTiles] = useState<Tile[]>(() => buildTiles(cards));
@@ -163,7 +166,7 @@ export function FlashCardMatch({
             {totalErrors} erro{totalErrors === 1 ? '' : 's'} no total.
           </p>
           <div className="flex flex-wrap justify-center gap-2">
-            <Button onClick={replay}>Jogar de novo</Button>
+            <Button onClick={onReplay ?? replay}>Jogar de novo</Button>
             {onExit && (
               <Button variant="secondary" onClick={onExit}>
                 Trocar modo

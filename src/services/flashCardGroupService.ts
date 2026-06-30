@@ -17,9 +17,14 @@ export const flashCardGroupService = {
     return apiRequest<FlashCardGroup>(`/flash-card-group/${id}`);
   },
 
-  /** Flashcards do grupo ordenados para a revisão. */
+  /** Flashcards do grupo ordenados para a revisão (modo um a um). */
   review(id: number): Promise<FlashCard[]> {
     return apiRequest<FlashCard[]>(`/flash-card-group/${id}/review`);
+  },
+
+  /** Flashcards do grupo em ordem aleatória, para o modo bloco (combinação). */
+  reviewBlock(id: number): Promise<FlashCard[]> {
+    return apiRequest<FlashCard[]>(`/flash-card-group/${id}/review/block`);
   },
 
   create(input: FlashCardGroupInput): Promise<FlashCardGroup> {

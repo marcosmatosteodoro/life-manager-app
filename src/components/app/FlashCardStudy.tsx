@@ -20,6 +20,9 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
   const [loadError, setLoadError] = useState<string[]>([]);
 
   const [index, setIndex] = useState(0);
+  // Muda a cada carga: usado como key para remontar a Combinação com o
+  // novo sorteio aleatório vindo do back (ao trocar de modo ou jogar de novo).
+  const [draw, setDraw] = useState(0);
   const [showValue, setShowValue] = useState(false);
   const [saving, setSaving] = useState(false);
   const [translating, setTranslating] = useState(false);
@@ -29,9 +32,15 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
   const load = useCallback(async () => {
     setLoadState('loading');
     try {
-      const rows = await flashCardGroupService.review(groupId);
+      // Combinação usa ordem aleatória (varia o subconjunto a cada partida);
+      // o modo um a um usa a ordenação de revisão (difíceis/antigos primeiro).
+      const rows =
+        mode === 'combinacao'
+          ? await flashCardGroupService.reviewBlock(groupId)
+          : await flashCardGroupService.review(groupId);
       setCards(rows);
       setIndex(0);
+      setDraw((d) => d + 1);
       setShowValue(false);
       setShowTranslation(false);
       setLoadState('loaded');
@@ -39,7 +48,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
       setLoadError(toMessages(error));
       setLoadState('error');
     }
-  }, [groupId]);
+  }, [groupId, mode]);
 
   useEffect(() => {
     void load();
@@ -144,7 +153,12 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
         )}
 
         {loadState === 'loaded' && mode === 'combinacao' && cards.length > 0 && (
-          <FlashCardMatch cards={cards} onExit={() => setMode('classico')} />
+          <FlashCardMatch
+            key={draw}
+            cards={cards}
+            onReplay={() => void load()}
+            onExit={() => setMode('classico')}
+          />
         )}
 
         {loadState === 'loaded' &&

@@ -8,6 +8,7 @@ import {
 } from '@/services/article.types';
 import { cn } from '@/utils/cn';
 import { formatDateTime, isToday } from '@/utils/date';
+import { StartReadingButton } from './StartReadingButton';
 
 interface ArticleListProps {
   articles: Article[];
@@ -111,6 +112,9 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
               </div>
 
               <div className="flex justify-end gap-1 sm:shrink-0">
+                {article.status === 'READING_IN_PROGRESS' && (
+                  <StartReadingButton />
+                )}
                 <Button variant="ghost" onClick={() => onEdit(article)}>
                   Editar
                 </Button>

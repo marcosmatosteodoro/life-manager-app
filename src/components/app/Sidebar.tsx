@@ -34,6 +34,17 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    label: 'Vagas',
+    items: [
+      { href: '/vagas/paises', label: 'Países', Icon: GlobeIcon },
+      { href: '/vagas/empresas', label: 'Empresas', Icon: BuildingIcon },
+      { href: '/vagas/aplicacoes', label: 'Candidaturas', Icon: SendIcon },
+      { href: '/vagas/buscador', label: 'Buscar vagas', Icon: SearchIcon },
+      { href: '/vagas/aplicador', label: 'Aplicador', Icon: BoltIcon },
+      { href: '/conversores', label: 'Conversores', Icon: SwapIcon },
+    ],
+  },
+  {
     label: 'Sobre mim',
     items: [
       { href: '/diario', label: 'Diário', Icon: JournalIcon },
@@ -48,17 +59,6 @@ const NAV_GROUPS: NavGroup[] = [
         label: 'Peso',
         Icon: ScaleIcon,
       },
-    ],
-  },
-  {
-    label: 'Vagas',
-    items: [
-      { href: '/vagas/paises', label: 'Países', Icon: GlobeIcon },
-      { href: '/vagas/empresas', label: 'Empresas', Icon: BuildingIcon },
-      { href: '/vagas/aplicacoes', label: 'Candidaturas', Icon: SendIcon },
-      { href: '/vagas/buscador', label: 'Buscar vagas', Icon: SearchIcon },
-      { href: '/vagas/aplicador', label: 'Aplicador', Icon: BoltIcon },
-      { href: '/conversores', label: 'Conversores', Icon: SwapIcon },
     ],
   },
   {

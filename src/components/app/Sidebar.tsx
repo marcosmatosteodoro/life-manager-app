@@ -24,7 +24,6 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/pomodoro', label: 'Pomodoro', Icon: PomodoroIcon },
       { href: '/afazeres', label: 'Afazeres', Icon: ListCheckIcon },
       { href: '/backlog', label: 'Próximos passos', Icon: RoadmapIcon },
-      { href: '/conversores', label: 'Conversores', Icon: SwapIcon },
     ],
   },
   {
@@ -59,6 +58,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/vagas/aplicacoes', label: 'Candidaturas', Icon: SendIcon },
       { href: '/vagas/buscador', label: 'Buscar vagas', Icon: SearchIcon },
       { href: '/vagas/aplicador', label: 'Aplicador', Icon: BoltIcon },
+      { href: '/conversores', label: 'Conversores', Icon: SwapIcon },
     ],
   },
 ];

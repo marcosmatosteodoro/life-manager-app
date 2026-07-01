@@ -13,13 +13,23 @@ export function Header() {
         href="/"
         className="flex items-center gap-2 transition-opacity hover:opacity-70"
       >
+        {/* Logo por tema: a clara tem o "LM" vazado (fundo aparece); a escura
+            tem o "LM" branco preenchido, visível no fundo escuro. */}
         <Image
           src="/logo.png"
           alt="Life Manager"
           width={32}
           height={32}
           priority
-          className="h-8 w-8 rounded-md object-contain"
+          className="h-8 w-8 rounded-md object-contain dark:hidden"
+        />
+        <Image
+          src="/logo-dark.png"
+          alt="Life Manager"
+          width={32}
+          height={32}
+          priority
+          className="hidden h-8 w-8 rounded-md object-contain dark:block"
         />
         <span className="text-lg font-semibold tracking-tight text-fg">
           Life Manager

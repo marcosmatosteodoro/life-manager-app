@@ -59,7 +59,15 @@ export function LoginForm() {
               width={48}
               height={48}
               priority
-              className="h-12 w-12 rounded-xl object-contain"
+              className="h-12 w-12 rounded-xl object-contain dark:hidden"
+            />
+            <Image
+              src="/logo-dark.png"
+              alt="Life Manager"
+              width={48}
+              height={48}
+              priority
+              className="hidden h-12 w-12 rounded-xl object-contain dark:block"
             />
             <div>
               <h1 className="text-xl font-semibold tracking-tight text-fg">

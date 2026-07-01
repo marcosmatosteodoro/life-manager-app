@@ -1,20 +1,19 @@
 'use client';
 
 import { IconButton } from '@/components/ui/IconButton';
-import { useThemeStore } from '@/hooks/useThemeStore';
+import { useThemeToggle } from '@/hooks/useThemeToggle';
 
 /**
  * Botão de alternância de tema (claro/escuro) para a navbar no desktop.
- * A preferência é salva no navegador pelo próprio store (localStorage).
+ * Salva no navegador (localStorage) e no perfil (banco) via useThemeToggle.
  */
 export function ThemeToggle() {
-  const theme = useThemeStore((s) => s.theme);
-  const toggle = useThemeStore((s) => s.toggle);
+  const { theme, toggle } = useThemeToggle();
   const isDark = theme === 'dark';
 
   return (
     <IconButton
-      onClick={toggle}
+      onClick={() => void toggle()}
       aria-label={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
       title={isDark ? 'Tema claro' : 'Tema escuro'}
     >

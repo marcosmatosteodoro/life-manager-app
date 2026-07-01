@@ -1,9 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { Theme } from '@/services/user.types';
 
-export type Theme = 'light' | 'dark';
+export type { Theme };
 
-/** Aplica/remove a classe `.dark` no <html> (a fonte do tema para o CSS). */
+/**
+ * Aplica/remove a classe `.dark` no <html> (a fonte do tema para o CSS).
+ * `custom` ainda não faz nada — renderiza como claro por ora.
+ */
 function applyThemeClass(theme: Theme): void {
   if (typeof document === 'undefined') return;
   document.documentElement.classList.toggle('dark', theme === 'dark');

@@ -30,6 +30,12 @@ export function Header() {
         {/* Desktop: ações inline. */}
         <div className="hidden items-center gap-2 md:flex">
           <ThemeToggle />
+          <Link
+            href="/perfil"
+            className="rounded-md px-3 py-1.5 text-sm font-medium text-fg-muted transition-colors hover:bg-surface-subtle hover:text-fg"
+          >
+            Meu perfil
+          </Link>
           <LogoutButton />
         </div>
         {/* Mobile: menu hambúrguer com tema + sair. */}

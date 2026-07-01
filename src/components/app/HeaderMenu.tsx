@@ -2,17 +2,16 @@
 
 import { useRouter } from 'next/navigation';
 import { DropdownMenu } from '@/components/ui/DropdownMenu';
-import { useThemeStore } from '@/hooks/useThemeStore';
+import { useThemeToggle } from '@/hooks/useThemeToggle';
 import { authService } from '@/services/authService';
 
 /**
- * Ações do Header em telas pequenas: menu hambúrguer com alternar tema + Sair.
- * No desktop essas ações ficam inline (ThemeToggle + LogoutButton).
+ * Ações do Header em telas pequenas: menu hambúrguer com Meu perfil, alternar
+ * tema e Sair. No desktop essas ações ficam inline (ThemeToggle + LogoutButton).
  */
 export function HeaderMenu() {
   const router = useRouter();
-  const theme = useThemeStore((s) => s.theme);
-  const toggle = useThemeStore((s) => s.toggle);
+  const { theme, toggle } = useThemeToggle();
 
   function handleLogout() {
     authService.logout();
@@ -24,9 +23,10 @@ export function HeaderMenu() {
       ariaLabel="Menu"
       icon={<HamburgerIcon className="h-5 w-5" />}
       items={[
+        { label: 'Meu perfil', onClick: () => router.push('/perfil') },
         {
           label: theme === 'dark' ? 'Tema claro' : 'Tema escuro',
-          onClick: toggle,
+          onClick: () => void toggle(),
         },
         { label: 'Sair', onClick: handleLogout, danger: true },
       ]}

@@ -21,9 +21,12 @@ export function LoginForm() {
     event.preventDefault();
     setSubmitting(true);
     try {
-      await authService.login(username, password);
+      const { mustChangePassword } = await authService.login(
+        username,
+        password,
+      );
       toast.success("Bem-vindo!");
-      router.replace("/");
+      router.replace(mustChangePassword ? "/trocar-senha" : "/");
     } catch (error) {
       toast.errors(toMessages(error));
     } finally {

@@ -1,9 +1,10 @@
 'use client';
 
+import { useProfileStore } from '@/hooks/useProfileStore';
 import { cn } from '@/utils/cn';
 
-// Altura fixa por enquanto (metros). Fácil de tornar configurável depois.
-const HEIGHT_M = 1.77;
+// Altura usada quando o perfil ainda não tem altura definida (metros).
+const FALLBACK_HEIGHT_M = 1.77;
 
 // Limites de IMC para a faixa de peso "normal" (OMS).
 const HEALTHY_MIN_BMI = 18.5;
@@ -16,11 +17,15 @@ interface BmiCardProps {
 
 /** Card informativo: IMC do peso atual, classificação e faixa/meta saudável. */
 export function BmiCard({ weightKg }: BmiCardProps) {
-  const bmi = weightKg / (HEIGHT_M * HEIGHT_M);
+  const heightCm = useProfileStore((s) => s.profile?.heightCm ?? null);
+  const heightM = heightCm != null ? heightCm / 100 : FALLBACK_HEIGHT_M;
+  const usingFallback = heightCm == null;
+
+  const bmi = weightKg / (heightM * heightM);
   const { label, badge } = classify(bmi);
 
-  const minHealthy = HEALTHY_MIN_BMI * HEIGHT_M * HEIGHT_M;
-  const maxHealthy = HEALTHY_MAX_BMI * HEIGHT_M * HEIGHT_M;
+  const minHealthy = HEALTHY_MIN_BMI * heightM * heightM;
+  const maxHealthy = HEALTHY_MAX_BMI * heightM * heightM;
 
   let goal: string;
   if (weightKg > maxHealthy) {
@@ -53,9 +58,19 @@ export function BmiCard({ weightKg }: BmiCardProps) {
       <p className="mt-2 text-sm text-fg-muted">{goal}</p>
 
       <p className="mt-1 text-xs text-fg-subtle">
-        Altura {fmt(HEIGHT_M)} m · faixa saudável {fmt(minHealthy)}–
+        Altura {fmt(heightM)} m · faixa saudável {fmt(minHealthy)}–
         {fmt(maxHealthy)} kg (IMC {fmt(HEALTHY_MIN_BMI)}–{fmt(HEALTHY_MAX_BMI)}).
       </p>
+
+      {usingFallback && (
+        <p className="mt-1 text-xs text-fg-subtle">
+          Usando altura padrão. Defina sua altura em{' '}
+          <a href="/perfil" className="underline hover:text-fg">
+            Meu perfil
+          </a>{' '}
+          para um IMC preciso.
+        </p>
+      )}
     </div>
   );
 }

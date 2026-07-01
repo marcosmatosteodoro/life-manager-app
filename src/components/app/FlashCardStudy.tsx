@@ -10,9 +10,16 @@ import { ApiError, flashCardService } from '@/services/flashCardService';
 import { flashCardGroupService } from '@/services/flashCardGroupService';
 import { cn } from '@/utils/cn';
 import { FlashCardMatch } from './FlashCardMatch';
+import { FlashCardQuiz } from './FlashCardQuiz';
 
 type LoadState = 'loading' | 'loaded' | 'error';
-type StudyMode = 'classico' | 'combinacao';
+type StudyMode = 'classico' | 'combinacao' | 'avaliacao';
+
+const MODE_LABELS: Record<StudyMode, string> = {
+  classico: 'Um a um',
+  combinacao: 'Combinação',
+  avaliacao: 'Avaliação',
+};
 
 export function FlashCardStudy({ groupId }: { groupId: number }) {
   const [cards, setCards] = useState<FlashCard[]>([]);
@@ -115,7 +122,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
       {/* Seletor de modo */}
       {loadState === 'loaded' && cards.length > 0 && (
         <div className="mt-4 flex gap-1 self-center rounded-lg border border-edge bg-surface-muted p-1">
-          {(['classico', 'combinacao'] as const).map((m) => (
+          {(['classico', 'combinacao', 'avaliacao'] as const).map((m) => (
             <button
               key={m}
               type="button"
@@ -128,7 +135,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
                   : 'text-fg-muted hover:text-fg',
               )}
             >
-              {m === 'classico' ? 'Um a um' : 'Combinação'}
+              {MODE_LABELS[m]}
             </button>
           ))}
         </div>
@@ -159,6 +166,10 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
             onReplay={() => void load()}
             onExit={() => setMode('classico')}
           />
+        )}
+
+        {loadState === 'loaded' && mode === 'avaliacao' && cards.length > 0 && (
+          <FlashCardQuiz groupId={groupId} onExit={() => setMode('classico')} />
         )}
 
         {loadState === 'loaded' &&

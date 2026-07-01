@@ -21,3 +21,14 @@ export interface FlashCardGroupListResponse {
   count: number;
   rows: FlashCardGroup[];
 }
+
+/** Pergunta do modo avaliação: termo + opções (uma correta = `value`). */
+export interface QuizQuestion {
+  /** Id do flashcard, usado para salvar o review de cada resposta. */
+  id: number;
+  term: string;
+  /** Value correto (uma das `options`). */
+  value: string;
+  /** Opções embaralhadas (inclui o value correto). */
+  options: string[];
+}

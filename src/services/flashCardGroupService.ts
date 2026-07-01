@@ -4,6 +4,7 @@ import type {
   FlashCardGroup,
   FlashCardGroupInput,
   FlashCardGroupListResponse,
+  QuizQuestion,
 } from './flashCardGroup.types';
 
 export { ApiError } from './http';
@@ -25,6 +26,11 @@ export const flashCardGroupService = {
   /** Flashcards do grupo em ordem aleatória, para o modo bloco (combinação). */
   reviewBlock(id: number): Promise<FlashCard[]> {
     return apiRequest<FlashCard[]>(`/flash-card-group/${id}/review/block`);
+  },
+
+  /** Perguntas do modo avaliação (termo + 4 opções, uma correta). */
+  reviewQuiz(id: number): Promise<QuizQuestion[]> {
+    return apiRequest<QuizQuestion[]>(`/flash-card-group/${id}/review/quiz`);
   },
 
   create(input: FlashCardGroupInput): Promise<FlashCardGroup> {

@@ -23,7 +23,6 @@ export function HeaderMenu() {
       ariaLabel="Menu"
       icon={<HamburgerIcon className="h-5 w-5" />}
       items={[
-        { label: 'Meu perfil', onClick: () => router.push('/perfil') },
         {
           label: theme === 'dark' ? 'Tema claro' : 'Tema escuro',
           onClick: () => void toggle(),

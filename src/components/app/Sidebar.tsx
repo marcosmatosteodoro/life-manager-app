@@ -23,6 +23,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/cronometro', label: 'Cronômetro', Icon: ClockIcon },
       { href: '/pomodoro', label: 'Pomodoro', Icon: PomodoroIcon },
       { href: '/afazeres', label: 'Afazeres', Icon: ListCheckIcon },
+      { href: '/backlog', label: 'Próximos passos', Icon: RoadmapIcon },
       { href: '/conversores', label: 'Conversores', Icon: SwapIcon },
     ],
   },
@@ -381,6 +382,18 @@ function ListCheckIcon(props: SVGProps<SVGSVGElement>) {
       <path d="m3 17 2 2 3-3" />
       <path d="M12 7h9" />
       <path d="M12 17h9" />
+    </svg>
+  );
+}
+
+function RoadmapIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M4 6h10" />
+      <path d="M4 12h16" />
+      <path d="M4 18h7" />
+      <circle cx="18" cy="6" r="2" />
+      <circle cx="15" cy="18" r="2" />
     </svg>
   );
 }

@@ -61,6 +61,10 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/conversores', label: 'Conversores', Icon: SwapIcon },
     ],
   },
+  {
+    label: 'Configurações',
+    items: [{ href: '/perfil', label: 'Meu perfil', Icon: UserIcon }],
+  },
 ];
 
 export function Sidebar() {
@@ -382,6 +386,15 @@ function ListCheckIcon(props: SVGProps<SVGSVGElement>) {
       <path d="m3 17 2 2 3-3" />
       <path d="M12 7h9" />
       <path d="M12 17h9" />
+    </svg>
+  );
+}
+
+function UserIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20a8 8 0 0 1 16 0" />
     </svg>
   );
 }

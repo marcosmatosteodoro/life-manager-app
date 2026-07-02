@@ -1,8 +1,8 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import type { Apply } from '@/services/apply.types';
-import { APPLY_STATUS_LABELS } from '@/services/applyService';
 import { cn } from '@/utils/cn';
 
 interface ApplyListProps {
@@ -25,10 +25,12 @@ const STATUS_CLASSES: Record<Apply['status'], string> = {
 };
 
 export function ApplyList({ applies, onEdit, onDelete }: ApplyListProps) {
+  const { t } = useTranslation(['jobs', 'common']);
+
   if (applies.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
-        Nenhuma candidatura registrada ainda.
+        {t('jobs:applies.empty')}
       </p>
     );
   }
@@ -51,11 +53,13 @@ export function ApplyList({ applies, onEdit, onDelete }: ApplyListProps) {
                   STATUS_CLASSES[apply.status],
                 )}
               >
-                {APPLY_STATUS_LABELS[apply.status]}
+                {t(`jobs:applyStatus.${apply.status}`)}
               </span>
             </div>
             <p className="mt-0.5 text-sm text-fg-muted">
-              {apply.company ? apply.company.name : `Empresa #${apply.companyId}`}
+              {apply.company
+                ? apply.company.name
+                : t('jobs:applies.companyFallback', { id: apply.companyId })}
               {' · '}
               {formatDate(apply.date)}
               {apply.link ? (
@@ -67,7 +71,7 @@ export function ApplyList({ applies, onEdit, onDelete }: ApplyListProps) {
                     rel="noopener noreferrer"
                     className="hover:underline"
                   >
-                    link
+                    {t('jobs:applies.link')}
                   </a>
                 </>
               ) : null}
@@ -75,14 +79,14 @@ export function ApplyList({ applies, onEdit, onDelete }: ApplyListProps) {
           </div>
           <div className="flex shrink-0 gap-1">
             <Button variant="ghost" onClick={() => onEdit(apply)}>
-              Editar
+              {t('common:edit')}
             </Button>
             <Button
               variant="ghost"
               className="text-red-600 hover:bg-red-50 hover:text-red-700"
               onClick={() => onDelete(apply)}
             >
-              Excluir
+              {t('common:delete')}
             </Button>
           </div>
         </li>

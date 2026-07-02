@@ -1,6 +1,7 @@
 'use client';
 
 import { type FormEvent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
 import { Loading } from '@/components/ui/Loading';
@@ -10,19 +11,20 @@ import { ApiError, userService } from '@/services/userService';
 import type { Language, Theme, UserProfile } from '@/services/user.types';
 import { ChangePasswordForm } from './ChangePasswordForm';
 
-const THEME_OPTIONS: { value: Theme; label: string }[] = [
-  { value: 'light', label: 'Claro' },
-  { value: 'dark', label: 'Escuro' },
-  { value: 'custom', label: 'Custom (em breve)' },
+const THEME_OPTIONS: { value: Theme; labelKey: string }[] = [
+  { value: 'light', labelKey: 'themeLight' },
+  { value: 'dark', labelKey: 'themeDark' },
+  { value: 'custom', labelKey: 'themeCustom' },
 ];
 
-const LANGUAGE_OPTIONS: { value: Language; label: string }[] = [
-  { value: 'pt-BR', label: 'Português (BR)' },
-  { value: 'en-US', label: 'English (US)' },
+const LANGUAGE_OPTIONS: { value: Language; labelKey: string }[] = [
+  { value: 'pt-BR', labelKey: 'languagePt' },
+  { value: 'en-US', labelKey: 'languageEn' },
 ];
 
 /** Tela "Meu perfil": edita dados/preferências e troca a senha. */
 export function ProfileManager() {
+  const { t } = useTranslation('profile');
   const profile = useProfileStore((s) => s.profile);
   const loading = useProfileStore((s) => s.loading);
   const load = useProfileStore((s) => s.load);
@@ -38,10 +40,10 @@ export function ProfileManager() {
     <section className="mx-auto flex w-full max-w-xl flex-col gap-8">
       <div>
         <h1 className="text-xl font-semibold tracking-tight text-fg">
-          Meu perfil
+          {t('title')}
         </h1>
         <p className="mt-1 text-sm text-fg-muted">
-          Seus dados e preferências.
+          {t('subtitle')}
         </p>
       </div>
 
@@ -50,10 +52,10 @@ export function ProfileManager() {
 
       <div className="border-t border-edge pt-6">
         <h2 className="text-lg font-semibold tracking-tight text-fg">
-          Trocar senha
+          {t('changePasswordTitle')}
         </h2>
         <p className="mb-4 mt-1 text-sm text-fg-muted">
-          Informe a senha atual e a nova.
+          {t('changePasswordSubtitle')}
         </p>
         <ChangePasswordForm />
       </div>
@@ -63,6 +65,7 @@ export function ProfileManager() {
 
 /** Form dos dados do perfil — estado semeado por inicialização lazy (sem effect). */
 function ProfileForm({ profile }: { profile: UserProfile }) {
+  const { t } = useTranslation(['profile', 'common']);
   const setProfile = useProfileStore((s) => s.setProfile);
   const [name, setName] = useState(profile.name);
   const [username, setUsername] = useState(profile.username);
@@ -87,12 +90,10 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
         language,
       });
       setProfile(updated);
-      toast.success('Perfil atualizado.');
+      toast.success(t('profileUpdated'));
     } catch (error) {
       toast.errors(
-        error instanceof ApiError
-          ? error.messages
-          : ['Não foi possível salvar o perfil.'],
+        error instanceof ApiError ? error.messages : [t('saveError')],
       );
     } finally {
       setSaving(false);
@@ -101,7 +102,7 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <Field label="Nome" htmlFor="profile-name">
+        <Field label={t('fieldName')} htmlFor="profile-name">
           <input
             id="profile-name"
             type="text"
@@ -111,7 +112,7 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
             className={inputClass}
           />
         </Field>
-        <Field label="Usuário" htmlFor="profile-username">
+        <Field label={t('fieldUsername')} htmlFor="profile-username">
           <input
             id="profile-username"
             type="text"
@@ -121,7 +122,7 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
             className={inputClass}
           />
         </Field>
-        <Field label="E-mail" htmlFor="profile-email">
+        <Field label={t('fieldEmail')} htmlFor="profile-email">
           <input
             id="profile-email"
             type="email"
@@ -131,7 +132,7 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
             className={inputClass}
           />
         </Field>
-        <Field label="Altura (cm)" htmlFor="profile-height">
+        <Field label={t('fieldHeight')} htmlFor="profile-height">
           <input
             id="profile-height"
             type="number"
@@ -142,7 +143,7 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
             className={inputClass}
           />
         </Field>
-        <Field label="Tema" htmlFor="profile-theme">
+        <Field label={t('fieldTheme')} htmlFor="profile-theme">
           <select
             id="profile-theme"
             value={theme}
@@ -151,12 +152,12 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
           >
             {THEME_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
-                {o.label}
+                {t(o.labelKey)}
               </option>
             ))}
           </select>
         </Field>
-        <Field label="Idioma" htmlFor="profile-language">
+        <Field label={t('fieldLanguage')} htmlFor="profile-language">
           <select
             id="profile-language"
             value={language}
@@ -165,13 +166,13 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
           >
             {LANGUAGE_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
-                {o.label}
+                {t(o.labelKey)}
               </option>
             ))}
           </select>
         </Field>
         <Button type="submit" disabled={saving} className="self-start">
-          {saving ? 'Salvando…' : 'Salvar perfil'}
+          {saving ? t('common:saving') : t('saveProfile')}
         </Button>
       </form>
   );

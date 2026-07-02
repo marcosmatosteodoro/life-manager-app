@@ -1,6 +1,7 @@
 'use client';
 
 import { type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
 import { inputClass } from '@/components/ui/Field';
@@ -28,6 +29,7 @@ export function BacklogItem({
   onSave,
   dragHandle,
 }: BacklogItemProps) {
+  const { t } = useTranslation(['backlog', 'common']);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(item.name);
@@ -37,9 +39,9 @@ export function BacklogItem({
     if (!item.description) return;
     try {
       await navigator.clipboard.writeText(item.description);
-      toast.success('Descrição copiada.');
+      toast.success(t('descriptionCopied'));
     } catch {
-      toast.error('Não foi possível copiar.');
+      toast.error(t('copyError'));
     }
   }
 
@@ -52,7 +54,7 @@ export function BacklogItem({
 
   function saveEdit() {
     if (!name.trim()) {
-      toast.errors(['O nome é obrigatório.']);
+      toast.errors([t('nameRequired')]);
       return;
     }
     onSave(item.id, { name: name.trim(), description: description.trim() });
@@ -99,8 +101,8 @@ export function BacklogItem({
           {onComplete && (
             <IconButton
               onClick={() => onComplete(item.id)}
-              aria-label="Concluir"
-              title="Concluir"
+              aria-label={t('complete')}
+              title={t('complete')}
             >
               <CheckIcon className="h-5 w-5" />
             </IconButton>
@@ -108,19 +110,23 @@ export function BacklogItem({
           {onReopen && (
             <IconButton
               onClick={() => onReopen(item.id)}
-              aria-label="Reabrir"
-              title="Reabrir"
+              aria-label={t('reopen')}
+              title={t('reopen')}
             >
               <UndoIcon className="h-5 w-5" />
             </IconButton>
           )}
-          <IconButton onClick={startEdit} aria-label="Editar" title="Editar">
+          <IconButton
+            onClick={startEdit}
+            aria-label={t('common:edit')}
+            title={t('common:edit')}
+          >
             <PencilIcon className="h-5 w-5" />
           </IconButton>
           <IconButton
             onClick={() => onDelete(item.id)}
-            aria-label="Excluir"
-            title="Excluir"
+            aria-label={t('common:delete')}
+            title={t('common:delete')}
             className="hover:bg-red-50 hover:text-red-600"
           >
             <TrashIcon className="h-5 w-5" />
@@ -143,22 +149,22 @@ export function BacklogItem({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className={inputClass}
-                  placeholder="Nome"
+                  placeholder={t('namePlaceholder')}
                 />
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
                   className={inputClass}
-                  placeholder="Descrição"
+                  placeholder={t('descriptionFieldPlaceholder')}
                 />
                 <div className="flex gap-2">
-                  <Button onClick={saveEdit}>Salvar</Button>
+                  <Button onClick={saveEdit}>{t('common:save')}</Button>
                   <Button
                     variant="secondary"
                     onClick={() => setEditing(false)}
                   >
-                    Cancelar
+                    {t('common:cancel')}
                   </Button>
                 </div>
               </div>
@@ -169,7 +175,7 @@ export function BacklogItem({
                     {item.description}
                   </p>
                 ) : (
-                  <p className="text-sm text-fg-subtle">Sem descrição.</p>
+                  <p className="text-sm text-fg-subtle">{t('noDescription')}</p>
                 )}
                 {item.description && (
                   <Button
@@ -178,7 +184,7 @@ export function BacklogItem({
                     className="self-start"
                   >
                     <CopyIcon className="h-4 w-4" />
-                    Copiar
+                    {t('copy')}
                   </Button>
                 )}
               </div>

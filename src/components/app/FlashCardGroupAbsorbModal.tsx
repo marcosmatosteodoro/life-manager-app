@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import type { FlashCardGroup } from '@/services/flashCardGroup.types';
@@ -29,6 +30,7 @@ export function FlashCardGroupAbsorbModal({
   onConfirm,
   onCancel,
 }: FlashCardGroupAbsorbModalProps) {
+  const { t } = useTranslation(['flashcards', 'common']);
   // A seleção começa vazia. O componente é remontado a cada abertura (via
   // `key` no pai), então não precisa de efeito para resetar entre grupos.
   const [sourceId, setSourceId] = useState<number | null>(null);
@@ -40,19 +42,19 @@ export function FlashCardGroupAbsorbModal({
   return (
     <Modal
       open={open}
-      title={`Absorver lista em "${target.name}"`}
+      title={t('absorbTitle', { name: target.name })}
       onClose={onCancel}
     >
       {candidates.length === 0 ? (
         <p className="text-sm text-fg-muted">
-          Não há outras listas para absorver.
+          {t('absorbNoLists')}
         </p>
       ) : (
         <>
           <p className="text-sm text-fg-muted">
-            Escolha a lista a ser absorvida. Os flashcards dela serão movidos
-            para <span className="font-medium">{target.name}</span> e a lista
-            escolhida será excluída.
+            {t('absorbIntroPrefix')}
+            <span className="font-medium">{target.name}</span>
+            {t('absorbIntroSuffix')}
           </p>
 
           <ul className="mt-4 flex max-h-64 flex-col gap-2 overflow-y-auto">
@@ -76,7 +78,7 @@ export function FlashCardGroupAbsorbModal({
                       {group.name}
                     </span>
                     <span className="shrink-0 text-xs text-fg-muted">
-                      {count} flashcard{count === 1 ? '' : 's'}
+                      {t('flashcardCountShort', { count })}
                     </span>
                   </button>
                 </li>
@@ -86,7 +88,7 @@ export function FlashCardGroupAbsorbModal({
 
           {source && (
             <p className="mt-4 rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">
-              {`"${source.name}" será mesclada em "${target.name}" e depois excluída. Esta ação não pode ser desfeita.`}
+              {t('absorbWarning', { source: source.name, target: target.name })}
             </p>
           )}
         </>
@@ -94,13 +96,13 @@ export function FlashCardGroupAbsorbModal({
 
       <div className="mt-6 flex justify-end gap-2">
         <Button variant="secondary" onClick={onCancel} disabled={submitting}>
-          Cancelar
+          {t('common:cancel')}
         </Button>
         <Button
           onClick={() => sourceId !== null && onConfirm(sourceId)}
           disabled={submitting || sourceId === null}
         >
-          {submitting ? 'Absorvendo...' : 'Absorver'}
+          {submitting ? t('absorbing') : t('absorb')}
         </Button>
       </div>
     </Modal>

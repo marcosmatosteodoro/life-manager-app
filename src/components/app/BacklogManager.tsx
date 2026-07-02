@@ -16,6 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { type FormEvent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
 import { Loading } from '@/components/ui/Loading';
@@ -28,6 +29,7 @@ import { BacklogItem as BacklogItemRow } from './BacklogItem';
 type LoadState = 'loading' | 'loaded' | 'error';
 
 export function BacklogManager() {
+  const { t } = useTranslation(['backlog', 'common']);
   const [status, setStatus] = useState<BacklogStatus>('pendente');
   const [items, setItems] = useState<BacklogItem[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
@@ -42,10 +44,10 @@ export function BacklogManager() {
       setItems(rows);
       setLoadState('loaded');
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load(status);
@@ -66,11 +68,11 @@ export function BacklogManager() {
       });
       setName('');
       setDescription('');
-      toast.success('Item adicionado.');
+      toast.success(t('itemAdded'));
       if (status === 'pendente') await load('pendente');
       else setStatus('pendente'); // novo é pendente: leva pra aba certa
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setCreating(false);
     }
@@ -81,12 +83,12 @@ export function BacklogManager() {
       await action;
       await load(status);
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     }
   }
 
   function handleDelete(id: number) {
-    if (!window.confirm('Excluir este item?')) return;
+    if (!window.confirm(t('confirmDelete'))) return;
     void runAndReload(backlogService.remove(id));
   }
 
@@ -108,7 +110,7 @@ export function BacklogManager() {
       await backlogService.reorder(reordered.map((i) => i.id));
     } catch (error) {
       setItems(previous); // reverte
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     }
   }
 
@@ -118,10 +120,10 @@ export function BacklogManager() {
     <section className="mx-auto flex w-full max-w-2xl flex-col gap-6">
       <div>
         <h1 className="text-xl font-semibold tracking-tight text-fg">
-          Próximos passos
+          {t('title')}
         </h1>
         <p className="mt-1 text-sm text-fg-muted">
-          Backlog do sistema — anote ideias e priorize arrastando.
+          {t('subtitle')}
         </p>
       </div>
 
@@ -130,27 +132,27 @@ export function BacklogManager() {
         onSubmit={handleCreate}
         className="flex flex-col gap-3 rounded-lg border border-edge bg-surface p-4"
       >
-        <Field label="Novo item" htmlFor="backlog-name">
+        <Field label={t('newItemLabel')} htmlFor="backlog-name">
           <input
             id="backlog-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="O que fazer?"
+            placeholder={t('newItemPlaceholder')}
             className={inputClass}
           />
         </Field>
-        <Field label="Descrição (opcional)" htmlFor="backlog-desc">
+        <Field label={t('descriptionLabel')} htmlFor="backlog-desc">
           <textarea
             id="backlog-desc"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
-            placeholder="Detalhes da ideia…"
+            placeholder={t('descriptionPlaceholder')}
             className={inputClass}
           />
         </Field>
         <Button type="submit" disabled={creating} className="self-start">
-          {creating ? 'Adicionando…' : 'Adicionar'}
+          {creating ? t('adding') : t('common:add')}
         </Button>
       </form>
 
@@ -169,7 +171,7 @@ export function BacklogManager() {
                 : 'text-fg-muted hover:text-fg',
             )}
           >
-            {s === 'pendente' ? 'Pendentes' : 'Concluídos'}
+            {s === 'pendente' ? t('tabPending') : t('tabDone')}
           </button>
         ))}
       </div>
@@ -179,22 +181,20 @@ export function BacklogManager() {
 
       {loadState === 'error' && (
         <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-          Não foi possível carregar.{' '}
+          {t('loadError')}{' '}
           <button
             type="button"
             onClick={() => void load(status)}
             className="underline"
           >
-            Tentar de novo
+            {t('retry')}
           </button>
         </div>
       )}
 
       {loadState === 'loaded' && items.length === 0 && (
         <p className="rounded-lg border border-dashed border-edge-strong px-4 py-12 text-center text-sm text-fg-muted">
-          {isPending
-            ? 'Nenhum item pendente. Adicione o primeiro acima.'
-            : 'Nenhum item concluído ainda.'}
+          {isPending ? t('emptyPending') : t('emptyDone')}
         </p>
       )}
 
@@ -258,8 +258,10 @@ function SortableBacklogItem({
   onDelete: (id: number) => void;
   onSave: (id: number, data: { name: string; description: string }) => void;
 }) {
+  const { t } = useTranslation('backlog');
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: item.id });
+  const dragLabel = t('dragToReorder');
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -277,7 +279,7 @@ function SortableBacklogItem({
         dragHandle={
           <button
             type="button"
-            aria-label="Arrastar para reordenar"
+            aria-label={dragLabel}
             className="cursor-grab touch-none text-fg-subtle hover:text-fg active:cursor-grabbing"
             {...attributes}
             {...listeners}
@@ -303,7 +305,7 @@ function GripIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

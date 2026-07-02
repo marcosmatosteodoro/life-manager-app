@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
 import { toast } from '@/hooks/useToastStore';
@@ -12,6 +13,7 @@ import { cn } from '@/utils/cn';
 type LoadState = 'loading' | 'loaded' | 'error';
 
 export function TodoTodayManager() {
+  const { t } = useTranslation(['todo', 'common']);
   const [checks, setChecks] = useState<TodoCheck[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -24,10 +26,10 @@ export function TodoTodayManager() {
       setChecks(rows);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -44,7 +46,7 @@ export function TodoTodayManager() {
       await todoCheckService.update(check.id, { checked });
     } catch (error) {
       setChecks(previous); // reverte
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSavingId(null);
     }
@@ -56,16 +58,20 @@ export function TodoTodayManager() {
     <section className="mx-auto w-full max-w-2xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold tracking-tight text-fg">
-          Afazeres
+          {t('todo:today.title')}
         </h1>
         <Link href="/afazeres/gerenciar">
-          <Button variant="secondary">Gerenciar</Button>
+          <Button variant="secondary">{t('todo:today.manage')}</Button>
         </Link>
       </div>
       <p className="mt-1 text-sm text-fg-muted">
-        Marque o que você fez hoje.
+        {t('todo:today.instruction')}
         {loadState === 'loaded' && checks.length > 0
-          ? ` ${doneCount}/${checks.length} concluído${doneCount === 1 ? '' : 's'}.`
+          ? t('todo:today.progress', {
+              count: doneCount,
+              done: doneCount,
+              total: checks.length,
+            })
           : ''}
       </p>
 
@@ -80,19 +86,19 @@ export function TodoTodayManager() {
               className="mt-3"
               onClick={() => void load()}
             >
-              Tentar novamente
+              {t('common:retry')}
             </Button>
           </div>
         )}
 
         {loadState === 'loaded' && checks.length === 0 && (
           <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
-            Nenhum afazer para hoje. Crie um em{' '}
+            {t('todo:today.empty')}{' '}
             <Link
               href="/afazeres/gerenciar"
               className="font-medium underline"
             >
-              Gerenciar
+              {t('todo:today.emptyLink')}
             </Link>
             .
           </p>
@@ -126,7 +132,7 @@ export function TodoTodayManager() {
                           : 'text-fg',
                       )}
                     >
-                      {check.todo?.name ?? 'Afazer'}
+                      {check.todo?.name ?? t('todo:today.fallbackName')}
                     </span>
                     {check.todo?.tag && (
                       <span className="text-xs text-fg-subtle">
@@ -144,7 +150,7 @@ export function TodoTodayManager() {
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

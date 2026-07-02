@@ -1,6 +1,7 @@
 'use client';
 
 import { type FormEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
 import { toast } from '@/hooks/useToastStore';
@@ -13,6 +14,7 @@ const MIN_LEN = 8;
  * e no fluxo obrigatório do 1º login. `onSuccess` roda após trocar com sucesso.
  */
 export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
+  const { t } = useTranslation(['auth', 'common']);
   const [current, setCurrent] = useState('');
   const [next, setNext] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -21,26 +23,24 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (next.length < MIN_LEN) {
-      toast.errors([`A nova senha deve ter ao menos ${MIN_LEN} caracteres.`]);
+      toast.errors([t('passwordTooShort', { min: MIN_LEN })]);
       return;
     }
     if (next !== confirm) {
-      toast.errors(['A confirmação não coincide com a nova senha.']);
+      toast.errors([t('passwordMismatch')]);
       return;
     }
     setSubmitting(true);
     try {
       await userService.changePassword(current, next);
-      toast.success('Senha alterada com sucesso.');
+      toast.success(t('passwordChanged'));
       setCurrent('');
       setNext('');
       setConfirm('');
       onSuccess?.();
     } catch (error) {
       toast.errors(
-        error instanceof ApiError
-          ? error.messages
-          : ['Não foi possível alterar a senha.'],
+        error instanceof ApiError ? error.messages : [t('changePasswordError')],
       );
     } finally {
       setSubmitting(false);
@@ -51,27 +51,27 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <PasswordField
         id="current-password"
-        label="Senha atual"
+        label={t('currentPassword')}
         autoComplete="current-password"
         value={current}
         onChange={setCurrent}
       />
       <PasswordField
         id="new-password"
-        label="Nova senha"
+        label={t('newPassword')}
         autoComplete="new-password"
         value={next}
         onChange={setNext}
       />
       <PasswordField
         id="confirm-password"
-        label="Confirmar nova senha"
+        label={t('confirmPassword')}
         autoComplete="new-password"
         value={confirm}
         onChange={setConfirm}
       />
       <Button type="submit" disabled={submitting} className="self-start">
-        {submitting ? 'Salvando…' : 'Alterar senha'}
+        {submitting ? t('common:saving') : t('changePassword')}
       </Button>
     </form>
   );

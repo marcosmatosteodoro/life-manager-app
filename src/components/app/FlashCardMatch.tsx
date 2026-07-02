@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { toast } from '@/hooks/useToastStore';
 import type { FlashCard } from '@/services/flashCard.types';
@@ -55,6 +56,7 @@ export function FlashCardMatch({
   onReplay?: () => void;
   onExit?: () => void;
 }) {
+  const { t } = useTranslation(['flashcards', 'common']);
   const [tiles, setTiles] = useState<Tile[]>(() => buildTiles(cards));
   const [selected, setSelected] = useState<string | null>(null);
   const [matched, setMatched] = useState<Set<number>>(new Set());
@@ -69,8 +71,7 @@ export function FlashCardMatch({
   if (keyIds.length < 2) {
     return (
       <p className="rounded-lg border border-dashed border-edge-strong px-4 py-16 text-center text-sm text-fg-muted">
-        Cadastre ao menos 2 termos com tradução neste grupo para jogar a
-        combinação.
+        {t('matchMinTerms')}
       </p>
     );
   }
@@ -136,9 +137,9 @@ export function FlashCardMatch({
         wrongAnswers: finalWrong[id] ?? 0,
       }));
       await flashCardService.reviewBlock(items);
-      toast.success('Combinação concluída! Notas salvas.');
+      toast.success(t('matchDone'));
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     }
   }
 
@@ -147,10 +148,10 @@ export function FlashCardMatch({
       {/* Mensagens no topo */}
       <div className="flex items-center justify-between text-sm">
         <span className="font-medium text-fg-muted">
-          {matched.size} / {keyIds.length} pares
+          {t('pairs', { matched: matched.size, total: keyIds.length })}
         </span>
         <span className="font-medium text-red-600">
-          {totalErrors} erro{totalErrors === 1 ? '' : 's'}
+          {t('errorCount', { count: totalErrors })}
         </span>
       </div>
 
@@ -160,16 +161,16 @@ export function FlashCardMatch({
             🎉
           </span>
           <p className="text-lg font-semibold text-emerald-800">
-            Tudo combinado!
+            {t('allMatched')}
           </p>
           <p className="text-sm text-emerald-700">
-            {totalErrors} erro{totalErrors === 1 ? '' : 's'} no total.
+            {t('errorTotal', { count: totalErrors })}
           </p>
           <div className="flex flex-wrap justify-center gap-2">
-            <Button onClick={onReplay ?? replay}>Jogar de novo</Button>
+            <Button onClick={onReplay ?? replay}>{t('playAgain')}</Button>
             {onExit && (
               <Button variant="secondary" onClick={onExit}>
-                Trocar modo
+                {t('switchMode')}
               </Button>
             )}
           </div>
@@ -213,7 +214,7 @@ export function FlashCardMatch({
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import type { Weight } from '@/services/weight.types';
 import { cn } from '@/utils/cn';
@@ -20,10 +21,11 @@ export function WeightList({
   onEdit,
   onDelete,
 }: WeightListProps) {
+  const { t } = useTranslation(['weight', 'common']);
   if (weights.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
-        Nenhum peso registrado ainda.
+        {t('empty')}
       </p>
     );
   }
@@ -48,25 +50,27 @@ export function WeightList({
               </span>
               <span className="text-sm text-fg-muted">
                 {formatDate(weight.date)}
-                {weight.time ? ` às ${weight.time.slice(0, 5)}` : ''}
+                {weight.time
+                  ? ` ${t('at', { time: weight.time.slice(0, 5) })}`
+                  : ''}
               </span>
               {highlighted && (
                 <span className="rounded-full bg-surface-inverse px-2 py-0.5 text-xs font-medium text-surface">
-                  Mais recente
+                  {t('mostRecent')}
                 </span>
               )}
             </div>
 
             <div className="flex justify-end gap-1 sm:shrink-0">
               <Button variant="ghost" onClick={() => onEdit(weight)}>
-                Editar
+                {t('common:edit')}
               </Button>
               <Button
                 variant="ghost"
                 className="text-red-600 hover:bg-red-50 hover:text-red-700"
                 onClick={() => onDelete(weight)}
               >
-                Excluir
+                {t('common:delete')}
               </Button>
             </div>
           </li>

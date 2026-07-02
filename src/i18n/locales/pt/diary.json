@@ -1,0 +1,18 @@
+{
+  "updated": "Registro atualizado com sucesso.",
+  "created": "Registro criado com sucesso.",
+  "deleted": "Registro excluído com sucesso.",
+  "editTitle": "Editar registro",
+  "deleteTitle": "Excluir registro",
+  "deleteDescription": "Tem certeza que deseja excluir este registro? Essa ação não pode ser desfeita.",
+  "empty": "Nenhum registro ainda.",
+  "today": "Hoje",
+  "diaryForm": {
+    "day": "Dia",
+    "description": "Descrição",
+    "descriptionPlaceholder": "Escreva aqui...",
+    "saving": "Salvando...",
+    "save": "Salvar",
+    "register": "Registrar"
+  }
+}

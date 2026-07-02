@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppShell } from "@/components/app/AppShell";
 import { ServiceWorkerRegister } from "@/components/app/ServiceWorkerRegister";
+import { I18nProvider } from "@/i18n/I18nProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,10 +33,10 @@ export const viewport: Viewport = {
   ],
 };
 
-// Aplica o tema salvo ANTES do primeiro paint (evita flash claro→escuro).
-// Lê o mesmo localStorage do useThemeStore (persist serializa { state: {...} }).
-// Conteúdo estático, sem input do usuário — sem risco de injeção.
-const themeInitScript = `(function(){try{var v=localStorage.getItem("lm_theme");if(v&&JSON.parse(v).state.theme==="dark"){document.documentElement.classList.add("dark")}}catch(e){}})();`;
+// Aplica tema e idioma salvos ANTES do primeiro paint (evita flash e mismatch
+// de hidratação). Lê os mesmos localStorage dos stores (persist serializa
+// { state: {...} }). Conteúdo estático, sem input do usuário — sem injeção.
+const initScript = `(function(){try{var t=localStorage.getItem("lm_theme");if(t&&JSON.parse(t).state.theme==="dark"){document.documentElement.classList.add("dark")}}catch(e){}try{var l=localStorage.getItem("lm_locale");if(l){document.documentElement.lang=JSON.parse(l).state.locale==="en"?"en-US":"pt-BR"}}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -52,10 +53,12 @@ export default function RootLayout({
           injetam atributos/elementos antes da hidratação; e a classe .dark é
           adicionada pelo script abaixo antes da hidratação do React. */}
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: initScript }} />
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
-        <AppShell>{children}</AppShell>
+        <I18nProvider>
+          <AppShell>{children}</AppShell>
+        </I18nProvider>
         <ServiceWorkerRegister />
       </body>
     </html>

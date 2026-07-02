@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
 import { toast } from "@/hooks/useToastStore";
 import { ApiError, authService } from "@/services/authService";
@@ -12,6 +13,7 @@ const inputClass =
 
 export function LoginForm() {
   const router = useRouter();
+  const { t } = useTranslation("auth");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +27,7 @@ export function LoginForm() {
         username,
         password,
       );
-      toast.success("Bem-vindo!");
+      toast.success(t("welcome"));
       router.replace(mustChangePassword ? "/trocar-senha" : "/");
     } catch (error) {
       toast.errors(toMessages(error));
@@ -74,14 +76,14 @@ export function LoginForm() {
                 Life Manager
               </h1>
               <p className="mt-1 text-sm text-fg-muted">
-                Entre para continuar.
+                {t("subtitle")}
               </p>
             </div>
           </div>
 
           <label className="mt-2 flex flex-col gap-1.5">
             <span className="text-sm font-medium text-fg-soft">
-              Usuário
+              {t("username")}
             </span>
             <input
               type="text"
@@ -94,7 +96,7 @@ export function LoginForm() {
           </label>
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-fg-soft">Senha</span>
+            <span className="text-sm font-medium text-fg-soft">{t("password")}</span>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -107,7 +109,7 @@ export function LoginForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                 aria-pressed={showPassword}
                 className="absolute inset-y-0 right-0 flex items-center px-3 text-fg-subtle transition-colors hover:text-fg-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fg"
               >
@@ -117,7 +119,7 @@ export function LoginForm() {
           </label>
 
           <Button type="submit" disabled={submitting} className="mt-2 w-full">
-            {submitting ? "Entrando..." : "Entrar"}
+            {submitting ? t("signingIn") : t("signIn")}
           </Button>
         </form>
       </div>

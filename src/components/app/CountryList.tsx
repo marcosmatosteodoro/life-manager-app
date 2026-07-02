@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import type { Country } from '@/services/country.types';
 
@@ -10,10 +11,12 @@ interface CountryListProps {
 }
 
 export function CountryList({ countries, onEdit, onDelete }: CountryListProps) {
+  const { t } = useTranslation(['jobs', 'common']);
+
   if (countries.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
-        Nenhum país cadastrado ainda.
+        {t('jobs:countries.empty')}
       </p>
     );
   }
@@ -33,14 +36,14 @@ export function CountryList({ countries, onEdit, onDelete }: CountryListProps) {
           </div>
           <div className="flex shrink-0 gap-1">
             <Button variant="ghost" onClick={() => onEdit(country)}>
-              Editar
+              {t('common:edit')}
             </Button>
             <Button
               variant="ghost"
               className="text-red-600 hover:bg-red-50 hover:text-red-700"
               onClick={() => onDelete(country)}
             >
-              Excluir
+              {t('common:delete')}
             </Button>
           </div>
         </li>

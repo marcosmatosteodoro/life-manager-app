@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
 import { SafeHtml } from '@/components/ui/SafeHtml';
@@ -16,14 +17,17 @@ import { formatDateTime } from '@/utils/date';
 
 type LoadState = 'loading' | 'loaded' | 'error';
 
-const periodLabel = (p: FeedbackPeriod) =>
-  FEEDBACK_PERIOD_OPTIONS.find((o) => o.value === p)?.label ?? p;
+const periodLabel = (p: FeedbackPeriod, translate: (key: string) => string) => {
+  const key = FEEDBACK_PERIOD_OPTIONS.find((o) => o.value === p)?.labelKey;
+  return key ? translate(key) : p;
+};
 
 // Estilo da prosa renderizada (HTML do feedback).
 const proseClass =
   'text-sm leading-relaxed text-fg-soft [&_h3]:mb-1 [&_h3]:mt-4 [&_h3]:font-semibold [&_h3]:text-fg [&_li]:mb-0.5 [&_p]:mb-2 [&_ul]:my-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:my-1 [&_ol]:list-decimal [&_ol]:pl-5';
 
 export function FeedbackManager() {
+  const { t } = useTranslation(['feedback', 'common']);
   const [history, setHistory] = useState<Feedback[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -40,10 +44,10 @@ export function FeedbackManager() {
       setSelected((current) => current ?? rows[0] ?? null);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -53,11 +57,11 @@ export function FeedbackManager() {
     setGenerating(true);
     try {
       const created = await feedbackService.generate(period);
-      toast.success('Feedback gerado com sucesso.');
+      toast.success(t('generated'));
       setHistory((prev) => [created, ...prev]);
       setSelected(created);
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setGenerating(false);
     }
@@ -66,17 +70,14 @@ export function FeedbackManager() {
   return (
     <section className="mx-auto w-full max-w-4xl">
       <h1 className="text-2xl font-semibold tracking-tight text-fg">
-        Feedback
+        {t('title')}
       </h1>
-      <p className="mt-1 text-sm text-fg-muted">
-        Gere uma análise do seu período com base nos seus dados (peso, estudos,
-        consistência, revisões, diário e vagas).
-      </p>
+      <p className="mt-1 text-sm text-fg-muted">{t('subtitle')}</p>
 
       {/* Gerador */}
       <div className="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-edge bg-surface p-4">
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-fg-soft">Período</span>
+          <span className="text-sm font-medium text-fg-soft">{t('period')}</span>
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value as FeedbackPeriod)}
@@ -84,20 +85,20 @@ export function FeedbackManager() {
           >
             {FEEDBACK_PERIOD_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>
-                {o.label}
+                {t(o.labelKey)}
               </option>
             ))}
           </select>
         </label>
         <Button onClick={() => void generate()} disabled={generating}>
-          {generating ? 'Gerando…' : 'Gerar feedback'}
+          {generating ? t('generating') : t('generate')}
         </Button>
       </div>
 
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {/* Histórico */}
         <aside className="md:col-span-1">
-          <h2 className="text-sm font-semibold text-fg-soft">Histórico</h2>
+          <h2 className="text-sm font-semibold text-fg-soft">{t('history')}</h2>
 
           {loadState === 'loading' && <Loading className="min-h-0 py-8" />}
 
@@ -109,15 +110,13 @@ export function FeedbackManager() {
                 className="mt-2"
                 onClick={() => void load()}
               >
-                Tentar novamente
+                {t('common:retry')}
               </Button>
             </div>
           )}
 
           {loadState === 'loaded' && history.length === 0 && (
-            <p className="mt-2 text-sm text-fg-muted">
-              Nenhum feedback ainda. Gere o primeiro acima.
-            </p>
+            <p className="mt-2 text-sm text-fg-muted">{t('historyEmpty')}</p>
           )}
 
           {loadState === 'loaded' && history.length > 0 && (
@@ -138,7 +137,7 @@ export function FeedbackManager() {
                       )}
                     >
                       <span className="block text-sm font-medium text-fg">
-                        {periodLabel(f.period)}
+                        {periodLabel(f.period, t)}
                       </span>
                       <span className="block text-xs text-fg-muted">
                         {formatDateTime(f.createdAt)}
@@ -157,7 +156,7 @@ export function FeedbackManager() {
             <article className="rounded-lg border border-edge bg-surface p-5">
               <header className="mb-3 flex flex-wrap items-baseline gap-2 border-b border-edge pb-3">
                 <span className="text-sm font-semibold text-fg">
-                  {periodLabel(selected.period)}
+                  {periodLabel(selected.period, t)}
                 </span>
                 <span className="text-xs text-fg-muted">
                   {formatDateTime(selected.createdAt)}
@@ -167,7 +166,7 @@ export function FeedbackManager() {
             </article>
           ) : (
             <p className="rounded-lg border border-dashed border-edge-strong px-4 py-16 text-center text-sm text-fg-muted">
-              Gere um feedback ou selecione um do histórico para visualizar.
+              {t('selectPrompt')}
             </p>
           )}
         </div>
@@ -176,7 +175,7 @@ export function FeedbackManager() {
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

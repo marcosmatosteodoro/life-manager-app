@@ -1,0 +1,19 @@
+{
+  "title": "Feedback",
+  "subtitle": "Generate an analysis of your period based on your data (weight, studies, consistency, reviews, diary and jobs).",
+  "period": "Period",
+  "generate": "Generate feedback",
+  "generating": "Generating…",
+  "generated": "Feedback generated successfully.",
+  "history": "History",
+  "historyEmpty": "No feedback yet. Generate the first one above.",
+  "selectPrompt": "Generate feedback or select one from the history to view.",
+  "period": {
+    "d7": "Last 7 days",
+    "d15": "Last 15 days",
+    "d30": "Last 30 days",
+    "d60": "Last 60 days",
+    "y1": "Last year",
+    "all": "Since the beginning"
+  }
+}

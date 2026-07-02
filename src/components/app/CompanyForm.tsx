@@ -1,6 +1,7 @@
 'use client';
 
 import { type FormEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
 import type { Company, CompanyInput } from '@/services/company.types';
@@ -21,6 +22,7 @@ export function CompanyForm({
   onSubmit,
   onCancel,
 }: CompanyFormProps) {
+  const { t } = useTranslation(['jobs', 'common']);
   const [name, setName] = useState(initial?.name ?? '');
   const [website, setWebsite] = useState(initial?.website ?? '');
   const [countryId, setCountryId] = useState(
@@ -40,18 +42,18 @@ export function CompanyForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <Field label="Nome" htmlFor="name">
+      <Field label={t('companyForm.name')} htmlFor="name">
         <input
           id="name"
           type="text"
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Ex.: Acme Corp"
+          placeholder={t('companyForm.namePlaceholder')}
           className={inputClass}
         />
       </Field>
-      <Field label="País" htmlFor="countryId">
+      <Field label={t('companyForm.country')} htmlFor="countryId">
         <select
           id="countryId"
           required
@@ -60,7 +62,7 @@ export function CompanyForm({
           className={inputClass}
         >
           <option value="" disabled>
-            Selecione um país
+            {t('companyForm.countryDefault')}
           </option>
           {countries.map((country) => (
             <option key={country.id} value={country.id}>
@@ -69,7 +71,7 @@ export function CompanyForm({
           ))}
         </select>
       </Field>
-      <Field label="Website" htmlFor="website">
+      <Field label={t('companyForm.website')} htmlFor="website">
         <input
           id="website"
           type="url"
@@ -80,22 +82,26 @@ export function CompanyForm({
           className={inputClass}
         />
       </Field>
-      <Field label="Observação" htmlFor="observation">
+      <Field label={t('companyForm.observation')} htmlFor="observation">
         <textarea
           id="observation"
           rows={3}
           value={observation}
           onChange={(e) => setObservation(e.target.value)}
-          placeholder="Anotações (opcional): contato, etapas do processo, etc."
+          placeholder={t('companyForm.observationPlaceholder')}
           className={`${inputClass} resize-y`}
         />
       </Field>
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="secondary" type="button" onClick={onCancel} disabled={submitting}>
-          Cancelar
+          {t('common:cancel')}
         </Button>
         <Button type="submit" disabled={submitting}>
-          {submitting ? 'Salvando...' : initial ? 'Salvar' : 'Criar'}
+          {submitting
+            ? t('companyForm.saving')
+            : initial
+              ? t('companyForm.save')
+              : t('companyForm.create')}
         </Button>
       </div>
     </form>

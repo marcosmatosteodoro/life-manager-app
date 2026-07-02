@@ -1,6 +1,7 @@
 'use client';
 
 import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconButton } from '@/components/ui/IconButton';
 import { cn } from '@/utils/cn';
 
@@ -13,7 +14,7 @@ export interface DropdownItem {
 /** Menu de 3 pontinhos (kebab) com fechamento por clique fora / ESC. */
 export function DropdownMenu({
   items,
-  ariaLabel = 'Ações',
+  ariaLabel,
   icon,
 }: {
   items: DropdownItem[];
@@ -21,6 +22,7 @@ export function DropdownMenu({
   /** Ícone do gatilho. Padrão: kebab (3 pontinhos). */
   icon?: ReactNode;
 }) {
+  const { t } = useTranslation('common');
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -45,7 +47,7 @@ export function DropdownMenu({
   return (
     <div ref={ref} className="relative">
       <IconButton
-        aria-label={ariaLabel}
+        aria-label={ariaLabel ?? t('actions')}
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={(e) => {

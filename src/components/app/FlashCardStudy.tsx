@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
 import { toast } from '@/hooks/useToastStore';
@@ -15,13 +16,14 @@ import { FlashCardQuiz } from './FlashCardQuiz';
 type LoadState = 'loading' | 'loaded' | 'error';
 type StudyMode = 'classico' | 'combinacao' | 'avaliacao';
 
-const MODE_LABELS: Record<StudyMode, string> = {
-  classico: 'Um a um',
-  combinacao: 'Combinação',
-  avaliacao: 'Avaliação',
+const MODE_KEYS: Record<StudyMode, string> = {
+  classico: 'modeClassic',
+  combinacao: 'modeMatch',
+  avaliacao: 'modeQuiz',
 };
 
 export function FlashCardStudy({ groupId }: { groupId: number }) {
+  const { t } = useTranslation(['flashcards', 'common']);
   const [cards, setCards] = useState<FlashCard[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -52,10 +54,10 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
       setShowTranslation(false);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, [groupId, mode]);
+  }, [groupId, mode, t]);
 
   useEffect(() => {
     void load();
@@ -74,7 +76,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
       setShowTranslation(false);
       setIndex((i) => i + 1);
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSaving(false);
     }
@@ -93,7 +95,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
       setCards((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
       setShowTranslation(true);
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setTranslating(false);
     }
@@ -107,7 +109,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
           href="/revisar"
           className="text-sm text-fg-muted transition-colors hover:text-fg"
         >
-          ← Voltar
+          {t('back')}
         </Link>
         {loadState === 'loaded' &&
           mode === 'classico' &&
@@ -135,7 +137,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
                   : 'text-fg-muted hover:text-fg',
               )}
             >
-              {MODE_LABELS[m]}
+              {t(MODE_KEYS[m])}
             </button>
           ))}
         </div>
@@ -148,14 +150,14 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             <p className="whitespace-pre-line">{loadError.join('\n')}</p>
             <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-              Tentar novamente
+              {t('common:retry')}
             </Button>
           </div>
         )}
 
         {loadState === 'loaded' && cards.length === 0 && (
           <p className="rounded-lg border border-dashed border-edge-strong px-4 py-16 text-center text-sm text-fg-muted">
-            Nenhum card para estudar neste grupo.
+            {t('noCardsToStudy')}
           </p>
         )}
 
@@ -181,12 +183,12 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
               🎉
             </span>
             <p className="text-lg font-semibold text-emerald-800">
-              Estudo concluído!
+              {t('studyFinished')}
             </p>
             <div className="flex gap-2">
-              <Button onClick={() => void load()}>Estudar novamente</Button>
+              <Button onClick={() => void load()}>{t('studyAgain')}</Button>
               <Link href="/revisar">
-                <Button variant="secondary">Voltar aos grupos</Button>
+                <Button variant="secondary">{t('backToGroupsButton')}</Button>
               </Link>
             </div>
           </div>
@@ -198,7 +200,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
             <div className="w-full [perspective:1200px]">
               <button
                 type="button"
-                aria-label="Virar card"
+                aria-label={t('flipCard')}
                 onClick={() => setShowValue((v) => !v)}
                 className={cn(
                   'relative h-64 w-full rounded-2xl transition-transform duration-500 [transform-style:preserve-3d]',
@@ -208,26 +210,26 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
                 {/* Frente: termo */}
                 <span className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-edge bg-surface p-6 text-center shadow-sm [backface-visibility:hidden]">
                   <span className="mb-3 text-xs font-medium uppercase tracking-wide text-fg-subtle">
-                    Termo
+                    {t('labelTerm')}
                   </span>
                   <span className="text-3xl font-semibold break-words text-fg">
                     {current.term}
                   </span>
                   <span className="mt-4 text-xs text-fg-subtle">
-                    Clique para virar
+                    {t('clickToFlip')}
                   </span>
                 </span>
 
                 {/* Verso: tradução (já rotacionado 180°) */}
                 <span className="absolute inset-0 flex flex-col items-center justify-center rounded-2xl border border-edge bg-surface p-6 text-center shadow-sm [backface-visibility:hidden] [transform:rotateY(180deg)]">
                   <span className="mb-3 text-xs font-medium uppercase tracking-wide text-fg-subtle">
-                    Tradução
+                    {t('labelTranslation')}
                   </span>
                   <span className="text-3xl font-semibold break-words text-fg">
                     {current.value ?? '—'}
                   </span>
                   <span className="mt-4 text-xs text-fg-subtle">
-                    Clique para virar
+                    {t('clickToFlip')}
                   </span>
                 </span>
               </button>
@@ -237,7 +239,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
             <div className="flex items-center justify-center gap-6">
               <button
                 type="button"
-                aria-label="Errei"
+                aria-label={t('gotWrong')}
                 disabled={saving}
                 onClick={() => void answer(false)}
                 className={cn(
@@ -249,7 +251,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
               </button>
               <button
                 type="button"
-                aria-label="Acertei"
+                aria-label={t('gotRight')}
                 disabled={saving}
                 onClick={() => void answer(true)}
                 className={cn(
@@ -268,12 +270,12 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
                 disabled={translating}
                 onClick={() => void translate()}
               >
-                {translating ? 'Traduzindo…' : 'Traduzir'}
+                {translating ? t('translating') : t('translate')}
               </Button>
 
               {showTranslation && current.translation && (
                 <p className="text-center text-sm text-fg-muted">
-                  <span className="text-fg-subtle">Tradução: </span>
+                  <span className="text-fg-subtle">{t('translationLabel')}</span>
                   <span className="font-medium text-fg">
                     {current.translation}
                   </span>
@@ -287,7 +289,7 @@ export function FlashCardStudy({ groupId }: { groupId: number }) {
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

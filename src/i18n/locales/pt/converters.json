@@ -1,0 +1,43 @@
+{
+  "title": "Conversores",
+  "subtitle": "Ferramentas rápidas para avaliar vagas: moeda, fuso horário e salário.",
+  "currency": {
+    "heading": "💱 Conversor de moeda",
+    "description": "Converte salários/valores de vagas (USD/CAD) para reais.",
+    "amount": "Valor",
+    "currency": "Moeda",
+    "optionUsd": "USD (dólar)",
+    "optionCad": "CAD (dólar canadense)",
+    "inReais": "Em reais",
+    "fetchingRate": "Buscando cotação…",
+    "autoRate": "1 {{currency}} = {{rate}} · atualizado {{date}}",
+    "useManualRate": "Usar taxa manual",
+    "manualRateLabel": "Taxa (1 {{currency}} em R$)",
+    "manualRatePlaceholder": "ex.: 5,40",
+    "fetchError": "Não foi possível buscar a cotação. Informe a taxa manualmente."
+  },
+  "salary": {
+    "heading": "💰 Conversor de salário",
+    "description": "De anual (como as vagas costumam anunciar) para mensal, semanal e por hora. Valores na mesma moeda que você informar.",
+    "annual": "Salário anual",
+    "hoursPerWeek": "Horas/semana",
+    "monthly": "Mensal",
+    "weekly": "Semanal",
+    "hourly": "Por hora",
+    "discountLabel": "Desconto estimado (impostos etc.) %",
+    "discountNote": "Estimativa simples: aplica a porcentagem sobre o bruto. Impostos reais variam por país/faixa.",
+    "netAnnual": "Líquido anual (aprox.)",
+    "netMonthly": "Líquido mensal (aprox.)"
+  },
+  "timezone": {
+    "heading": "🕐 Conversor de fuso horário",
+    "yourZone": "Seu fuso:",
+    "now": "Agora",
+    "convertTime": "Converter um horário",
+    "dateTime": "Data e hora",
+    "from": "De",
+    "to": "Para",
+    "inTargetZone": "No fuso de destino",
+    "yourZoneSuffix": "{{zone}} (seu fuso)"
+  }
+}

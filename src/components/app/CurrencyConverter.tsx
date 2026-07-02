@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ApiError,
   converterService,
@@ -19,6 +20,7 @@ const brl = new Intl.NumberFormat('pt-BR', {
 });
 
 export function CurrencyConverter() {
+  const { t } = useTranslation('converters');
   const [amount, setAmount] = useState('100');
   const [from, setFrom] = useState<From>('USD');
   const [data, setData] = useState<ExchangeRate | null>(null);
@@ -36,11 +38,11 @@ export function CurrencyConverter() {
       setLoadState('loaded');
     } catch (err) {
       // Sem cotação automática: cai para o modo manual.
-      setError(toMessage(err));
+      setError(toMessage(err, t('currency.fetchError')));
       setUseManual(true);
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load(from);
@@ -59,15 +61,17 @@ export function CurrencyConverter() {
   return (
     <div className="rounded-lg border border-edge bg-surface p-4">
       <h2 className="text-sm font-semibold text-fg">
-        💱 Conversor de moeda
+        {t('currency.heading')}
       </h2>
       <p className="mt-0.5 text-xs text-fg-muted">
-        Converte salários/valores de vagas (USD/CAD) para reais.
+        {t('currency.description')}
       </p>
 
       <div className="mt-4 flex flex-wrap items-end gap-3">
         <label className="flex flex-1 flex-col gap-1.5">
-          <span className="text-sm font-medium text-fg-soft">Valor</span>
+          <span className="text-sm font-medium text-fg-soft">
+            {t('currency.amount')}
+          </span>
           <input
             inputMode="decimal"
             value={amount}
@@ -76,20 +80,22 @@ export function CurrencyConverter() {
           />
         </label>
         <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-fg-soft">Moeda</span>
+          <span className="text-sm font-medium text-fg-soft">
+            {t('currency.currency')}
+          </span>
           <select
             value={from}
             onChange={(e) => setFrom(e.target.value as From)}
             className={inputClass}
           >
-            <option value="USD">USD (dólar)</option>
-            <option value="CAD">CAD (dólar canadense)</option>
+            <option value="USD">{t('currency.optionUsd')}</option>
+            <option value="CAD">{t('currency.optionCad')}</option>
           </select>
         </label>
       </div>
 
       <div className="mt-4 rounded-md bg-surface-muted px-3 py-3 text-center">
-        <span className="text-xs text-fg-subtle">Em reais</span>
+        <span className="text-xs text-fg-subtle">{t('currency.inReais')}</span>
         <p className="text-2xl font-semibold text-fg">
           {converted != null ? brl.format(converted) : '—'}
         </p>
@@ -97,11 +103,14 @@ export function CurrencyConverter() {
 
       {/* Origem da taxa */}
       <div className="mt-3 text-xs text-fg-muted">
-        {loadState === 'loading' && <span>Buscando cotação…</span>}
+        {loadState === 'loading' && <span>{t('currency.fetchingRate')}</span>}
         {loadState === 'loaded' && autoRate != null && !useManual && (
           <span>
-            1 {from} = {brl.format(autoRate)} · atualizado{' '}
-            {data?.date ? formatDate(data.date) : ''}
+            {t('currency.autoRate', {
+              currency: from,
+              rate: brl.format(autoRate),
+              date: data?.date ? formatDate(data.date) : '',
+            })}
           </span>
         )}
         {error && <span className="text-amber-700">{error}</span>}
@@ -114,17 +123,17 @@ export function CurrencyConverter() {
           onChange={(e) => setUseManual(e.target.checked)}
           className="h-3.5 w-3.5 rounded border-edge-strong"
         />
-        Usar taxa manual
+        {t('currency.useManualRate')}
       </label>
 
       {useManual && (
         <label className="mt-2 flex flex-col gap-1.5">
           <span className="text-sm font-medium text-fg-soft">
-            Taxa (1 {from} em R$)
+            {t('currency.manualRateLabel', { currency: from })}
           </span>
           <input
             inputMode="decimal"
-            placeholder="ex.: 5,40"
+            placeholder={t('currency.manualRatePlaceholder')}
             value={manualRate}
             onChange={(e) => setManualRate(e.target.value.replace(',', '.'))}
             className={inputClass}
@@ -145,7 +154,7 @@ function formatDate(raw: string): string {
       }).format(d);
 }
 
-function toMessage(error: unknown): string {
+function toMessage(error: unknown, fallback: string): string {
   if (error instanceof ApiError) return error.messages.join(' ');
-  return 'Não foi possível buscar a cotação. Informe a taxa manualmente.';
+  return fallback;
 }

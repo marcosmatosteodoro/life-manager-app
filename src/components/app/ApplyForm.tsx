@@ -1,11 +1,14 @@
 'use client';
 
 import { type FormEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
 import type { Apply, ApplyInput, ApplyStatus } from '@/services/apply.types';
-import { APPLY_STATUS_LABELS } from '@/services/applyService';
+import { APPLY_STATUSES } from '@/services/applyService';
 import type { Company } from '@/services/company.types';
+
+const STATUS_KEYS = APPLY_STATUSES;
 
 interface ApplyFormProps {
   initial?: Apply | null;
@@ -16,11 +19,6 @@ interface ApplyFormProps {
   onSubmit: (input: ApplyInput) => void;
   onCancel: () => void;
 }
-
-const STATUS_OPTIONS = Object.entries(APPLY_STATUS_LABELS) as [
-  ApplyStatus,
-  string,
-][];
 
 function currentDate(): string {
   const now = new Date();
@@ -36,6 +34,7 @@ export function ApplyForm({
   onSubmit,
   onCancel,
 }: ApplyFormProps) {
+  const { t } = useTranslation(['jobs', 'common']);
   const [name, setName] = useState(initial?.name ?? prefill?.name ?? '');
   const [companyId, setCompanyId] = useState(
     initial?.companyId != null ? String(initial.companyId) : '',
@@ -65,19 +64,19 @@ export function ApplyForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <Field label="Nome da vaga" htmlFor="name">
+      <Field label={t('applyForm.name')} htmlFor="name">
         <input
           id="name"
           type="text"
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Ex.: Vaga Backend Node - Acme"
+          placeholder={t('applyForm.namePlaceholder')}
           className={inputClass}
         />
       </Field>
 
-      <Field label="Empresa" htmlFor="companyId">
+      <Field label={t('applyForm.company')} htmlFor="companyId">
         <select
           id="companyId"
           required
@@ -86,7 +85,7 @@ export function ApplyForm({
           className={inputClass}
         >
           <option value="" disabled>
-            Selecione uma empresa
+            {t('applyForm.companyDefault')}
           </option>
           {companies.map((company) => (
             <option key={company.id} value={company.id}>
@@ -97,7 +96,7 @@ export function ApplyForm({
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Status" htmlFor="status">
+        <Field label={t('applyForm.status')} htmlFor="status">
           <select
             id="status"
             required
@@ -105,14 +104,14 @@ export function ApplyForm({
             onChange={(e) => setStatus(e.target.value as ApplyStatus)}
             className={inputClass}
           >
-            {STATUS_OPTIONS.map(([value, label]) => (
+            {STATUS_KEYS.map((value) => (
               <option key={value} value={value}>
-                {label}
+                {t(`jobs:applyStatus.${value}`)}
               </option>
             ))}
           </select>
         </Field>
-        <Field label="Data" htmlFor="date">
+        <Field label={t('applyForm.date')} htmlFor="date">
           <input
             id="date"
             type="date"
@@ -124,18 +123,18 @@ export function ApplyForm({
         </Field>
       </div>
 
-      <Field label="Link (opcional)" htmlFor="link">
+      <Field label={t('applyForm.link')} htmlFor="link">
         <input
           id="link"
           type="url"
           value={link}
           onChange={(e) => setLink(e.target.value)}
-          placeholder="https://..."
+          placeholder={t('applyForm.linkPlaceholder')}
           className={inputClass}
         />
       </Field>
 
-      <Field label="Descrição (opcional)" htmlFor="description">
+      <Field label={t('applyForm.description')} htmlFor="description">
         <textarea
           id="description"
           rows={3}
@@ -147,10 +146,14 @@ export function ApplyForm({
 
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="secondary" type="button" onClick={onCancel} disabled={submitting}>
-          Cancelar
+          {t('common:cancel')}
         </Button>
         <Button type="submit" disabled={submitting}>
-          {submitting ? 'Salvando...' : initial ? 'Salvar' : 'Criar'}
+          {submitting
+            ? t('applyForm.saving')
+            : initial
+              ? t('applyForm.save')
+              : t('applyForm.create')}
         </Button>
       </div>
     </form>

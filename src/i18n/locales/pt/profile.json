@@ -1,0 +1,20 @@
+{
+  "title": "Meu perfil",
+  "subtitle": "Seus dados e preferências.",
+  "changePasswordTitle": "Trocar senha",
+  "changePasswordSubtitle": "Informe a senha atual e a nova.",
+  "fieldName": "Nome",
+  "fieldUsername": "Usuário",
+  "fieldEmail": "E-mail",
+  "fieldHeight": "Altura (cm)",
+  "fieldTheme": "Tema",
+  "fieldLanguage": "Idioma",
+  "saveProfile": "Salvar perfil",
+  "profileUpdated": "Perfil atualizado.",
+  "saveError": "Não foi possível salvar o perfil.",
+  "themeLight": "Claro",
+  "themeDark": "Escuro",
+  "themeCustom": "Custom (em breve)",
+  "languagePt": "Português (BR)",
+  "languageEn": "English (US)"
+}

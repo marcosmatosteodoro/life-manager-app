@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { formatDays, type Todo } from '@/services/todo.types';
 import { formatDate } from '@/utils/date';
@@ -12,10 +13,12 @@ interface TodoListProps {
 }
 
 export function TodoList({ todos, onEdit, onDelete, onChecks }: TodoListProps) {
+  const { t } = useTranslation(['todo', 'common']);
+
   if (todos.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
-        Nenhum afazer cadastrado ainda.
+        {t('todo:empty')}
       </p>
     );
   }
@@ -39,11 +42,17 @@ export function TodoList({ todos, onEdit, onDelete, onChecks }: TodoListProps) {
               )}
             </div>
             <p className="mt-0.5 text-sm text-fg-muted">
-              {formatDays(todo.days)}
+              {formatDays(todo.days, t)}
             </p>
             <p className="mt-0.5 text-xs text-fg-subtle">
-              A partir de {formatDate(todo.startDate)}
-              {todo.endDate ? ` até ${formatDate(todo.endDate)}` : ''}
+              {todo.endDate
+                ? t('todo:list.startTo', {
+                    start: formatDate(todo.startDate),
+                    end: formatDate(todo.endDate),
+                  })
+                : t('todo:list.startFrom', {
+                    start: formatDate(todo.startDate),
+                  })}
             </p>
             {todo.description && (
               <p className="mt-1 text-sm text-fg-muted">{todo.description}</p>
@@ -52,17 +61,17 @@ export function TodoList({ todos, onEdit, onDelete, onChecks }: TodoListProps) {
 
           <div className="flex shrink-0 flex-wrap justify-end gap-1">
             <Button variant="ghost" onClick={() => onChecks(todo)}>
-              Checks
+              {t('todo:checks')}
             </Button>
             <Button variant="ghost" onClick={() => onEdit(todo)}>
-              Editar
+              {t('common:edit')}
             </Button>
             <Button
               variant="ghost"
               className="text-red-600 hover:bg-red-50 hover:text-red-700"
               onClick={() => onDelete(todo)}
             >
-              Excluir
+              {t('common:delete')}
             </Button>
           </div>
         </li>

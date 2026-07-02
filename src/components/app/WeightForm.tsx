@@ -1,6 +1,7 @@
 'use client';
 
 import { type FormEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import type { Weight, WeightInput } from '@/services/weight.types';
 
@@ -19,6 +20,7 @@ export function WeightForm({
   onSubmit,
   onCancel,
 }: WeightFormProps) {
+  const { t } = useTranslation(['weight', 'common']);
   const [value, setValue] = useState(initial ? String(initial.value) : '');
   // Ao criar, data e hora vêm preenchidas com o momento atual.
   const [date, setDate] = useState(initial?.date ?? currentDate());
@@ -36,7 +38,7 @@ export function WeightForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <Field label="Peso (kg)" htmlFor="value">
+      <Field label={t('fieldWeight')} htmlFor="value">
         <input
           id="value"
           type="number"
@@ -45,12 +47,12 @@ export function WeightForm({
           required
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Ex.: 81.55"
+          placeholder={t('fieldWeightPlaceholder')}
           className={inputClass}
         />
       </Field>
 
-      <Field label="Data" htmlFor="date">
+      <Field label={t('fieldDate')} htmlFor="date">
         <input
           id="date"
           type="date"
@@ -61,7 +63,7 @@ export function WeightForm({
         />
       </Field>
 
-      <Field label="Hora (opcional)" htmlFor="time">
+      <Field label={t('fieldTime')} htmlFor="time">
         <input
           id="time"
           type="time"
@@ -73,10 +75,14 @@ export function WeightForm({
 
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="secondary" type="button" onClick={onCancel} disabled={submitting}>
-          Cancelar
+          {t('common:cancel')}
         </Button>
         <Button type="submit" disabled={submitting}>
-          {submitting ? 'Salvando...' : initial ? 'Salvar' : 'Registrar'}
+          {submitting
+            ? t('common:saving')
+            : initial
+              ? t('common:save')
+              : t('register')}
         </Button>
       </div>
     </form>

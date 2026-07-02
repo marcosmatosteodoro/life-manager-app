@@ -1,6 +1,7 @@
 'use client';
 
 import { type SVGProps, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import type { Company } from '@/services/company.types';
 import { cn } from '@/utils/cn';
@@ -12,10 +13,12 @@ interface CompanyListProps {
 }
 
 export function CompanyList({ companies, onEdit, onDelete }: CompanyListProps) {
+  const { t } = useTranslation('jobs');
+
   if (companies.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
-        Nenhuma empresa cadastrada ainda.
+        {t('companies.empty')}
       </p>
     );
   }
@@ -43,6 +46,7 @@ function CompanyRow({
   onEdit: (company: Company) => void;
   onDelete: (company: Company) => void;
 }) {
+  const { t } = useTranslation(['jobs', 'common']);
   const [open, setOpen] = useState(false);
 
   return (
@@ -54,7 +58,11 @@ function CompanyRow({
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            aria-label={open ? 'Ocultar observações' : 'Ver observações'}
+            aria-label={
+              open
+                ? t('companies.hideObservations')
+                : t('companies.showObservations')
+            }
             className="mt-0.5 rounded-md p-0.5 text-fg-subtle transition-colors hover:bg-surface-subtle hover:text-fg-soft"
           >
             <ChevronDownIcon
@@ -88,14 +96,14 @@ function CompanyRow({
 
         <div className="flex shrink-0 gap-1">
           <Button variant="ghost" onClick={() => onEdit(company)}>
-            Editar
+            {t('common:edit')}
           </Button>
           <Button
             variant="ghost"
             className="text-red-600 hover:bg-red-50 hover:text-red-700"
             onClick={() => onDelete(company)}
           >
-            Excluir
+            {t('common:delete')}
           </Button>
         </div>
       </div>
@@ -112,7 +120,9 @@ function CompanyRow({
             {company.observation?.trim() ? (
               company.observation
             ) : (
-              <span className="text-fg-subtle">Sem observações.</span>
+              <span className="text-fg-subtle">
+                {t('companies.noObservations')}
+              </span>
             )}
           </p>
         </div>

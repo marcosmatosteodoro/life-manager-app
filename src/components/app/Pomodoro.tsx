@@ -1,6 +1,7 @@
 'use client';
 
 import { type SVGProps, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import {
   phaseDurationMs,
@@ -13,6 +14,7 @@ import { playBeep, unlockAudio } from '@/utils/sound';
 const MODE_OPTIONS: PomodoroMode[] = ['25/5', '50/10'];
 
 export function Pomodoro() {
+  const { t } = useTranslation('timers');
   const mode = usePomodoroStore((s) => s.mode);
   const phase = usePomodoroStore((s) => s.phase);
   const running = usePomodoroStore((s) => s.running);
@@ -63,7 +65,7 @@ export function Pomodoro() {
   return (
     <section className="mx-auto flex w-full max-w-md flex-col">
       <h1 className="text-2xl font-semibold tracking-tight text-fg">
-        Pomodoro
+        {t('pomodoroTitle')}
       </h1>
 
       <div className="mt-8 flex flex-col items-center rounded-2xl border border-edge bg-surface p-8 shadow-sm">
@@ -81,7 +83,7 @@ export function Pomodoro() {
               isFocus ? 'bg-rose-500' : 'bg-emerald-500',
             )}
           />
-          {isFocus ? 'Foco' : 'Pausa'}
+          {isFocus ? t('focus') : t('break')}
         </span>
 
         {/* Contagem regressiva */}
@@ -116,32 +118,30 @@ export function Pomodoro() {
             <>
               <Button variant="primary" onClick={pause}>
                 <PauseIcon className="h-4 w-4" />
-                Pausar
+                {t('pause')}
               </Button>
               <Button variant="secondary" onClick={reset}>
                 <ResetIcon className="h-4 w-4" />
-                Reiniciar
+                {t('reset')}
               </Button>
             </>
           ) : (
             <>
               <Button variant="primary" onClick={handleStart}>
                 <PlayIcon className="h-4 w-4" />
-                {elapsedMs > 0 ? 'Continuar' : 'Iniciar'}
+                {elapsedMs > 0 ? t('resume') : t('start')}
               </Button>
               {elapsedMs > 0 && (
                 <Button variant="secondary" onClick={reset}>
                   <ResetIcon className="h-4 w-4" />
-                  Reiniciar
+                  {t('reset')}
                 </Button>
               )}
             </>
           )}
         </div>
 
-        <p className="mt-4 text-xs text-fg-subtle">
-          Toca um som ao trocar de foco/pausa. Trocar o modo reinicia o ciclo.
-        </p>
+        <p className="mt-4 text-xs text-fg-subtle">{t('pomodoroHint')}</p>
       </div>
     </section>
   );

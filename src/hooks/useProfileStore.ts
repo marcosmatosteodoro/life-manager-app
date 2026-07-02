@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { userService } from '@/services/userService';
 import type { UserProfile } from '@/services/user.types';
+import { toLocale, useLocaleStore } from './useLocaleStore';
 import { useThemeStore } from './useThemeStore';
 
 interface ProfileState {
@@ -26,6 +27,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
     try {
       const profile = await userService.getMe();
       useThemeStore.getState().setTheme(profile.theme);
+      useLocaleStore.getState().setLocale(toLocale(profile.language));
       set({ profile, loading: false });
       return profile;
     } catch {
@@ -36,6 +38,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
 
   setProfile: (profile) => {
     useThemeStore.getState().setTheme(profile.theme);
+    useLocaleStore.getState().setLocale(toLocale(profile.language));
     set({ profile });
   },
 

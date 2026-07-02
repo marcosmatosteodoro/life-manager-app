@@ -2,13 +2,11 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
 import { articleService } from '@/services/articleService';
-import {
-  ARTICLE_STATUS_LABELS,
-  type Article,
-} from '@/services/article.types';
+import { type Article, type ArticleStatus } from '@/services/article.types';
 import { applyService } from '@/services/applyService';
 import { todoCheckService } from '@/services/todoCheckService';
 import type { TodoCheck } from '@/services/todo.types';
@@ -21,6 +19,14 @@ import { isToday } from '@/utils/date';
 
 type LoadState = 'loading' | 'loaded' | 'error';
 
+/** Mapa status → chave no namespace `articles` (rótulo traduzido). */
+const ARTICLE_STATUS_KEYS: Record<ArticleStatus, string> = {
+  READING_IN_PROGRESS: 'statusReadingInProgress',
+  SUMMARY_IN_PROGRESS: 'statusSummaryInProgress',
+  APPLYING_CORRECTION: 'statusApplyingCorrection',
+  COMPLETED: 'statusCompleted',
+};
+
 interface DashboardData {
   todayChecks: TodoCheck[];
   articles: Article[];
@@ -30,6 +36,7 @@ interface DashboardData {
 }
 
 export function HomeDashboard() {
+  const { t } = useTranslation(['common', 'articles']);
   const [data, setData] = useState<DashboardData | null>(null);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -54,10 +61,10 @@ export function HomeDashboard() {
       });
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -72,7 +79,7 @@ export function HomeDashboard() {
       <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
         <p className="whitespace-pre-line">{loadError.join('\n')}</p>
         <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-          Tentar novamente
+          {t('common:retry')}
         </Button>
       </div>
     );
@@ -107,21 +114,19 @@ export function HomeDashboard() {
   const tasks: { label: string; href: string }[] = [];
   if (todosPending > 0) {
     tasks.push({
-      label: `Conclua seus afazeres de hoje — faltam ${todosPending} de ${todosTotal}`,
+      label: t('taskTodos', { pending: todosPending, total: todosTotal }),
       href: '/afazeres',
     });
   }
   if (!loggedWeightThisWeek) {
     tasks.push({
-      label: 'Registre o peso desta semana',
+      label: t('taskWeight'),
       href: '/gerenciamento-de-peso',
     });
   }
   if (studyPending) {
     tasks.push({
-      label: todayStudy
-        ? 'Termine seu estudo de inglês de hoje'
-        : 'Registre seu estudo de inglês de hoje',
+      label: todayStudy ? t('taskStudyFinish') : t('taskStudyLog'),
       href: '/estudando-ingles',
     });
   }
@@ -129,57 +134,61 @@ export function HomeDashboard() {
   return (
     <section className="mx-auto w-full max-w-3xl">
       {/* Visão geral */}
-      <h2 className="text-sm font-semibold text-fg-soft">Visão geral</h2>
+      <h2 className="text-sm font-semibold text-fg-soft">{t('overview')}</h2>
       <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <StatCard
           href="/estudando-ingles"
-          title="Ofensiva"
+          title={t('streak')}
           value={`🔥 ${streak}`}
-          hint={`dia${streak === 1 ? '' : 's'} seguido${streak === 1 ? '' : 's'} estudando`}
+          hint={t('streakHint', { count: streak })}
         />
         <StatCard
           href="/gerenciamento-de-peso"
-          title="Peso atual"
+          title={t('currentWeight')}
           value={latestWeight ? `${latestWeight.value} kg` : '—'}
           hint={
             loggedWeightThisWeek
-              ? 'registrado nesta semana'
-              : 'sem registro nesta semana'
+              ? t('weightLoggedThisWeek')
+              : t('weightNotLoggedThisWeek')
           }
         />
         <StatCard
           href="/afazeres"
-          title="Afazeres"
+          title={t('todos')}
           value={`${todosDone}/${todosTotal}`}
-          hint="afazeres hoje"
+          hint={t('todosToday')}
         />
         <StatCard
           href="/estudando-ingles"
-          title="Estudo de hoje"
-          value={todayStudy ? ARTICLE_STATUS_LABELS[todayStudy.status] : 'Nenhum'}
-          hint={todayStudy ? undefined : 'registre um estudo'}
+          title={t('todayStudy')}
+          value={
+            todayStudy
+              ? t(`articles:${ARTICLE_STATUS_KEYS[todayStudy.status]}`)
+              : t('none')
+          }
+          hint={todayStudy ? undefined : t('logAStudy')}
         />
         <StatCard
           href="/revisar"
-          title="Flashcards"
+          title={t('flashcards')}
           value={`${totalCards}`}
-          hint={`${data.groups.length} grupo${data.groups.length === 1 ? '' : 's'}`}
+          hint={t('groupCount', { count: data.groups.length })}
         />
         <StatCard
           href="/vagas/aplicacoes"
-          title="Candidaturas"
+          title={t('applications')}
           value={`${data.appliesCount}`}
-          hint="vagas aplicadas"
+          hint={t('jobsApplied')}
         />
       </div>
 
       {/* Pendências de hoje */}
       <h2 className="mt-8 text-sm font-semibold text-fg-soft">
-        Pendências de hoje
+        {t('pendingToday')}
       </h2>
       {tasks.length === 0 ? (
         <p className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          Tudo em dia por hoje! 🎉
+          {t('allDone')}
         </p>
       ) : (
         <ul className="mt-2 flex flex-col gap-2">
@@ -202,7 +211,7 @@ export function HomeDashboard() {
         href="/feedback"
         className="mt-8 flex items-center justify-between gap-3 rounded-lg bg-surface-inverse px-4 py-3 text-sm font-medium text-surface transition-colors hover:bg-fg-soft"
       >
-        <span>Gerar um feedback do seu período</span>
+        <span>{t('ctaFeedback')}</span>
         <span aria-hidden>→</span>
       </Link>
     </section>
@@ -273,7 +282,7 @@ function studyStreak(days: Set<string>): number {
   return streak;
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

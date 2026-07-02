@@ -1,0 +1,70 @@
+{
+  "backToToday": "← Voltar para hoje",
+  "manageTitle": "Gerenciar afazeres",
+  "new": "Novo afazer",
+  "empty": "Nenhum afazer cadastrado ainda.",
+  "editTitle": "Editar afazer",
+  "newTitle": "Novo afazer",
+  "created": "Afazer criado com sucesso.",
+  "updated": "Afazer atualizado com sucesso.",
+  "deleted": "Afazer excluído com sucesso.",
+  "deleteTitle": "Excluir afazer",
+  "deleteDescription": "Tem certeza que deseja excluir \"{{name}}\"? Os checks dele também serão removidos. Essa ação não pode ser desfeita.",
+  "checksTitle": "Checks — {{name}}",
+  "checks": "Checks",
+  "list": {
+    "startFrom": "A partir de {{start}}",
+    "startTo": "A partir de {{start}} até {{end}}"
+  },
+  "form": {
+    "name": "Nome",
+    "namePlaceholder": "Ex.: Treinar",
+    "description": "Descrição (opcional)",
+    "descriptionPlaceholder": "Detalhes do afazer",
+    "start": "Início",
+    "end": "Fim (opcional)",
+    "weekdays": "Dias da semana",
+    "tag": "Tag (opcional)",
+    "tagPlaceholder": "Escolha uma existente ou digite uma nova",
+    "selectDay": "Selecione ao menos um dia da semana.",
+    "submitCreate": "Criar"
+  },
+  "today": {
+    "title": "Afazeres",
+    "manage": "Gerenciar",
+    "instruction": "Marque o que você fez hoje.",
+    "progress_one": " {{done}}/{{total}} concluído.",
+    "progress_other": " {{done}}/{{total}} concluídos.",
+    "empty": "Nenhum afazer para hoje. Crie um em",
+    "emptyLink": "Gerenciar",
+    "fallbackName": "Afazer"
+  },
+  "checksModal": {
+    "addDate": "Adicionar data",
+    "add": "Adicionar",
+    "added": "Check adicionado.",
+    "empty": "Nenhum check ainda. Adicione uma data acima.",
+    "remove": "Remover",
+    "title": "Checks"
+  },
+  "weekday": {
+    "short": {
+      "1": "Seg",
+      "2": "Ter",
+      "3": "Qua",
+      "4": "Qui",
+      "5": "Sex",
+      "6": "Sáb",
+      "7": "Dom"
+    },
+    "long": {
+      "1": "Segunda",
+      "2": "Terça",
+      "3": "Quarta",
+      "4": "Quinta",
+      "5": "Sexta",
+      "6": "Sábado",
+      "7": "Domingo"
+    }
+  }
+}

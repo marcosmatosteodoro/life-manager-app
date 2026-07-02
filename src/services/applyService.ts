@@ -27,15 +27,18 @@ export const applyService = {
   },
 };
 
-/** Rótulos PT-BR para o enum de status. */
-export const APPLY_STATUS_LABELS: Record<ApplyStatusKey, string> = {
-  APPLIED: 'Aplicado',
-  REJECTED: 'Rejeitado',
-  IGNORED: 'Ignorado',
-  INTERVIEW_SCHEDULED: 'Entrevista marcada',
-  TECHNICAL_TEST: 'Fazendo teste técnico',
-  AWAITING_RESPONSE: 'Aguardando retorno',
-  APPROVED: 'Aprovado',
-};
-
 type ApplyStatusKey = NonNullable<ApplyInput['status']>;
+
+/**
+ * Ordem dos status para os selects. Os rótulos são traduzidos no front
+ * (i18n, namespace `jobs` → `applyStatus.<VALUE>`).
+ */
+export const APPLY_STATUSES: ApplyStatusKey[] = [
+  'APPLIED',
+  'REJECTED',
+  'IGNORED',
+  'INTERVIEW_SCHEDULED',
+  'TECHNICAL_TEST',
+  'AWAITING_RESPONSE',
+  'APPROVED',
+];

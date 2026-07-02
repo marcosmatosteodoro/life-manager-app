@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { DropdownMenu } from '@/components/ui/DropdownMenu';
 import type { FlashCardGroup } from '@/services/flashCardGroup.types';
 import { formatDateTime } from '@/utils/date';
@@ -21,10 +22,12 @@ export function FlashCardGroupList({
   onEdit,
   onDelete,
 }: FlashCardGroupListProps) {
+  const { t } = useTranslation(['flashcards', 'common']);
+
   if (groups.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
-        Nenhum grupo criado ainda.
+        {t('emptyGroups')}
       </p>
     );
   }
@@ -50,19 +53,20 @@ export function FlashCardGroupList({
                 {group.name}
               </p>
               <p className="mt-0.5 text-sm text-fg-muted">
-                {group.flashCardsCount ?? 0} flashcard
-                {(group.flashCardsCount ?? 0) === 1 ? '' : 's'} · criado em{' '}
-                {formatDateTime(group.createdAt)}
+                {t('flashcardCount', {
+                  count: group.flashCardsCount ?? 0,
+                  date: formatDateTime(group.createdAt),
+                })}
               </p>
             </div>
             <div className="shrink-0">
               <DropdownMenu
-                ariaLabel={`Ações de ${group.name}`}
+                ariaLabel={t('groupActions', { name: group.name })}
                 items={[
-                  { label: 'Gerenciar termos', onClick: () => onManageTerms(group) },
-                  { label: 'Absorver lista', onClick: () => onAbsorb(group) },
-                  { label: 'Editar', onClick: () => onEdit(group) },
-                  { label: 'Excluir', onClick: () => onDelete(group), danger: true },
+                  { label: t('manageTerms'), onClick: () => onManageTerms(group) },
+                  { label: t('absorbList'), onClick: () => onAbsorb(group) },
+                  { label: t('common:edit'), onClick: () => onEdit(group) },
+                  { label: t('common:delete'), onClick: () => onDelete(group), danger: true },
                 ]}
               />
             </div>

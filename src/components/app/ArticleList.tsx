@@ -1,11 +1,9 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { SafeHtml } from '@/components/ui/SafeHtml';
-import {
-  ARTICLE_STATUS_LABELS,
-  type Article,
-} from '@/services/article.types';
+import type { Article, ArticleStatus } from '@/services/article.types';
 import { cn } from '@/utils/cn';
 import { formatDateTime, isToday } from '@/utils/date';
 import { StartReadingButton } from './StartReadingButton';
@@ -24,11 +22,21 @@ const STATUS_CLASSES: Record<Article['status'], string> = {
   COMPLETED: 'bg-emerald-100 text-emerald-800',
 };
 
+// Chave de tradução por status (rótulos ficam no namespace articles).
+const STATUS_KEYS: Record<ArticleStatus, string> = {
+  READING_IN_PROGRESS: 'statusReadingInProgress',
+  SUMMARY_IN_PROGRESS: 'statusSummaryInProgress',
+  APPLYING_CORRECTION: 'statusApplyingCorrection',
+  COMPLETED: 'statusCompleted',
+};
+
 export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
+  const { t } = useTranslation(['articles', 'common']);
+
   if (articles.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
-        Nenhum estudo registrado ainda.
+        {t('empty')}
       </p>
     );
   }
@@ -59,11 +67,11 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                       STATUS_CLASSES[article.status],
                     )}
                   >
-                    {ARTICLE_STATUS_LABELS[article.status]}
+                    {t(STATUS_KEYS[article.status])}
                   </span>
                   {today && (
                     <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-xs font-medium text-white">
-                      Hoje
+                      {t('today')}
                     </span>
                   )}
                 </div>
@@ -78,19 +86,21 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                         rel="noopener noreferrer"
                         className="text-fg-muted hover:underline"
                       >
-                        link
+                        {t('link')}
                       </a>
                     </>
                   ) : null}
                 </p>
                 <p className="mt-1 text-sm text-fg-muted">
                   {article.timeRead != null
-                    ? `Leitura: ${article.timeRead} min`
-                    : 'Leitura: —'}
+                    ? t('reading', { min: article.timeRead })
+                    : t('readingEmpty')}
                   {article.timeWrite != null
-                    ? ` · Escrita: ${article.timeWrite} min`
+                    ? t('writing', { min: article.timeWrite })
                     : ''}
-                  {article.score != null ? ` · Nota: ${article.score}` : ''}
+                  {article.score != null
+                    ? t('score', { score: article.score })
+                    : ''}
                 </p>
                 {article.summary && (
                   <p className="mt-2 line-clamp-2 text-sm text-fg-muted">
@@ -100,7 +110,7 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                 {article.summaryCorrected && (
                   <div className="mt-2">
                     <span className="text-xs font-medium text-fg-muted">
-                      Resumo corrigido
+                      {t('summaryCorrectedLabel')}
                     </span>
                     {/* HTML do corretor — renderizado já sanitizado. */}
                     <SafeHtml
@@ -116,14 +126,14 @@ export function ArticleList({ articles, onEdit, onDelete }: ArticleListProps) {
                   <StartReadingButton />
                 )}
                 <Button variant="ghost" onClick={() => onEdit(article)}>
-                  Editar
+                  {t('common:edit')}
                 </Button>
                 <Button
                   variant="ghost"
                   className="text-red-600 hover:bg-red-50 hover:text-red-700"
                   onClick={() => onDelete(article)}
                 >
-                  Excluir
+                  {t('common:delete')}
                 </Button>
               </div>
             </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { usePomodoroStore } from '@/hooks/usePomodoroStore';
 import { useStopwatchStore } from '@/hooks/useStopwatchStore';
@@ -10,6 +11,7 @@ import { useStopwatchStore } from '@/hooks/useStopwatchStore';
  * timers globais (os mesmos das páginas /pomodoro e /cronometro).
  */
 export function StartReadingButton() {
+  const { t } = useTranslation('common');
   const pomodoroRunning = usePomodoroStore((s) => s.running);
   const pomodoroMode = usePomodoroStore((s) => s.mode);
   const setPomodoroMode = usePomodoroStore((s) => s.setMode);
@@ -37,7 +39,7 @@ export function StartReadingButton() {
 
   return (
     <Button variant="secondary" onClick={toggle}>
-      {running ? 'Pausar' : 'Iniciar'}
+      {running ? t('pause') : t('start')}
     </Button>
   );
 }

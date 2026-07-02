@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { type ComponentType, type SVGProps, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconButton } from '@/components/ui/IconButton';
 import { useSidebarStore } from '@/hooks/useSidebarStore';
 import { cn } from '@/utils/cn';
@@ -16,59 +17,61 @@ type NavItem = {
 // Grupo de navegação; `label` ausente = itens soltos (sem cabeçalho).
 type NavGroup = { label?: string; items: NavItem[] };
 
+// `label` guarda a CHAVE i18n (namespace nav); o texto é resolvido no render.
 const NAV_GROUPS: NavGroup[] = [
   {
     items: [
-      { href: '/', label: 'Home', Icon: HomeIcon },
-      { href: '/cronometro', label: 'Cronômetro', Icon: ClockIcon },
-      { href: '/pomodoro', label: 'Pomodoro', Icon: PomodoroIcon },
-      { href: '/afazeres', label: 'Afazeres', Icon: ListCheckIcon },
-      { href: '/backlog', label: 'Próximos passos', Icon: RoadmapIcon },
+      { href: '/', label: 'home', Icon: HomeIcon },
+      { href: '/cronometro', label: 'stopwatch', Icon: ClockIcon },
+      { href: '/pomodoro', label: 'pomodoro', Icon: PomodoroIcon },
+      { href: '/afazeres', label: 'todos', Icon: ListCheckIcon },
+      { href: '/backlog', label: 'backlog', Icon: RoadmapIcon },
     ],
   },
   {
-    label: 'Estudos',
+    label: 'groupStudies',
     items: [
-      { href: '/estudando-ingles', label: 'Artigos', Icon: BookIcon },
-      { href: '/revisar', label: 'Flashcards', Icon: CardsIcon },
+      { href: '/estudando-ingles', label: 'articles', Icon: BookIcon },
+      { href: '/revisar', label: 'flashcards', Icon: CardsIcon },
     ],
   },
   {
-    label: 'Vagas',
+    label: 'groupJobs',
     items: [
-      { href: '/vagas/paises', label: 'Países', Icon: GlobeIcon },
-      { href: '/vagas/empresas', label: 'Empresas', Icon: BuildingIcon },
-      { href: '/vagas/aplicacoes', label: 'Candidaturas', Icon: SendIcon },
-      { href: '/vagas/buscador', label: 'Buscar vagas', Icon: SearchIcon },
-      { href: '/vagas/aplicador', label: 'Aplicador', Icon: BoltIcon },
-      { href: '/conversores', label: 'Conversores', Icon: SwapIcon },
+      { href: '/vagas/paises', label: 'countries', Icon: GlobeIcon },
+      { href: '/vagas/empresas', label: 'companies', Icon: BuildingIcon },
+      { href: '/vagas/aplicacoes', label: 'applications', Icon: SendIcon },
+      { href: '/vagas/buscador', label: 'searchJobs', Icon: SearchIcon },
+      { href: '/vagas/aplicador', label: 'applier', Icon: BoltIcon },
+      { href: '/conversores', label: 'converters', Icon: SwapIcon },
     ],
   },
   {
-    label: 'Sobre mim',
+    label: 'groupAboutMe',
     items: [
-      { href: '/diario', label: 'Diário', Icon: JournalIcon },
+      { href: '/diario', label: 'diary', Icon: JournalIcon },
       {
         href: '/diario-de-gratidao',
-        label: 'Gratidão',
+        label: 'gratitude',
         Icon: HeartIcon,
       },
-      { href: '/feedback', label: 'Feedback', Icon: SparklesIcon },
+      { href: '/feedback', label: 'feedback', Icon: SparklesIcon },
       {
         href: '/gerenciamento-de-peso',
-        label: 'Peso',
+        label: 'weight',
         Icon: ScaleIcon,
       },
     ],
   },
   {
-    label: 'Configurações',
-    items: [{ href: '/perfil', label: 'Meu perfil', Icon: UserIcon }],
+    label: 'groupSettings',
+    items: [{ href: '/perfil', label: 'profile', Icon: UserIcon }],
   },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { t } = useTranslation('nav');
   const collapsed = useSidebarStore((state) => state.collapsed);
   const toggle = useSidebarStore((state) => state.toggle);
   const mobileOpen = useSidebarStore((state) => state.mobileOpen);
@@ -92,7 +95,7 @@ export function Sidebar() {
         key={href}
         href={href}
         onClick={opts.onClick}
-        title={opts.iconOnly ? label : undefined}
+        title={opts.iconOnly ? t(label) : undefined}
         aria-current={active ? 'page' : undefined}
         className={cn(
           'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
@@ -103,7 +106,7 @@ export function Sidebar() {
         )}
       >
         <Icon className="h-5 w-5 shrink-0" />
-        {!opts.iconOnly && <span className="truncate">{label}</span>}
+        {!opts.iconOnly && <span className="truncate">{t(label)}</span>}
       </Link>
     );
   }
@@ -121,7 +124,7 @@ export function Sidebar() {
             <div className="mx-2 border-t border-edge" />
           ) : (
             <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-fg-subtle">
-              {group.label}
+              {t(group.label)}
             </p>
           ))}
         <nav className="flex flex-col gap-1 pt-1">
@@ -154,7 +157,7 @@ export function Sidebar() {
         >
           <IconButton
             onClick={toggle}
-            aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+            aria-label={collapsed ? t('expandMenu') : t('collapseMenu')}
             aria-expanded={!collapsed}
           >
             <ChevronIcon
@@ -172,7 +175,7 @@ export function Sidebar() {
         <button
           type="button"
           onClick={toggleMobile}
-          aria-label="Abrir menu"
+          aria-label={t('openMenu')}
           className="fixed bottom-4 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-edge bg-surface text-fg-soft shadow-lg transition-transform active:scale-95 md:hidden"
         >
           <ChevronIcon className="h-5 w-5 -rotate-90" />
@@ -184,9 +187,9 @@ export function Sidebar() {
         <div className="animate-slide-in-left fixed inset-0 z-50 flex flex-col bg-surface md:hidden">
           <div className="flex h-14 items-center justify-between border-b border-edge px-4">
             <span className="text-lg font-semibold tracking-tight text-fg">
-              Menu
+              {t('menu')}
             </span>
-            <IconButton onClick={closeMobile} aria-label="Fechar menu">
+            <IconButton onClick={closeMobile} aria-label={t('closeMenu')}>
               <CloseIcon className="h-5 w-5" />
             </IconButton>
           </div>
@@ -200,7 +203,7 @@ export function Sidebar() {
           <button
             type="button"
             onClick={closeMobile}
-            aria-label="Fechar menu"
+            aria-label={t('closeMenu')}
             className="fixed bottom-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-edge bg-surface text-fg-soft shadow-lg transition-transform active:scale-95"
           >
             <ChevronIcon className="h-5 w-5 rotate-90" />

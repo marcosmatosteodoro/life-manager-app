@@ -1,0 +1,19 @@
+{
+  "title": "Feedback",
+  "subtitle": "Gere uma análise do seu período com base nos seus dados (peso, estudos, consistência, revisões, diário e vagas).",
+  "period": "Período",
+  "generate": "Gerar feedback",
+  "generating": "Gerando…",
+  "generated": "Feedback gerado com sucesso.",
+  "history": "Histórico",
+  "historyEmpty": "Nenhum feedback ainda. Gere o primeiro acima.",
+  "selectPrompt": "Gere um feedback ou selecione um do histórico para visualizar.",
+  "period": {
+    "d7": "Últimos 7 dias",
+    "d15": "Últimos 15 dias",
+    "d30": "Últimos 30 dias",
+    "d60": "Últimos 60 dias",
+    "y1": "Último ano",
+    "all": "Desde o começo"
+  }
+}

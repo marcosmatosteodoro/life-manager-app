@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { DropdownMenu } from '@/components/ui/DropdownMenu';
 import { useThemeToggle } from '@/hooks/useThemeToggle';
 import { authService } from '@/services/authService';
@@ -11,6 +12,7 @@ import { authService } from '@/services/authService';
  */
 export function HeaderMenu() {
   const router = useRouter();
+  const { t } = useTranslation('common');
   const { theme, toggle } = useThemeToggle();
 
   function handleLogout() {
@@ -20,14 +22,14 @@ export function HeaderMenu() {
 
   return (
     <DropdownMenu
-      ariaLabel="Menu"
+      ariaLabel={t('menu')}
       icon={<HamburgerIcon className="h-5 w-5" />}
       items={[
         {
-          label: theme === 'dark' ? 'Tema claro' : 'Tema escuro',
+          label: theme === 'dark' ? t('themeLight') : t('themeDark'),
           onClick: () => void toggle(),
         },
-        { label: 'Sair', onClick: handleLogout, danger: true },
+        { label: t('logout'), onClick: handleLogout, danger: true },
       ]}
     />
   );

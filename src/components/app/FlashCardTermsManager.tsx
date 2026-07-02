@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
@@ -28,6 +29,7 @@ function cleanTerm(raw: string): string {
 }
 
 export function FlashCardTermsManager({ groupId }: { groupId: number }) {
+  const { t } = useTranslation(['flashcards', 'common']);
   const [groupName, setGroupName] = useState('');
   const [cards, setCards] = useState<FlashCard[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
@@ -59,10 +61,10 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
       setCards(group.flashCards ?? []);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, [groupId]);
+  }, [groupId, t]);
 
   useEffect(() => {
     void load();
@@ -95,11 +97,11 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
         term: cleanTerm(draftTerm),
         value: draftValue.trim() ? draftValue.trim() : null,
       });
-      toast.success('Termo atualizado com sucesso.');
+      toast.success(t('termUpdated'));
       setEditingId(null);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSavingEdit(false);
     }
@@ -110,11 +112,11 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
     setDeleteInProgress(true);
     try {
       await flashCardService.remove(deleting.id);
-      toast.success('Termo excluído com sucesso.');
+      toast.success(t('termDeleted'));
       setDeleting(null);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setDeleteInProgress(false);
     }
@@ -129,14 +131,14 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
         value: newValue.trim() ? newValue.trim() : null,
         flashCardGroupId: groupId,
       });
-      toast.success('Termo adicionado com sucesso.');
+      toast.success(t('termAdded'));
       // Continua na tela para adicionar quantos quiser.
       setNewTerm('');
       setNewValue('');
       newTermRef.current?.focus();
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setAdding(false);
     }
@@ -156,11 +158,11 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
         href="/revisar"
         className="text-sm text-fg-muted transition-colors hover:text-fg"
       >
-        ← Voltar para grupos
+        {t('backToGroups')}
       </Link>
 
       <h1 className="mt-2 text-2xl font-semibold tracking-tight text-fg">
-        {loadState === 'loaded' ? groupName : 'Gerenciar termos'}
+        {loadState === 'loaded' ? groupName : t('manageTermsTitle')}
       </h1>
 
       <div className="mt-6">
@@ -170,7 +172,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             <p className="whitespace-pre-line">{loadError.join('\n')}</p>
             <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-              Tentar novamente
+              {t('common:retry')}
             </Button>
           </div>
         )}
@@ -179,7 +181,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
           <div className="flex flex-col gap-3">
             {cards.length === 0 && (
               <p className="rounded-lg border border-dashed border-edge-strong px-4 py-8 text-center text-sm text-fg-muted">
-                Nenhum termo ainda. Adicione o primeiro abaixo.
+                {t('emptyTerms')}
               </p>
             )}
 
@@ -197,7 +199,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                     <div className="flex flex-1 flex-col gap-2">
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <input
-                          aria-label="Termo"
+                          aria-label={t('fieldTerm')}
                           value={isEditing ? draftTerm : card.term}
                           readOnly={!isEditing}
                           onChange={(e) => setDraftTerm(e.target.value)}
@@ -209,10 +211,10 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                           )}
                         />
                         <input
-                          aria-label="Tradução"
+                          aria-label={t('fieldTranslation')}
                           value={isEditing ? draftValue : (card.value ?? '')}
                           readOnly={!isEditing}
-                          placeholder={isEditing ? 'Tradução (opcional)' : ''}
+                          placeholder={isEditing ? t('translationPlaceholder') : ''}
                           onChange={(e) => setDraftValue(e.target.value)}
                           className={cn(
                             baseInput,
@@ -224,12 +226,10 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                       </div>
                       <div className="flex items-center gap-3 px-1 text-xs">
                         <span className="font-medium text-emerald-600">
-                          ✓ {card.correctAnswers} acerto
-                          {card.correctAnswers === 1 ? '' : 's'}
+                          {t('correctCount', { count: card.correctAnswers })}
                         </span>
                         <span className="font-medium text-red-600">
-                          ✗ {card.wrongAnswers} erro
-                          {card.wrongAnswers === 1 ? '' : 's'}
+                          {t('wrongCount', { count: card.wrongAnswers })}
                         </span>
                       </div>
                     </div>
@@ -237,23 +237,23 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                       {isEditing ? (
                         <>
                           <Button onClick={() => void saveEdit(card)} disabled={savingEdit}>
-                            {savingEdit ? 'Salvando...' : 'Salvar'}
+                            {savingEdit ? t('saving') : t('common:save')}
                           </Button>
                           <Button variant="secondary" onClick={cancelEdit} disabled={savingEdit}>
-                            Cancelar
+                            {t('common:cancel')}
                           </Button>
                         </>
                       ) : (
                         <>
                           <Button variant="ghost" onClick={() => startEdit(card)}>
-                            Editar
+                            {t('common:edit')}
                           </Button>
                           <Button
                             variant="ghost"
                             className="text-red-600 hover:bg-red-50 hover:text-red-700"
                             onClick={() => setDeleting(card)}
                           >
-                            Excluir
+                            {t('common:delete')}
                           </Button>
                         </>
                       )}
@@ -276,11 +276,11 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                 <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
                   <input
                     ref={newTermRef}
-                    aria-label="Novo termo"
+                    aria-label={t('newTerm')}
                     required
                     value={newTerm}
                     onChange={(e) => setNewTerm(e.target.value)}
-                    placeholder="Termo"
+                    placeholder={t('termPlaceholder')}
                     aria-invalid={duplicateTerm ? true : undefined}
                     className={cn(
                       baseInput,
@@ -290,22 +290,25 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                     )}
                   />
                   <input
-                    aria-label="Nova tradução"
+                    aria-label={t('newTranslation')}
                     value={newValue}
                     onChange={(e) => setNewValue(e.target.value)}
-                    placeholder="Tradução (opcional)"
+                    placeholder={t('translationPlaceholder')}
                     className={cn(baseInput, 'border-edge-strong focus:border-edge-inverse')}
                   />
                 </div>
                 <div className="shrink-0">
                   <Button type="submit" disabled={adding}>
-                    {adding ? 'Adicionando...' : 'Adicionar termo'}
+                    {adding ? t('adding') : t('addTerm')}
                   </Button>
                 </div>
               </div>
               {duplicateTerm && (
                 <p className="mt-2 pl-9 text-xs text-amber-700">
-                  {`"${duplicateTerm.term}" já existe na lista (posição ${duplicateIndex + 1}). Você ainda pode adicionar se quiser.`}
+                  {t('duplicateTerm', {
+                    term: duplicateTerm.term,
+                    position: duplicateIndex + 1,
+                  })}
                 </p>
               )}
             </form>
@@ -315,13 +318,13 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
 
       <ConfirmDialog
         open={deleting !== null}
-        title="Excluir termo"
+        title={t('deleteTermTitle')}
         description={
           deleting
-            ? `Tem certeza que deseja excluir "${deleting.term}"? Essa ação não pode ser desfeita.`
+            ? t('deleteTermDescription', { term: deleting.term })
             : ''
         }
-        confirmLabel="Excluir"
+        confirmLabel={t('common:delete')}
         loading={deleteInProgress}
         onConfirm={() => void confirmDelete()}
         onCancel={() => {
@@ -332,7 +335,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

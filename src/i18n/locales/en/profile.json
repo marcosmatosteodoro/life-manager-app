@@ -1,0 +1,20 @@
+{
+  "title": "My profile",
+  "subtitle": "Your data and preferences.",
+  "changePasswordTitle": "Change password",
+  "changePasswordSubtitle": "Enter your current password and the new one.",
+  "fieldName": "Name",
+  "fieldUsername": "Username",
+  "fieldEmail": "Email",
+  "fieldHeight": "Height (cm)",
+  "fieldTheme": "Theme",
+  "fieldLanguage": "Language",
+  "saveProfile": "Save profile",
+  "profileUpdated": "Profile updated.",
+  "saveError": "Could not save the profile.",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeCustom": "Custom (coming soon)",
+  "languagePt": "Portuguese (BR)",
+  "languageEn": "English (US)"
+}

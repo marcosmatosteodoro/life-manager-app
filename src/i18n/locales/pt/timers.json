@@ -1,0 +1,23 @@
+{
+  "pomodoroTitle": "Pomodoro",
+  "focus": "Foco",
+  "break": "Pausa",
+  "resume": "Continuar",
+  "start": "Iniciar",
+  "pause": "Pausar",
+  "reset": "Reiniciar",
+  "pomodoroHint": "Toca um som ao trocar de foco/pausa. Trocar o modo reinicia o ciclo.",
+  "stopwatchTitle": "Cronômetro",
+  "statusRunning": "Em andamento",
+  "statusPaused": "Pausado",
+  "statusIdle": "Pronto",
+  "stop": "Parar",
+  "copy": "Copiar",
+  "copyTitle": "Clique para copiar (em minutos)",
+  "copyHint": "Clique no número para copiar (em minutos).",
+  "copied": "Valor copiado: {{minutes}} min",
+  "copyFailed": "Não foi possível copiar o valor.",
+  "unitSeconds": "segundos",
+  "unitMinutesSeconds": "minutos : segundos",
+  "unitHoursMinutes": "horas : minutos"
+}

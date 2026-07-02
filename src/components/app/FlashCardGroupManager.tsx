@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
@@ -19,6 +20,7 @@ import { FlashCardGroupList } from './FlashCardGroupList';
 type LoadState = 'loading' | 'loaded' | 'error';
 
 export function FlashCardGroupManager() {
+  const { t } = useTranslation(['flashcards', 'common']);
   const router = useRouter();
   const [groups, setGroups] = useState<FlashCardGroup[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
@@ -42,10 +44,10 @@ export function FlashCardGroupManager() {
       setGroups(rows);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -75,15 +77,15 @@ export function FlashCardGroupManager() {
     try {
       if (editing) {
         await flashCardGroupService.update(editing.id, input);
-        toast.success('Grupo atualizado com sucesso.');
+        toast.success(t('groupUpdated'));
       } else {
         await flashCardGroupService.create(input);
-        toast.success('Grupo criado com sucesso.');
+        toast.success(t('groupCreated'));
       }
       setFormOpen(false);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSubmitting(false);
     }
@@ -94,11 +96,11 @@ export function FlashCardGroupManager() {
     setDeleteInProgress(true);
     try {
       await flashCardGroupService.remove(deleting.id);
-      toast.success('Grupo excluído com sucesso.');
+      toast.success(t('groupDeleted'));
       setDeleting(null);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setDeleteInProgress(false);
     }
@@ -109,11 +111,11 @@ export function FlashCardGroupManager() {
     setAbsorbInProgress(true);
     try {
       await flashCardGroupService.absorb(absorbing.id, sourceId);
-      toast.success('Lista absorvida com sucesso.');
+      toast.success(t('listAbsorbed'));
       setAbsorbing(null);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setAbsorbInProgress(false);
     }
@@ -123,9 +125,9 @@ export function FlashCardGroupManager() {
     <section className="mx-auto w-full max-w-2xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold tracking-tight text-fg">
-          Flashcards
+          {t('title')}
         </h1>
-        <Button onClick={openCreate}>Novo grupo</Button>
+        <Button onClick={openCreate}>{t('newGroup')}</Button>
       </div>
 
       <div className="mt-6">
@@ -134,7 +136,7 @@ export function FlashCardGroupManager() {
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             <p className="whitespace-pre-line">{loadError.join('\n')}</p>
             <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-              Tentar novamente
+              {t('common:retry')}
             </Button>
           </div>
         )}
@@ -154,7 +156,7 @@ export function FlashCardGroupManager() {
 
       <Modal
         open={formOpen}
-        title={editing ? 'Editar grupo' : 'Novo grupo'}
+        title={editing ? t('editGroup') : t('newGroup')}
         onClose={closeForm}
       >
         <FlashCardGroupForm
@@ -168,13 +170,13 @@ export function FlashCardGroupManager() {
 
       <ConfirmDialog
         open={deleting !== null}
-        title="Excluir grupo"
+        title={t('deleteGroupTitle')}
         description={
           deleting
-            ? `Tem certeza que deseja excluir "${deleting.name}"? Os flashcards do grupo também serão removidos.`
+            ? t('deleteGroupDescription', { name: deleting.name })
             : ''
         }
-        confirmLabel="Excluir"
+        confirmLabel={t('common:delete')}
         loading={deleteInProgress}
         onConfirm={() => void confirmDelete()}
         onCancel={() => {
@@ -197,7 +199,7 @@ export function FlashCardGroupManager() {
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { IconButton } from '@/components/ui/IconButton';
 import { useThemeToggle } from '@/hooks/useThemeToggle';
 
@@ -8,14 +9,15 @@ import { useThemeToggle } from '@/hooks/useThemeToggle';
  * Salva no navegador (localStorage) e no perfil (banco) via useThemeToggle.
  */
 export function ThemeToggle() {
+  const { t } = useTranslation('common');
   const { theme, toggle } = useThemeToggle();
   const isDark = theme === 'dark';
 
   return (
     <IconButton
       onClick={() => void toggle()}
-      aria-label={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-      title={isDark ? 'Tema claro' : 'Tema escuro'}
+      aria-label={isDark ? t('themeSwitchToLight') : t('themeSwitchToDark')}
+      title={isDark ? t('themeLight') : t('themeDark')}
     >
       {isDark ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
     </IconButton>

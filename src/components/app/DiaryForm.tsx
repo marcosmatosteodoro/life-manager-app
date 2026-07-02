@@ -1,6 +1,7 @@
 'use client';
 
 import { type FormEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
 import type { Diary } from '@/services/diary.types';
@@ -20,6 +21,7 @@ export function DiaryForm({
   onSubmit,
   onCancel,
 }: DiaryFormProps) {
+  const { t } = useTranslation(['diary', 'common']);
   const [day, setDay] = useState(initial?.day ?? todayDate());
   const [description, setDescription] = useState(initial?.description ?? '');
 
@@ -30,7 +32,7 @@ export function DiaryForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <Field label="Dia" htmlFor="day">
+      <Field label={t('diaryForm.day')} htmlFor="day">
         <input
           id="day"
           type="date"
@@ -40,23 +42,27 @@ export function DiaryForm({
           className={inputClass}
         />
       </Field>
-      <Field label="Descrição" htmlFor="description">
+      <Field label={t('diaryForm.description')} htmlFor="description">
         <textarea
           id="description"
           rows={6}
           required
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Escreva aqui..."
+          placeholder={t('diaryForm.descriptionPlaceholder')}
           className={inputClass}
         />
       </Field>
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="secondary" type="button" onClick={onCancel} disabled={submitting}>
-          Cancelar
+          {t('common:cancel')}
         </Button>
         <Button type="submit" disabled={submitting}>
-          {submitting ? 'Salvando...' : initial ? 'Salvar' : 'Registrar'}
+          {submitting
+            ? t('diaryForm.saving')
+            : initial
+              ? t('diaryForm.save')
+              : t('diaryForm.register')}
         </Button>
       </div>
     </form>

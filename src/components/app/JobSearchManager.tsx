@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/hooks/useToastStore';
@@ -30,6 +31,7 @@ const inputClass =
   'rounded-md border border-edge-strong px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-edge-inverse';
 
 export function JobSearchManager() {
+  const { t } = useTranslation(['jobs', 'common']);
   const [countries, setCountries] = useState<Country[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
@@ -63,10 +65,10 @@ export function JobSearchManager() {
       setCompanies(companyRes.rows);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -82,7 +84,7 @@ export function JobSearchManager() {
 
   async function handleSearch() {
     if (providers.length === 0) {
-      toast.error('Selecione ao menos um provedor.');
+      toast.error(t('jobs:search.selectProvider'));
       return;
     }
     setSearchState('searching');
@@ -95,7 +97,7 @@ export function JobSearchManager() {
       setRows(found);
       setSearchState('done');
     } catch (error) {
-      setSearchError(toMessages(error));
+      setSearchError(toMessages(error, t('common:unexpectedError')));
       setSearchState('error');
     }
   }
@@ -104,10 +106,10 @@ export function JobSearchManager() {
     setSubmittingApply(true);
     try {
       await applyService.create(input);
-      toast.success('Candidatura salva com sucesso.');
+      toast.success(t('jobs:search.applySaved'));
       setSavingJob(null);
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSubmittingApply(false);
     }
@@ -116,18 +118,17 @@ export function JobSearchManager() {
   return (
     <section className="mx-auto w-full max-w-3xl">
       <h1 className="text-2xl font-semibold tracking-tight text-fg">
-        Buscar vagas
+        {t('jobs:search.title')}
       </h1>
       <p className="mt-1 text-sm text-fg-muted">
-        Vagas remotas ranqueadas pela sua stack. Salve as que aplicar como
-        candidatura.
+        {t('jobs:search.subtitle')}
       </p>
 
       {loadState === 'error' && (
         <div className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
           <p className="whitespace-pre-line">{loadError.join('\n')}</p>
           <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-            Tentar novamente
+            {t('common:retry')}
           </Button>
         </div>
       )}
@@ -139,7 +140,7 @@ export function JobSearchManager() {
             <div className="flex flex-wrap items-end gap-4">
               <label className="flex flex-col gap-1.5">
                 <span className="text-sm font-medium text-fg-soft">
-                  Período
+                  {t('jobs:search.period')}
                 </span>
                 <select
                   value={period}
@@ -150,7 +151,7 @@ export function JobSearchManager() {
                 >
                   {JOB_PERIOD_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>
-                      {o.label}
+                      {t(`jobs:${o.labelKey}`)}
                     </option>
                   ))}
                 </select>
@@ -158,14 +159,14 @@ export function JobSearchManager() {
 
               <label className="flex flex-col gap-1.5">
                 <span className="text-sm font-medium text-fg-soft">
-                  País
+                  {t('jobs:search.country')}
                 </span>
                 <select
                   value={countryId}
                   onChange={(e) => setCountryId(e.target.value)}
                   className={inputClass}
                 >
-                  <option value="">Padrão (Brasil)</option>
+                  <option value="">{t('jobs:search.countryDefault')}</option>
                   {countries.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name} ({c.code})
@@ -176,7 +177,7 @@ export function JobSearchManager() {
 
               <fieldset className="flex flex-col gap-1.5">
                 <span className="text-sm font-medium text-fg-soft">
-                  Provedores
+                  {t('jobs:search.providers')}
                 </span>
                 <div className="flex items-center gap-3 py-2">
                   {JOB_PROVIDER_OPTIONS.map((o) => (
@@ -199,12 +200,13 @@ export function JobSearchManager() {
                 onClick={() => void handleSearch()}
                 disabled={searchState === 'searching'}
               >
-                {searchState === 'searching' ? 'Buscando…' : 'Buscar'}
+                {searchState === 'searching'
+                  ? t('jobs:search.searching')
+                  : t('jobs:search.search')}
               </Button>
             </div>
             <p className="text-xs text-fg-subtle">
-              Apenas vagas remotas. Sinais de contratação internacional sobem no
-              ranking (heurística).
+              {t('jobs:search.heuristicNote')}
             </p>
           </div>
 
@@ -218,15 +220,14 @@ export function JobSearchManager() {
 
             {searchState === 'done' && rows.length === 0 && (
               <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
-                Nenhuma vaga encontrada com esses filtros.
+                {t('jobs:search.noResults')}
               </p>
             )}
 
             {searchState === 'done' && rows.length > 0 && (
               <>
                 <p className="mb-2 text-sm text-fg-muted">
-                  {rows.length} vaga{rows.length === 1 ? '' : 's'} encontrada
-                  {rows.length === 1 ? '' : 's'}.
+                  {t('jobs:search.resultsCount', { count: rows.length })}
                 </p>
                 <ul className="flex flex-col gap-3">
                   {rows.map((job, index) => (
@@ -246,16 +247,16 @@ export function JobSearchManager() {
       {/* Modal: salvar como candidatura */}
       <Modal
         open={savingJob !== null}
-        title="Salvar como candidatura"
+        title={t('jobs:search.saveAsApply')}
         onClose={() => {
           if (!submittingApply) setSavingJob(null);
         }}
       >
         {companies.length === 0 ? (
           <p className="text-sm text-fg-muted">
-            Você precisa cadastrar uma empresa antes de salvar.{' '}
+            {t('jobs:search.needCompanyToSave')}{' '}
             <Link href="/vagas/empresas" className="font-medium underline">
-              Criar empresa
+              {t('jobs:search.createCompany')}
             </Link>
             .
           </p>
@@ -283,6 +284,7 @@ export function JobSearchManager() {
 }
 
 function JobCard({ job, onSave }: { job: JobRow; onSave: () => void }) {
+  const { t } = useTranslation('jobs');
   const salary =
     job.salaryMin || job.salaryMax
       ? `${fmtSalary(job.salaryMin)}–${fmtSalary(job.salaryMax)}`
@@ -308,14 +310,16 @@ function JobCard({ job, onSave }: { job: JobRow; onSave: () => void }) {
           <span className="rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium uppercase text-fg-muted">
             {job.source}
           </span>
-          <span className="text-xs text-fg-subtle">score {job.score}</span>
+          <span className="text-xs text-fg-subtle">
+            {t('search.score', { score: job.score })}
+          </span>
         </div>
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-1.5">
         {job.hiresInternational && (
           <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
-            Possível contratação internacional
+            {t('search.hiresInternational')}
           </span>
         )}
         {job.matchedKeywords.map((kw) => (
@@ -336,10 +340,10 @@ function JobCard({ job, onSave }: { job: JobRow; onSave: () => void }) {
 
       <div className="mt-3 flex gap-2">
         <a href={job.url} target="_blank" rel="noopener noreferrer">
-          <Button variant="secondary">Abrir vaga</Button>
+          <Button variant="secondary">{t('search.openJob')}</Button>
         </a>
         <Button variant="ghost" onClick={onSave}>
-          Salvar
+          {t('search.saveJob')}
         </Button>
       </div>
     </li>
@@ -351,7 +355,7 @@ function fmtSalary(value: number | null): string {
   return value >= 1000 ? `${Math.round(value / 1000)}k` : String(value);
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

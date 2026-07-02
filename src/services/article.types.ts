@@ -42,11 +42,3 @@ export interface ArticleListResponse {
   count: number;
   rows: Article[];
 }
-
-/** Rótulos PT-BR para o status (exibição no front). */
-export const ARTICLE_STATUS_LABELS: Record<ArticleStatus, string> = {
-  READING_IN_PROGRESS: 'Leitura em progresso',
-  SUMMARY_IN_PROGRESS: 'Resumo em progresso',
-  APPLYING_CORRECTION: 'Aplicando correção',
-  COMPLETED: 'Concluído',
-};

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
@@ -15,6 +16,7 @@ import { WeightList } from './WeightList';
 type LoadState = 'loading' | 'loaded' | 'error';
 
 export function WeightManager() {
+  const { t } = useTranslation(['weight', 'common']);
   const [weights, setWeights] = useState<Weight[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -33,10 +35,10 @@ export function WeightManager() {
       setWeights(rows);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -62,16 +64,16 @@ export function WeightManager() {
     try {
       if (editing) {
         await weightService.update(editing.id, input);
-        toast.success('Peso atualizado com sucesso.');
+        toast.success(t('updated'));
       } else {
         await weightService.create(input);
-        toast.success('Peso registrado com sucesso.');
+        toast.success(t('created'));
       }
       setFormOpen(false);
       await load();
     } catch (error) {
       // Exibe as mensagens que o backend devolveu.
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSubmitting(false);
     }
@@ -82,11 +84,11 @@ export function WeightManager() {
     setDeleteInProgress(true);
     try {
       await weightService.remove(deleting.id);
-      toast.success('Peso excluído com sucesso.');
+      toast.success(t('deleted'));
       setDeleting(null);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setDeleteInProgress(false);
     }
@@ -96,9 +98,9 @@ export function WeightManager() {
     <section className="mx-auto w-full max-w-2xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold tracking-tight text-fg">
-          Peso
+          {t('title')}
         </h1>
-        <Button onClick={openCreate}>Registrar novo peso</Button>
+        <Button onClick={openCreate}>{t('registerNew')}</Button>
       </div>
 
       {loadState === 'loaded' && weights[0] && (
@@ -114,7 +116,7 @@ export function WeightManager() {
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             <p className="whitespace-pre-line">{loadError.join('\n')}</p>
             <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-              Tentar novamente
+              {t('common:retry')}
             </Button>
           </div>
         )}
@@ -131,7 +133,7 @@ export function WeightManager() {
 
       <Modal
         open={formOpen}
-        title={editing ? 'Editar peso' : 'Registrar novo peso'}
+        title={editing ? t('editTitle') : t('registerNew')}
         onClose={closeForm}
       >
         <WeightForm
@@ -145,13 +147,13 @@ export function WeightManager() {
 
       <ConfirmDialog
         open={deleting !== null}
-        title="Excluir peso"
+        title={t('deleteTitle')}
         description={
           deleting
-            ? `Tem certeza que deseja excluir o registro de ${deleting.value.toFixed(2)} kg? Essa ação não pode ser desfeita.`
+            ? t('deleteDescription', { value: deleting.value.toFixed(2) })
             : ''
         }
-        confirmLabel="Excluir"
+        confirmLabel={t('common:delete')}
         loading={deleteInProgress}
         onConfirm={() => void confirmDelete()}
         onCancel={() => {
@@ -163,7 +165,7 @@ export function WeightManager() {
 }
 
 /** Extrai mensagens exibíveis de um erro (ApiError ou genérico). */
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

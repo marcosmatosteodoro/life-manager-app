@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocaleStore } from '@/hooks/useLocaleStore';
 import { usePomodoroStore } from '@/hooks/usePomodoroStore';
 import { useStopwatchStore } from '@/hooks/useStopwatchStore';
 import { useThemeStore } from '@/hooks/useThemeStore';
@@ -15,6 +17,7 @@ import { cn } from '@/utils/cn';
  * qualquer tela, o estado "rodando" seja conhecido aqui também.
  */
 export function RunningTimersIndicator() {
+  const { t } = useTranslation('common');
   const stopwatchRunning = useStopwatchStore((s) => s.running);
   const pomodoroRunning = usePomodoroStore((s) => s.running);
   const pomodoroPhase = usePomodoroStore((s) => s.phase);
@@ -22,9 +25,10 @@ export function RunningTimersIndicator() {
   useEffect(() => {
     void useStopwatchStore.persist.rehydrate();
     void usePomodoroStore.persist.rehydrate();
-    // Sincroniza o estado React do tema com o localStorage (o visual já foi
-    // aplicado antes do paint pelo script inline do layout).
+    // Sincroniza o estado React do tema/idioma com o localStorage (o visual já
+    // foi aplicado antes do paint pelo script inline do layout).
     void useThemeStore.persist.rehydrate();
+    void useLocaleStore.persist.rehydrate();
   }, []);
 
   if (!stopwatchRunning && !pomodoroRunning) return null;
@@ -36,8 +40,8 @@ export function RunningTimersIndicator() {
       {stopwatchRunning && (
         <Pill
           href="/cronometro"
-          label="Cronômetro"
-          title="Cronômetro em andamento — toque para abrir"
+          label={t('stopwatch')}
+          title={t('stopwatchRunning')}
           className="bg-emerald-50 text-emerald-700"
           dotClassName="bg-emerald-500"
         />
@@ -45,8 +49,8 @@ export function RunningTimersIndicator() {
       {pomodoroRunning && (
         <Pill
           href="/pomodoro"
-          label={isFocus ? 'Foco' : 'Pausa'}
-          title={`Pomodoro em andamento (${isFocus ? 'foco' : 'pausa'}) — toque para abrir`}
+          label={isFocus ? t('focus') : t('breakLabel')}
+          title={isFocus ? t('pomodoroRunningFocus') : t('pomodoroRunningBreak')}
           className={
             isFocus
               ? 'bg-rose-50 text-rose-700'

@@ -1,3 +1,5 @@
+import i18n from '@/i18n/config';
+import { useLocaleStore } from '@/hooks/useLocaleStore';
 import { clearToken, getToken } from './authToken';
 
 // Remove barras finais para evitar URLs com "//" ao concatenar com o path.
@@ -35,8 +37,11 @@ export async function apiRequest<T>(
 ): Promise<T> {
   // Anexa o token JWT (quando houver) preservando headers do chamador.
   const token = getToken();
+  // Idioma atual → o back traduz mensagens pelo Accept-Language.
+  const locale = useLocaleStore.getState().locale;
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    'Accept-Language': locale === 'en' ? 'en-US' : 'pt-BR',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...((init?.headers as Record<string, string>) ?? {}),
   };
@@ -49,10 +54,7 @@ export async function apiRequest<T>(
     });
   } catch {
     // Falha de rede / servidor fora do ar.
-    throw new ApiError(
-      ['Não foi possível conectar à API. Verifique se o servidor está no ar.'],
-      0,
-    );
+    throw new ApiError([i18n.t('common:networkError')], 0);
   }
 
   if (response.status === 204) {
@@ -72,7 +74,7 @@ export async function apiRequest<T>(
       window.location.href = '/login';
     }
     throw new ApiError(
-      extractMessages(body, 'Ocorreu um erro inesperado.'),
+      extractMessages(body, i18n.t('common:unexpectedError')),
       response.status,
     );
   }

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
@@ -16,6 +17,7 @@ import { TodoList } from './TodoList';
 type LoadState = 'loading' | 'loaded' | 'error';
 
 export function TodoManager() {
+  const { t } = useTranslation(['todo', 'common']);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -41,10 +43,10 @@ export function TodoManager() {
       setTags(tagList);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -69,15 +71,15 @@ export function TodoManager() {
     try {
       if (editing) {
         await todoService.update(editing.id, input);
-        toast.success('Afazer atualizado com sucesso.');
+        toast.success(t('todo:updated'));
       } else {
         await todoService.create(input);
-        toast.success('Afazer criado com sucesso.');
+        toast.success(t('todo:created'));
       }
       setFormOpen(false);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSubmitting(false);
     }
@@ -88,11 +90,11 @@ export function TodoManager() {
     setDeleteInProgress(true);
     try {
       await todoService.remove(deleting.id);
-      toast.success('Afazer excluído com sucesso.');
+      toast.success(t('todo:deleted'));
       setDeleting(null);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setDeleteInProgress(false);
     }
@@ -104,14 +106,14 @@ export function TodoManager() {
         href="/afazeres"
         className="text-sm text-fg-muted transition-colors hover:text-fg"
       >
-        ← Voltar para hoje
+        {t('todo:backToToday')}
       </Link>
 
       <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold tracking-tight text-fg">
-          Gerenciar afazeres
+          {t('todo:manageTitle')}
         </h1>
-        <Button onClick={openCreate}>Novo afazer</Button>
+        <Button onClick={openCreate}>{t('todo:new')}</Button>
       </div>
 
       <div className="mt-6">
@@ -125,7 +127,7 @@ export function TodoManager() {
               className="mt-3"
               onClick={() => void load()}
             >
-              Tentar novamente
+              {t('common:retry')}
             </Button>
           </div>
         )}
@@ -142,7 +144,7 @@ export function TodoManager() {
 
       <Modal
         open={formOpen}
-        title={editing ? 'Editar afazer' : 'Novo afazer'}
+        title={editing ? t('todo:editTitle') : t('todo:newTitle')}
         onClose={closeForm}
       >
         <TodoForm
@@ -157,7 +159,11 @@ export function TodoManager() {
 
       <Modal
         open={checksTodo !== null}
-        title={checksTodo ? `Checks — ${checksTodo.name}` : 'Checks'}
+        title={
+          checksTodo
+            ? t('todo:checksTitle', { name: checksTodo.name })
+            : t('todo:checks')
+        }
         onClose={() => setChecksTodo(null)}
       >
         {checksTodo && <TodoChecksModal todo={checksTodo} />}
@@ -165,13 +171,13 @@ export function TodoManager() {
 
       <ConfirmDialog
         open={deleting !== null}
-        title="Excluir afazer"
+        title={t('todo:deleteTitle')}
         description={
           deleting
-            ? `Tem certeza que deseja excluir "${deleting.name}"? Os checks dele também serão removidos. Essa ação não pode ser desfeita.`
+            ? t('todo:deleteDescription', { name: deleting.name })
             : ''
         }
-        confirmLabel="Excluir"
+        confirmLabel={t('common:delete')}
         loading={deleteInProgress}
         onConfirm={() => void confirmDelete()}
         onCancel={() => {
@@ -182,7 +188,7 @@ export function TodoManager() {
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

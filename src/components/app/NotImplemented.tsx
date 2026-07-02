@@ -1,5 +1,10 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
+
 /** Placeholder para recursos ainda não implementados. */
 export function NotImplemented({ title }: { title: string }) {
+  const { t } = useTranslation('common');
   return (
     <section className="mx-auto w-full max-w-2xl">
       <h1 className="text-2xl font-semibold tracking-tight text-fg">
@@ -10,10 +15,10 @@ export function NotImplemented({ title }: { title: string }) {
           🚧
         </span>
         <p className="text-sm font-medium text-fg-soft">
-          Ainda não implementado
+          {t('notImplemented')}
         </p>
         <p className="text-sm text-fg-muted">
-          Este recurso estará disponível em breve.
+          {t('notImplementedHint')}
         </p>
       </div>
     </section>

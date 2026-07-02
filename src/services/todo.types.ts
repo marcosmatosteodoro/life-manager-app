@@ -51,20 +51,26 @@ export interface TodoCheckListResponse {
 }
 
 /** Dias da semana (ISO 1=seg … 7=dom) para seletores e exibição. */
-export const WEEKDAYS: { value: number; short: string; long: string }[] = [
-  { value: 1, short: 'Seg', long: 'Segunda' },
-  { value: 2, short: 'Ter', long: 'Terça' },
-  { value: 3, short: 'Qua', long: 'Quarta' },
-  { value: 4, short: 'Qui', long: 'Quinta' },
-  { value: 5, short: 'Sex', long: 'Sexta' },
-  { value: 6, short: 'Sáb', long: 'Sábado' },
-  { value: 7, short: 'Dom', long: 'Domingo' },
+export const WEEKDAYS: { value: number; shortKey: string; longKey: string }[] = [
+  { value: 1, shortKey: 'weekday.short.1', longKey: 'weekday.long.1' },
+  { value: 2, shortKey: 'weekday.short.2', longKey: 'weekday.long.2' },
+  { value: 3, shortKey: 'weekday.short.3', longKey: 'weekday.long.3' },
+  { value: 4, shortKey: 'weekday.short.4', longKey: 'weekday.long.4' },
+  { value: 5, shortKey: 'weekday.short.5', longKey: 'weekday.long.5' },
+  { value: 6, shortKey: 'weekday.short.6', longKey: 'weekday.long.6' },
+  { value: 7, shortKey: 'weekday.short.7', longKey: 'weekday.long.7' },
 ];
 
 /** Rótulo curto dos dias de um todo (ex.: "Seg, Qua, Sex"). */
-export function formatDays(days: number[]): string {
+export function formatDays(
+  days: number[],
+  translate: (key: string) => string,
+): string {
   return [...days]
     .sort((a, b) => a - b)
-    .map((d) => WEEKDAYS.find((w) => w.value === d)?.short ?? d)
+    .map((d) => {
+      const key = WEEKDAYS.find((w) => w.value === d)?.shortKey;
+      return key ? translate(key) : d;
+    })
     .join(', ');
 }

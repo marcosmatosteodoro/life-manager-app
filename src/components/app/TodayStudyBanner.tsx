@@ -1,10 +1,16 @@
 'use client';
 
-import {
-  ARTICLE_STATUS_LABELS,
-  type Article,
-} from '@/services/article.types';
+import { useTranslation } from 'react-i18next';
+import type { Article, ArticleStatus } from '@/services/article.types';
 import { formatDateTime } from '@/utils/date';
+
+// Mapeia o status do artigo para a chave i18n (namespace articles).
+const STATUS_KEY: Record<ArticleStatus, string> = {
+  READING_IN_PROGRESS: 'statusReadingInProgress',
+  SUMMARY_IN_PROGRESS: 'statusSummaryInProgress',
+  APPLYING_CORRECTION: 'statusApplyingCorrection',
+  COMPLETED: 'statusCompleted',
+};
 
 interface TodayStudyBannerProps {
   /** Estudo registrado hoje (createdAt de hoje), ou null se não houver. */
@@ -16,6 +22,8 @@ interface TodayStudyBannerProps {
  * com o artigo do dia quando há.
  */
 export function TodayStudyBanner({ todayStudy }: TodayStudyBannerProps) {
+  const { t } = useTranslation('articles');
+
   if (!todayStudy) {
     return (
       <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800">
@@ -23,9 +31,11 @@ export function TodayStudyBanner({ todayStudy }: TodayStudyBannerProps) {
           📚
         </span>
         <div className="min-w-0">
-          <p className="text-sm font-semibold">Falta estudar hoje</p>
+          <p className="text-sm font-semibold">
+            {t('todayBanner.missingTitle')}
+          </p>
           <p className="text-sm text-amber-700">
-            Você ainda não registrou um estudo de inglês hoje.
+            {t('todayBanner.missingDescription')}
           </p>
         </div>
       </div>
@@ -39,15 +49,20 @@ export function TodayStudyBanner({ todayStudy }: TodayStudyBannerProps) {
       </span>
       <div className="min-w-0">
         <p className="text-sm font-semibold break-words">
-          Artigo de hoje: {todayStudy.title}
+          {t('todayBanner.todayArticle', { title: todayStudy.title })}
         </p>
         <p className="text-sm text-emerald-700">
-          {ARTICLE_STATUS_LABELS[todayStudy.status]} · registrado em{' '}
-          {formatDateTime(todayStudy.createdAt)}
+          {t('todayBanner.loggedAt', {
+            status: t(STATUS_KEY[todayStudy.status]),
+            datetime: formatDateTime(todayStudy.createdAt),
+          })}
           {todayStudy.timeRead !== null
-            ? ` · ${todayStudy.timeRead} min de leitura`
+            ? t('todayBanner.readingSuffix', { min: todayStudy.timeRead })
             : ''}
-          {todayStudy.score !== null ? ` · nota ${todayStudy.score}` : ''}.
+          {todayStudy.score !== null
+            ? t('todayBanner.scoreSuffix', { score: todayStudy.score })
+            : ''}
+          .
         </p>
       </div>
     </div>

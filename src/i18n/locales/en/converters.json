@@ -1,0 +1,43 @@
+{
+  "title": "Converters",
+  "subtitle": "Quick tools to evaluate jobs: currency, timezone and salary.",
+  "currency": {
+    "heading": "💱 Currency converter",
+    "description": "Converts job salaries/amounts (USD/CAD) to reais.",
+    "amount": "Amount",
+    "currency": "Currency",
+    "optionUsd": "USD (dollar)",
+    "optionCad": "CAD (Canadian dollar)",
+    "inReais": "In reais",
+    "fetchingRate": "Fetching rate…",
+    "autoRate": "1 {{currency}} = {{rate}} · updated {{date}}",
+    "useManualRate": "Use manual rate",
+    "manualRateLabel": "Rate (1 {{currency}} in R$)",
+    "manualRatePlaceholder": "e.g. 5.40",
+    "fetchError": "Could not fetch the exchange rate. Please enter the rate manually."
+  },
+  "salary": {
+    "heading": "💰 Salary converter",
+    "description": "From annual (how jobs usually advertise) to monthly, weekly and hourly. Values in the same currency you enter.",
+    "annual": "Annual salary",
+    "hoursPerWeek": "Hours/week",
+    "monthly": "Monthly",
+    "weekly": "Weekly",
+    "hourly": "Hourly",
+    "discountLabel": "Estimated deduction (taxes etc.) %",
+    "discountNote": "Simple estimate: applies the percentage to the gross. Real taxes vary by country/bracket.",
+    "netAnnual": "Net annual (approx.)",
+    "netMonthly": "Net monthly (approx.)"
+  },
+  "timezone": {
+    "heading": "🕐 Timezone converter",
+    "yourZone": "Your zone:",
+    "now": "Now",
+    "convertTime": "Convert a time",
+    "dateTime": "Date and time",
+    "from": "From",
+    "to": "To",
+    "inTargetZone": "In the target zone",
+    "yourZoneSuffix": "{{zone}} (your zone)"
+  }
+}

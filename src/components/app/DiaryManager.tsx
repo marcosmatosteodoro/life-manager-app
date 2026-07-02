@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
@@ -28,6 +29,7 @@ export function DiaryManager({
   todayPendingMessage,
   createLabel,
 }: DiaryManagerProps) {
+  const { t } = useTranslation(['diary', 'common']);
   const [entries, setEntries] = useState<Diary[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -51,10 +53,10 @@ export function DiaryManager({
       setEntries(rows);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, [type]);
+  }, [type, t]);
 
   useEffect(() => {
     void load();
@@ -79,15 +81,15 @@ export function DiaryManager({
     try {
       if (editing) {
         await diaryService.update(editing.id, { ...data, type });
-        toast.success('Registro atualizado com sucesso.');
+        toast.success(t('updated'));
       } else {
         await diaryService.create({ ...data, type });
-        toast.success('Registro criado com sucesso.');
+        toast.success(t('created'));
       }
       setFormOpen(false);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSubmitting(false);
     }
@@ -98,11 +100,11 @@ export function DiaryManager({
     setDeleteInProgress(true);
     try {
       await diaryService.remove(deleting.id);
-      toast.success('Registro excluído com sucesso.');
+      toast.success(t('deleted'));
       setDeleting(null);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setDeleteInProgress(false);
     }
@@ -132,7 +134,7 @@ export function DiaryManager({
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             <p className="whitespace-pre-line">{loadError.join('\n')}</p>
             <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-              Tentar novamente
+              {t('common:retry')}
             </Button>
           </div>
         )}
@@ -143,7 +145,7 @@ export function DiaryManager({
 
       <Modal
         open={formOpen}
-        title={editing ? 'Editar registro' : createLabel}
+        title={editing ? t('editTitle') : createLabel}
         onClose={closeForm}
       >
         <DiaryForm
@@ -157,9 +159,9 @@ export function DiaryManager({
 
       <ConfirmDialog
         open={deleting !== null}
-        title="Excluir registro"
-        description="Tem certeza que deseja excluir este registro? Essa ação não pode ser desfeita."
-        confirmLabel="Excluir"
+        title={t('deleteTitle')}
+        description={t('deleteDescription')}
+        confirmLabel={t('common:delete')}
         loading={deleteInProgress}
         onConfirm={() => void confirmDelete()}
         onCancel={() => {
@@ -170,7 +172,7 @@ export function DiaryManager({
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

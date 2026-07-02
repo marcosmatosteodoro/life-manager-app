@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
@@ -17,6 +18,7 @@ import { CompanyList } from './CompanyList';
 type LoadState = 'loading' | 'loaded' | 'error';
 
 export function CompanyManager() {
+  const { t } = useTranslation(['jobs', 'common']);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
@@ -42,10 +44,10 @@ export function CompanyManager() {
       setCountries(countryRes.rows);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -70,15 +72,15 @@ export function CompanyManager() {
     try {
       if (editing) {
         await companyService.update(editing.id, input);
-        toast.success('Empresa atualizada com sucesso.');
+        toast.success(t('jobs:companies.updated'));
       } else {
         await companyService.create(input);
-        toast.success('Empresa criada com sucesso.');
+        toast.success(t('jobs:companies.created'));
       }
       setFormOpen(false);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSubmitting(false);
     }
@@ -89,11 +91,11 @@ export function CompanyManager() {
     setDeleteInProgress(true);
     try {
       await companyService.remove(deleting.id);
-      toast.success('Empresa excluída com sucesso.');
+      toast.success(t('jobs:companies.deleted'));
       setDeleting(null);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setDeleteInProgress(false);
     }
@@ -103,18 +105,18 @@ export function CompanyManager() {
     <section className="mx-auto w-full max-w-2xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold tracking-tight text-fg">
-          Empresas
+          {t('jobs:companies.title')}
         </h1>
         <Button onClick={openCreate} disabled={!hasCountries}>
-          Nova empresa
+          {t('jobs:companies.new')}
         </Button>
       </div>
 
       {loadState === 'loaded' && !hasCountries && (
         <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          Você precisa cadastrar um país antes de criar uma empresa.{' '}
+          {t('jobs:companies.needCountry')}{' '}
           <Link href="/vagas/paises" className="font-medium underline">
-            Criar país
+            {t('jobs:companies.createCountry')}
           </Link>
           .
         </div>
@@ -126,7 +128,7 @@ export function CompanyManager() {
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             <p className="whitespace-pre-line">{loadError.join('\n')}</p>
             <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-              Tentar novamente
+              {t('common:retry')}
             </Button>
           </div>
         )}
@@ -141,7 +143,7 @@ export function CompanyManager() {
 
       <Modal
         open={formOpen}
-        title={editing ? 'Editar empresa' : 'Nova empresa'}
+        title={editing ? t('jobs:companies.editTitle') : t('jobs:companies.newTitle')}
         onClose={closeForm}
       >
         <CompanyForm
@@ -156,13 +158,13 @@ export function CompanyManager() {
 
       <ConfirmDialog
         open={deleting !== null}
-        title="Excluir empresa"
+        title={t('jobs:companies.deleteTitle')}
         description={
           deleting
-            ? `Tem certeza que deseja excluir "${deleting.name}"? Essa ação não pode ser desfeita.`
+            ? t('jobs:companies.deleteDescription', { name: deleting.name })
             : ''
         }
-        confirmLabel="Excluir"
+        confirmLabel={t('common:delete')}
         loading={deleteInProgress}
         onConfirm={() => void confirmDelete()}
         onCancel={() => {
@@ -173,7 +175,7 @@ export function CompanyManager() {
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

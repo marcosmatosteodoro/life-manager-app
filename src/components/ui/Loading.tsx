@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/utils/cn';
 
 interface LoadingProps {
@@ -10,7 +13,9 @@ interface LoadingProps {
  * Indicador de carregamento padrão: spinner + rótulo, centralizado na área.
  * Use em todos os estados de "carregando" do app.
  */
-export function Loading({ label = 'Carregando...', className }: LoadingProps) {
+export function Loading({ label, className }: LoadingProps) {
+  const { t } = useTranslation('common');
+  const text = label ?? t('loadingDots');
   return (
     <div
       role="status"
@@ -25,7 +30,7 @@ export function Loading({ label = 'Carregando...', className }: LoadingProps) {
         aria-hidden
         className="h-8 w-8 animate-spin rounded-full border-2 border-edge border-t-edge-inverse"
       />
-      <span className="text-sm">{label}</span>
+      <span className="text-sm">{text}</span>
     </div>
   );
 }

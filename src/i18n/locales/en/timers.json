@@ -1,0 +1,23 @@
+{
+  "pomodoroTitle": "Pomodoro",
+  "focus": "Focus",
+  "break": "Break",
+  "resume": "Resume",
+  "start": "Start",
+  "pause": "Pause",
+  "reset": "Reset",
+  "pomodoroHint": "Plays a sound when switching between focus/break. Changing the mode restarts the cycle.",
+  "stopwatchTitle": "Stopwatch",
+  "statusRunning": "Running",
+  "statusPaused": "Paused",
+  "statusIdle": "Ready",
+  "stop": "Stop",
+  "copy": "Copy",
+  "copyTitle": "Click to copy (in minutes)",
+  "copyHint": "Click the number to copy (in minutes).",
+  "copied": "Value copied: {{minutes}} min",
+  "copyFailed": "Could not copy the value.",
+  "unitSeconds": "seconds",
+  "unitMinutesSeconds": "minutes : seconds",
+  "unitHoursMinutes": "hours : minutes"
+}

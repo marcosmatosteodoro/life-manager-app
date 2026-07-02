@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import {
   COMMON_ZONES,
   formatInZone,
@@ -12,6 +14,7 @@ const inputClass =
   'w-full rounded-md border border-edge-strong px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-edge-inverse';
 
 export function TimezoneConverter() {
+  const { t } = useTranslation('converters');
   const local = useMemo(() => localTimeZone(), []);
   const [now, setNow] = useState<Date | null>(null);
 
@@ -32,16 +35,16 @@ export function TimezoneConverter() {
   return (
     <div className="rounded-lg border border-edge bg-surface p-4">
       <h2 className="text-sm font-semibold text-fg">
-        🕐 Conversor de fuso horário
+        {t('timezone.heading')}
       </h2>
       <p className="mt-0.5 text-xs text-fg-muted">
-        Seu fuso: <span className="font-medium">{local}</span>
+        {t('timezone.yourZone')} <span className="font-medium">{local}</span>
       </p>
 
       {/* Agora nos principais fusos */}
       <div className="mt-4">
         <span className="text-xs font-medium uppercase tracking-wide text-fg-subtle">
-          Agora
+          {t('timezone.now')}
         </span>
         <ul className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
           {COMMON_ZONES.map((z) => (
@@ -66,12 +69,12 @@ export function TimezoneConverter() {
       {/* Converter um horário específico */}
       <div className="mt-5 border-t border-edge pt-4">
         <span className="text-xs font-medium uppercase tracking-wide text-fg-subtle">
-          Converter um horário
+          {t('timezone.convertTime')}
         </span>
         <div className="mt-2 flex flex-col gap-3">
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-medium text-fg-soft">
-              Data e hora
+              {t('timezone.dateTime')}
             </span>
             <input
               type="datetime-local"
@@ -82,30 +85,36 @@ export function TimezoneConverter() {
           </label>
           <div className="flex flex-col gap-3 sm:flex-row">
             <label className="flex flex-1 flex-col gap-1.5">
-              <span className="text-sm font-medium text-fg-soft">De</span>
+              <span className="text-sm font-medium text-fg-soft">
+                {t('timezone.from')}
+              </span>
               <select
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
                 className={inputClass}
               >
-                {zoneOptions(local)}
+                {zoneOptions(local, t)}
               </select>
             </label>
             <label className="flex flex-1 flex-col gap-1.5">
-              <span className="text-sm font-medium text-fg-soft">Para</span>
+              <span className="text-sm font-medium text-fg-soft">
+                {t('timezone.to')}
+              </span>
               <select
                 value={target}
                 onChange={(e) => setTarget(e.target.value)}
                 className={inputClass}
               >
-                {zoneOptions(local)}
+                {zoneOptions(local, t)}
               </select>
             </label>
           </div>
         </div>
 
         <div className="mt-3 rounded-md bg-surface-muted px-3 py-3 text-center">
-          <span className="text-xs text-fg-subtle">No fuso de destino</span>
+          <span className="text-xs text-fg-subtle">
+            {t('timezone.inTargetZone')}
+          </span>
           <p className="text-lg font-semibold text-fg">
             {instant
               ? formatInZone(instant, target, {
@@ -124,10 +133,13 @@ export function TimezoneConverter() {
 }
 
 /** Opções do select, incluindo o fuso local caso não esteja na lista comum. */
-function zoneOptions(local: string) {
+function zoneOptions(local: string, t: TFunction) {
   const zones = COMMON_ZONES.some((z) => z.id === local)
     ? COMMON_ZONES
-    : [{ id: local, label: `${local} (seu fuso)` }, ...COMMON_ZONES];
+    : [
+        { id: local, label: t('timezone.yourZoneSuffix', { zone: local }) },
+        ...COMMON_ZONES,
+      ];
   return zones.map((z) => (
     <option key={z.id} value={z.id}>
       {z.label}

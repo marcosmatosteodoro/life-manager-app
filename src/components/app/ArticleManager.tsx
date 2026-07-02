@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
@@ -16,6 +17,7 @@ import { TodayStudyBanner } from './TodayStudyBanner';
 type LoadState = 'loading' | 'loaded' | 'error';
 
 export function ArticleManager() {
+  const { t } = useTranslation(['articles', 'common']);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -40,10 +42,10 @@ export function ArticleManager() {
       setArticles(rows);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -69,15 +71,15 @@ export function ArticleManager() {
     try {
       if (editing) {
         await articleService.update(editing.id, input);
-        toast.success('Estudo atualizado com sucesso.');
+        toast.success(t('studyUpdated'));
       } else {
         await articleService.create(input);
-        toast.success('Estudo registrado com sucesso.');
+        toast.success(t('studyCreated'));
       }
       setFormOpen(false);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSubmitting(false);
     }
@@ -92,10 +94,10 @@ export function ArticleManager() {
     try {
       const updated = await articleService.correctSummary(id);
       setArticles((prev) => prev.map((a) => (a.id === updated.id ? updated : a)));
-      toast.success('Resumo corrigido com sucesso.');
+      toast.success(t('summaryCorrected'));
       return updated;
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
       return null;
     }
   }
@@ -105,11 +107,11 @@ export function ArticleManager() {
     setDeleteInProgress(true);
     try {
       await articleService.remove(deleting.id);
-      toast.success('Estudo excluído com sucesso.');
+      toast.success(t('studyDeleted'));
       setDeleting(null);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setDeleteInProgress(false);
     }
@@ -119,9 +121,9 @@ export function ArticleManager() {
     <section className="mx-auto w-full max-w-2xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold tracking-tight text-fg">
-          Artigos
+          {t('title')}
         </h1>
-        <Button onClick={openCreate}>Registrar estudo</Button>
+        <Button onClick={openCreate}>{t('registerStudy')}</Button>
       </div>
 
       {loadState === 'loaded' && (
@@ -137,7 +139,7 @@ export function ArticleManager() {
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             <p className="whitespace-pre-line">{loadError.join('\n')}</p>
             <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-              Tentar novamente
+              {t('common:retry')}
             </Button>
           </div>
         )}
@@ -153,7 +155,7 @@ export function ArticleManager() {
 
       <Modal
         open={formOpen}
-        title={editing ? 'Editar estudo' : 'Registrar estudo'}
+        title={editing ? t('editStudy') : t('registerStudy')}
         onClose={closeForm}
       >
         <ArticleForm
@@ -168,9 +170,9 @@ export function ArticleManager() {
 
       <ConfirmDialog
         open={deleting !== null}
-        title="Excluir estudo"
-        description="Tem certeza que deseja excluir este estudo? Essa ação não pode ser desfeita."
-        confirmLabel="Excluir"
+        title={t('deleteTitle')}
+        description={t('deleteDescription')}
+        confirmLabel={t('common:delete')}
         loading={deleteInProgress}
         onConfirm={() => void confirmDelete()}
         onCancel={() => {
@@ -182,7 +184,7 @@ export function ArticleManager() {
 }
 
 /** Extrai mensagens exibíveis de um erro (ApiError ou genérico). */
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

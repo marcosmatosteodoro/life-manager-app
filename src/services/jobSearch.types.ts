@@ -39,9 +39,10 @@ export const JOB_PROVIDER_OPTIONS: { value: JobProvider; label: string }[] = [
   { value: 'jsearch', label: 'JSearch' },
 ];
 
-export const JOB_PERIOD_OPTIONS: { value: JobSearchPeriod; label: string }[] = [
-  { value: 'today', label: 'Hoje' },
-  { value: '3d', label: 'Últimos 3 dias' },
-  { value: '7d', label: 'Últimos 7 dias' },
-  { value: '1m', label: 'Último mês' },
-];
+export const JOB_PERIOD_OPTIONS: { value: JobSearchPeriod; labelKey: string }[] =
+  [
+    { value: 'today', labelKey: 'period.today' },
+    { value: '3d', labelKey: 'period.d3' },
+    { value: '7d', labelKey: 'period.d7' },
+    { value: '1m', labelKey: 'period.m1' },
+  ];

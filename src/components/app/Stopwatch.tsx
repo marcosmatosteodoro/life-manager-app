@@ -1,12 +1,14 @@
 'use client';
 
 import { type SVGProps, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { toast } from '@/hooks/useToastStore';
 import { useStopwatchStore } from '@/hooks/useStopwatchStore';
 import { cn } from '@/utils/cn';
 
 export function Stopwatch() {
+  const { t } = useTranslation('timers');
   // Assina os campos que afetam o display, para re-renderizar em qualquer
   // mudança (inclusive reiniciar com o cronômetro parado).
   const running = useStopwatchStore((s) => s.running);
@@ -35,7 +37,8 @@ export function Stopwatch() {
       ? accumulatedMs + (Date.now() - startedAt)
       : accumulatedMs;
   // Display adaptativo: segundos < 1min, min:seg < 1h, senão horas:min.
-  const { value, unit } = formatElapsed(elapsedMs);
+  const { value, unitKey } = formatElapsed(elapsedMs);
+  const unit = t(unitKey);
   // Cópia sempre em minutos inteiros (para colar nos campos de tempo do app).
   const copyMinutes = String(Math.round(elapsedMs / 60000));
   const canCopy = !running && elapsedMs > 0;
@@ -46,16 +49,16 @@ export function Stopwatch() {
   async function copyValue() {
     try {
       await navigator.clipboard.writeText(copyMinutes);
-      toast.success(`Valor copiado: ${copyMinutes} min`);
+      toast.success(t('copied', { minutes: copyMinutes }));
     } catch {
-      toast.error('Não foi possível copiar o valor.');
+      toast.error(t('copyFailed'));
     }
   }
 
   return (
     <section className="mx-auto flex w-full max-w-md flex-col">
       <h1 className="text-2xl font-semibold tracking-tight text-fg">
-        Cronômetro
+        {t('stopwatchTitle')}
       </h1>
 
       <div className="mt-8 flex flex-col items-center rounded-2xl border border-edge bg-surface p-8 shadow-sm">
@@ -77,10 +80,10 @@ export function Stopwatch() {
             )}
           />
           {status === 'running'
-            ? 'Em andamento'
+            ? t('statusRunning')
             : status === 'paused'
-              ? 'Pausado'
-              : 'Pronto'}
+              ? t('statusPaused')
+              : t('statusIdle')}
         </span>
 
         {/* Tempo */}
@@ -89,7 +92,7 @@ export function Stopwatch() {
             <button
               type="button"
               onClick={copyValue}
-              title="Clique para copiar (em minutos)"
+              title={t('copyTitle')}
               className="rounded-xl px-4 py-2 font-mono text-6xl font-semibold tabular-nums tracking-tight text-fg transition-colors hover:bg-surface-subtle"
             >
               {value}
@@ -110,40 +113,38 @@ export function Stopwatch() {
             <>
               <Button variant="primary" onClick={pause}>
                 <PauseIcon className="h-4 w-4" />
-                Parar
+                {t('stop')}
               </Button>
               <Button variant="secondary" onClick={reset}>
                 <ResetIcon className="h-4 w-4" />
-                Reiniciar
+                {t('reset')}
               </Button>
             </>
           ) : elapsedMs > 0 ? (
             <>
               <Button variant="primary" onClick={start}>
                 <PlayIcon className="h-4 w-4" />
-                Continuar
+                {t('resume')}
               </Button>
               <Button variant="secondary" onClick={reset}>
                 <ResetIcon className="h-4 w-4" />
-                Reiniciar
+                {t('reset')}
               </Button>
               <Button variant="ghost" onClick={copyValue}>
                 <CopyIcon className="h-4 w-4" />
-                Copiar
+                {t('copy')}
               </Button>
             </>
           ) : (
             <Button variant="primary" onClick={start}>
               <PlayIcon className="h-4 w-4" />
-              Iniciar
+              {t('start')}
             </Button>
           )}
         </div>
 
         {canCopy && (
-          <p className="mt-4 text-xs text-fg-subtle">
-            Clique no número para copiar (em minutos).
-          </p>
+          <p className="mt-4 text-xs text-fg-subtle">{t('copyHint')}</p>
         )}
       </div>
     </section>
@@ -156,19 +157,19 @@ export function Stopwatch() {
  * - < 1 h: minutos e segundos (ex.: "2:05");
  * - >= 1 h: horas e minutos (ex.: "1:23").
  */
-function formatElapsed(ms: number): { value: string; unit: string } {
+function formatElapsed(ms: number): { value: string; unitKey: string } {
   const totalSeconds = ms / 1000;
   if (totalSeconds < 60) {
-    return { value: totalSeconds.toFixed(2), unit: 'segundos' };
+    return { value: totalSeconds.toFixed(2), unitKey: 'unitSeconds' };
   }
   if (totalSeconds < 3600) {
     const m = Math.floor(totalSeconds / 60);
     const s = Math.floor(totalSeconds % 60);
-    return { value: `${m}:${pad(s)}`, unit: 'minutos : segundos' };
+    return { value: `${m}:${pad(s)}`, unitKey: 'unitMinutesSeconds' };
   }
   const h = Math.floor(totalSeconds / 3600);
   const m = Math.floor((totalSeconds % 3600) / 60);
-  return { value: `${h}:${pad(m)}`, unit: 'horas : minutos' };
+  return { value: `${h}:${pad(m)}`, unitKey: 'unitHoursMinutes' };
 }
 
 function pad(n: number): string {

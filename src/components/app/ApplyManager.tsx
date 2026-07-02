@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
@@ -17,6 +18,7 @@ import { ApplyList } from './ApplyList';
 type LoadState = 'loading' | 'loaded' | 'error';
 
 export function ApplyManager() {
+  const { t } = useTranslation(['jobs', 'common']);
   const [applies, setApplies] = useState<Apply[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
@@ -42,10 +44,10 @@ export function ApplyManager() {
       setCompanies(companyRes.rows);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void load();
@@ -70,15 +72,15 @@ export function ApplyManager() {
     try {
       if (editing) {
         await applyService.update(editing.id, input);
-        toast.success('Candidatura atualizada com sucesso.');
+        toast.success(t('jobs:applies.updated'));
       } else {
         await applyService.create(input);
-        toast.success('Candidatura criada com sucesso.');
+        toast.success(t('jobs:applies.created'));
       }
       setFormOpen(false);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setSubmitting(false);
     }
@@ -89,11 +91,11 @@ export function ApplyManager() {
     setDeleteInProgress(true);
     try {
       await applyService.remove(deleting.id);
-      toast.success('Candidatura excluída com sucesso.');
+      toast.success(t('jobs:applies.deleted'));
       setDeleting(null);
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setDeleteInProgress(false);
     }
@@ -103,18 +105,18 @@ export function ApplyManager() {
     <section className="mx-auto w-full max-w-2xl">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold tracking-tight text-fg">
-          Candidaturas
+          {t('jobs:applies.title')}
         </h1>
         <Button onClick={openCreate} disabled={!hasCompanies}>
-          Nova candidatura
+          {t('jobs:applies.new')}
         </Button>
       </div>
 
       {loadState === 'loaded' && !hasCompanies && (
         <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          Você precisa cadastrar uma empresa antes de criar uma candidatura.{' '}
+          {t('jobs:applies.needCompany')}{' '}
           <Link href="/vagas/empresas" className="font-medium underline">
-            Criar empresa
+            {t('jobs:applies.createCompany')}
           </Link>
           .
         </div>
@@ -126,7 +128,7 @@ export function ApplyManager() {
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             <p className="whitespace-pre-line">{loadError.join('\n')}</p>
             <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-              Tentar novamente
+              {t('common:retry')}
             </Button>
           </div>
         )}
@@ -137,7 +139,7 @@ export function ApplyManager() {
 
       <Modal
         open={formOpen}
-        title={editing ? 'Editar candidatura' : 'Nova candidatura'}
+        title={editing ? t('jobs:applies.editTitle') : t('jobs:applies.newTitle')}
         onClose={closeForm}
       >
         <ApplyForm
@@ -152,13 +154,13 @@ export function ApplyManager() {
 
       <ConfirmDialog
         open={deleting !== null}
-        title="Excluir candidatura"
+        title={t('jobs:applies.deleteTitle')}
         description={
           deleting
-            ? `Tem certeza que deseja excluir "${deleting.name}"? Essa ação não pode ser desfeita.`
+            ? t('jobs:applies.deleteDescription', { name: deleting.name })
             : ''
         }
-        confirmLabel="Excluir"
+        confirmLabel={t('common:delete')}
         loading={deleteInProgress}
         onConfirm={() => void confirmDelete()}
         onCancel={() => {
@@ -169,7 +171,7 @@ export function ApplyManager() {
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import type { Diary } from '@/services/diary.types';
 import { cn } from '@/utils/cn';
@@ -12,10 +13,11 @@ interface DiaryListProps {
 }
 
 export function DiaryList({ entries, onEdit, onDelete }: DiaryListProps) {
+  const { t } = useTranslation(['diary', 'common']);
   if (entries.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
-        Nenhum registro ainda.
+        {t('empty')}
       </p>
     );
   }
@@ -44,7 +46,7 @@ export function DiaryList({ entries, onEdit, onDelete }: DiaryListProps) {
                   </span>
                   {isToday && (
                     <span className="rounded-full bg-surface-inverse px-2 py-0.5 text-xs font-medium text-surface">
-                      Hoje
+                      {t('today')}
                     </span>
                   )}
                 </div>
@@ -54,14 +56,14 @@ export function DiaryList({ entries, onEdit, onDelete }: DiaryListProps) {
               </div>
               <div className="flex shrink-0 gap-1">
                 <Button variant="ghost" onClick={() => onEdit(entry)}>
-                  Editar
+                  {t('common:edit')}
                 </Button>
                 <Button
                   variant="ghost"
                   className="text-red-600 hover:bg-red-50 hover:text-red-700"
                   onClick={() => onDelete(entry)}
                 >
-                  Excluir
+                  {t('common:delete')}
                 </Button>
               </div>
             </div>

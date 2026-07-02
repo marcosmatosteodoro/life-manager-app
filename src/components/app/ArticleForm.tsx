@@ -1,6 +1,7 @@
 'use client';
 
 import { type FormEvent, type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { SafeHtml } from '@/components/ui/SafeHtml';
 import type { Article, ArticleInput } from '@/services/article.types';
@@ -23,6 +24,7 @@ export function ArticleForm({
   onCorrect,
   onCancel,
 }: ArticleFormProps) {
+  const { t } = useTranslation(['articles', 'common']);
   const [correcting, setCorrecting] = useState(false);
   const [title, setTitle] = useState(initial?.title ?? '');
   const [link, setLink] = useState(initial?.link ?? '');
@@ -83,19 +85,19 @@ export function ArticleForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <Field label="Título" htmlFor="title">
+      <Field label={t('fieldTitle')} htmlFor="title">
         <input
           id="title"
           type="text"
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Ex.: The Pragmatic Programmer"
+          placeholder={t('fieldTitlePlaceholder')}
           className={inputClass}
         />
       </Field>
 
-      <Field label="Link (opcional)" htmlFor="link">
+      <Field label={t('fieldLink')} htmlFor="link">
         <input
           id="link"
           type="url"
@@ -107,7 +109,7 @@ export function ArticleForm({
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Tempo de leitura (min)" htmlFor="readingTime">
+        <Field label={t('fieldReadingTime')} htmlFor="readingTime">
           <input
             id="readingTime"
             type="number"
@@ -115,51 +117,51 @@ export function ArticleForm({
             required
             value={readingTime}
             onChange={(e) => setReadingTime(e.target.value)}
-            placeholder="Ex.: 5"
+            placeholder={t('fieldReadingTimePlaceholder')}
             className={inputClass}
           />
         </Field>
-        <Field label="Tempo lendo (min)" htmlFor="timeRead">
+        <Field label={t('fieldTimeRead')} htmlFor="timeRead">
           <input
             id="timeRead"
             type="number"
             min="1"
             value={timeRead}
             onChange={(e) => setTimeRead(e.target.value)}
-            placeholder="Opcional"
+            placeholder={t('fieldOptional')}
             className={inputClass}
           />
         </Field>
-        <Field label="Tempo escrevendo (min)" htmlFor="timeWrite">
+        <Field label={t('fieldTimeWrite')} htmlFor="timeWrite">
           <input
             id="timeWrite"
             type="number"
             min="1"
             value={timeWrite}
             onChange={(e) => setTimeWrite(e.target.value)}
-            placeholder="Opcional"
+            placeholder={t('fieldOptional')}
             className={inputClass}
           />
         </Field>
-        <Field label="Nota" htmlFor="score">
+        <Field label={t('fieldScore')} htmlFor="score">
           <input
             id="score"
             type="number"
             value={score}
             onChange={(e) => setScore(e.target.value)}
-            placeholder="Opcional"
+            placeholder={t('fieldOptional')}
             className={inputClass}
           />
         </Field>
       </div>
 
-      <Field label="Resumo" htmlFor="summary">
+      <Field label={t('fieldSummary')} htmlFor="summary">
         <textarea
           id="summary"
           rows={3}
           value={summary}
           onChange={(e) => setSummary(e.target.value)}
-          placeholder="Opcional"
+          placeholder={t('fieldOptional')}
           className={inputClass}
         />
       </Field>
@@ -170,7 +172,7 @@ export function ArticleForm({
             htmlFor="summaryCorrected"
             className="text-sm font-medium text-fg-soft"
           >
-            Resumo corrigido
+            {t('fieldSummaryCorrected')}
           </label>
           {initial && (
             <Button
@@ -180,7 +182,7 @@ export function ArticleForm({
               disabled={!canCorrect || correcting}
               className="px-2.5 py-1 text-xs"
             >
-              {correcting ? 'Corrigindo…' : 'Corrigir resumo (IA)'}
+              {correcting ? t('correcting') : t('correctWithAi')}
             </Button>
           )}
         </div>
@@ -189,18 +191,18 @@ export function ArticleForm({
           rows={3}
           value={summaryCorrected}
           onChange={(e) => setSummaryCorrected(e.target.value)}
-          placeholder="Use a correção por IA ou escreva manualmente"
+          placeholder={t('summaryCorrectedPlaceholder')}
           className={inputClass}
         />
         {initial && summaryDirty && summary.trim() !== '' && (
           <p className="text-xs text-amber-700">
-            Salve o resumo antes de corrigir para usar a versão atual.
+            {t('summaryDirtyWarning')}
           </p>
         )}
         {summaryCorrected.trim() !== '' && (
           <div className="mt-1">
             <span className="text-xs font-medium text-fg-muted">
-              Pré-visualização
+              {t('preview')}
             </span>
             <SafeHtml
               html={summaryCorrected}
@@ -212,10 +214,10 @@ export function ArticleForm({
 
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="secondary" type="button" onClick={onCancel} disabled={submitting}>
-          Cancelar
+          {t('common:cancel')}
         </Button>
         <Button type="submit" disabled={submitting}>
-          {submitting ? 'Salvando...' : initial ? 'Salvar' : 'Registrar'}
+          {submitting ? t('saving') : initial ? t('common:save') : t('register')}
         </Button>
       </div>
     </form>

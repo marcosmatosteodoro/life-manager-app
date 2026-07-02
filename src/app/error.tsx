@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 
 /**
@@ -16,6 +17,7 @@ export default function Error({
   error: Error & { digest?: string };
   unstable_retry: () => void;
 }) {
+  const { t } = useTranslation('common');
   useEffect(() => {
     // Log no console; em produção o digest ajuda a casar com o log do servidor.
     console.error(error);
@@ -27,23 +29,23 @@ export default function Error({
         500
       </span>
       <h1 className="mt-4 text-xl font-semibold text-fg">
-        Algo deu errado
+        {t('errorTitle')}
       </h1>
       <p className="mt-2 text-sm text-fg-muted">
-        Ocorreu um erro inesperado ao carregar esta página. Tente novamente.
+        {t('error500Description')}
       </p>
       {error.digest && (
         <p className="mt-1 text-xs text-fg-subtle">
-          Código de referência: {error.digest}
+          {t('errorReference', { digest: error.digest })}
         </p>
       )}
       <div className="mt-6 flex items-center gap-2">
-        <Button onClick={() => unstable_retry()}>Tentar novamente</Button>
+        <Button onClick={() => unstable_retry()}>{t('retry')}</Button>
         <Link
           href="/"
           className="inline-flex items-center justify-center rounded-md border border-edge-strong bg-surface px-4 py-2 text-sm font-medium text-fg-soft transition-colors hover:bg-surface-subtle"
         >
-          Início
+          {t('home')}
         </Link>
       </div>
     </section>

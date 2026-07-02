@@ -23,13 +23,15 @@ export interface FeedbackListResponse {
   rows: Feedback[];
 }
 
-/** Opções de período com rótulos pt-BR (para o seletor e exibição). */
-export const FEEDBACK_PERIOD_OPTIONS: { value: FeedbackPeriod; label: string }[] =
-  [
-    { value: '7d', label: 'Últimos 7 dias' },
-    { value: '15d', label: 'Últimos 15 dias' },
-    { value: '30d', label: 'Últimos 30 dias' },
-    { value: '60d', label: 'Últimos 60 dias' },
-    { value: '1y', label: 'Último ano' },
-    { value: 'all', label: 'Desde o começo' },
-  ];
+/** Opções de período com chaves i18n (para o seletor e exibição). */
+export const FEEDBACK_PERIOD_OPTIONS: {
+  value: FeedbackPeriod;
+  labelKey: string;
+}[] = [
+  { value: '7d', labelKey: 'period.d7' },
+  { value: '15d', labelKey: 'period.d15' },
+  { value: '30d', labelKey: 'period.d30' },
+  { value: '60d', labelKey: 'period.d60' },
+  { value: '1y', labelKey: 'period.y1' },
+  { value: 'all', labelKey: 'period.all' },
+];

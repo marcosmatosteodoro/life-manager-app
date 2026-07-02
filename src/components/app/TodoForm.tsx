@@ -1,6 +1,7 @@
 'use client';
 
 import { type FormEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
 import { toast } from '@/hooks/useToastStore';
@@ -24,6 +25,7 @@ export function TodoForm({
   onSubmit,
   onCancel,
 }: TodoFormProps) {
+  const { t } = useTranslation(['todo', 'common']);
   const [name, setName] = useState(initial?.name ?? '');
   const [description, setDescription] = useState(initial?.description ?? '');
   // Novo afazer começa com início = hoje.
@@ -43,7 +45,7 @@ export function TodoForm({
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (days.length === 0) {
-      toast.error('Selecione ao menos um dia da semana.');
+      toast.error(t('todo:form.selectDay'));
       return;
     }
     onSubmit({
@@ -58,31 +60,31 @@ export function TodoForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <Field label="Nome" htmlFor="name">
+      <Field label={t('todo:form.name')} htmlFor="name">
         <input
           id="name"
           type="text"
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Ex.: Treinar"
+          placeholder={t('todo:form.namePlaceholder')}
           className={inputClass}
         />
       </Field>
 
-      <Field label="Descrição (opcional)" htmlFor="description">
+      <Field label={t('todo:form.description')} htmlFor="description">
         <textarea
           id="description"
           rows={2}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Detalhes do afazer"
+          placeholder={t('todo:form.descriptionPlaceholder')}
           className={`${inputClass} resize-y`}
         />
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Início" htmlFor="startDate">
+        <Field label={t('todo:form.start')} htmlFor="startDate">
           <input
             id="startDate"
             type="date"
@@ -92,7 +94,7 @@ export function TodoForm({
             className={inputClass}
           />
         </Field>
-        <Field label="Fim (opcional)" htmlFor="endDate">
+        <Field label={t('todo:form.end')} htmlFor="endDate">
           <input
             id="endDate"
             type="date"
@@ -105,7 +107,7 @@ export function TodoForm({
 
       <div className="flex flex-col gap-1.5">
         <span className="text-sm font-medium text-fg-soft">
-          Dias da semana
+          {t('todo:form.weekdays')}
         </span>
         <div className="flex flex-wrap gap-1.5">
           {WEEKDAYS.map((w) => {
@@ -123,14 +125,14 @@ export function TodoForm({
                     : 'border-edge-strong text-fg-soft hover:bg-surface-subtle',
                 )}
               >
-                {w.short}
+                {t(w.shortKey)}
               </button>
             );
           })}
         </div>
       </div>
 
-      <Field label="Tag (opcional)" htmlFor="tag">
+      <Field label={t('todo:form.tag')} htmlFor="tag">
         {/* Autocomplete: sugere tags existentes; texto novo vira tag nova. */}
         <input
           id="tag"
@@ -138,12 +140,12 @@ export function TodoForm({
           list="todo-tags"
           value={tag}
           onChange={(e) => setTag(e.target.value)}
-          placeholder="Escolha uma existente ou digite uma nova"
+          placeholder={t('todo:form.tagPlaceholder')}
           className={inputClass}
         />
         <datalist id="todo-tags">
-          {tags.map((t) => (
-            <option key={t} value={t} />
+          {tags.map((tagOption) => (
+            <option key={tagOption} value={tagOption} />
           ))}
         </datalist>
       </Field>
@@ -155,10 +157,14 @@ export function TodoForm({
           onClick={onCancel}
           disabled={submitting}
         >
-          Cancelar
+          {t('common:cancel')}
         </Button>
         <Button type="submit" disabled={submitting}>
-          {submitting ? 'Salvando...' : initial ? 'Salvar' : 'Criar'}
+          {submitting
+            ? t('common:saving')
+            : initial
+              ? t('common:save')
+              : t('todo:form.submitCreate')}
         </Button>
       </div>
     </form>

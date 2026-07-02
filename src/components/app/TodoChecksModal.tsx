@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
 import { Loading } from '@/components/ui/Loading';
@@ -13,6 +14,7 @@ type LoadState = 'loading' | 'loaded' | 'error';
 
 /** Lista/edição dos checks de um afazer: marcar, criar por data e remover. */
 export function TodoChecksModal({ todo }: { todo: Todo }) {
+  const { t } = useTranslation(['todo', 'common']);
   const [checks, setChecks] = useState<TodoCheck[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -26,10 +28,10 @@ export function TodoChecksModal({ todo }: { todo: Todo }) {
       setChecks(rows);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, [todo.id]);
+  }, [todo.id, t]);
 
   useEffect(() => {
     void load();
@@ -44,7 +46,7 @@ export function TodoChecksModal({ todo }: { todo: Todo }) {
       await todoCheckService.update(check.id, { checked });
     } catch (error) {
       setChecks(previous);
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     }
   }
 
@@ -53,10 +55,10 @@ export function TodoChecksModal({ todo }: { todo: Todo }) {
     setBusy(true);
     try {
       await todoCheckService.create({ todoId: todo.id, date: newDate });
-      toast.success('Check adicionado.');
+      toast.success(t('todo:checksModal.added'));
       await load();
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     } finally {
       setBusy(false);
     }
@@ -67,7 +69,7 @@ export function TodoChecksModal({ todo }: { todo: Todo }) {
       await todoCheckService.remove(id);
       setChecks((cur) => cur.filter((c) => c.id !== id));
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     }
   }
 
@@ -76,7 +78,7 @@ export function TodoChecksModal({ todo }: { todo: Todo }) {
       {/* Adicionar um check para uma data (inclusive passada) */}
       <div className="flex items-end gap-2">
         <div className="flex-1">
-          <Field label="Adicionar data" htmlFor="newDate">
+          <Field label={t('todo:checksModal.addDate')} htmlFor="newDate">
             <input
               id="newDate"
               type="date"
@@ -87,7 +89,7 @@ export function TodoChecksModal({ todo }: { todo: Todo }) {
           </Field>
         </div>
         <Button type="button" onClick={() => void addCheck()} disabled={busy}>
-          Adicionar
+          {t('todo:checksModal.add')}
         </Button>
       </div>
 
@@ -97,14 +99,14 @@ export function TodoChecksModal({ todo }: { todo: Todo }) {
         <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
           <p className="whitespace-pre-line">{loadError.join('\n')}</p>
           <Button variant="secondary" className="mt-2" onClick={() => void load()}>
-            Tentar novamente
+            {t('common:retry')}
           </Button>
         </div>
       )}
 
       {loadState === 'loaded' && checks.length === 0 && (
         <p className="text-sm text-fg-muted">
-          Nenhum check ainda. Adicione uma data acima.
+          {t('todo:checksModal.empty')}
         </p>
       )}
 
@@ -131,7 +133,7 @@ export function TodoChecksModal({ todo }: { todo: Todo }) {
                 onClick={() => void removeCheck(check.id)}
                 className="text-xs font-medium text-red-600 hover:underline"
               >
-                Remover
+                {t('todo:checksModal.remove')}
               </button>
             </li>
           ))}
@@ -147,7 +149,7 @@ function formatDate(date: string): string {
   return `${d}/${m}/${y}`;
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

@@ -1,0 +1,70 @@
+{
+  "backToToday": "← Back to today",
+  "manageTitle": "Manage to-dos",
+  "new": "New to-do",
+  "empty": "No to-dos registered yet.",
+  "editTitle": "Edit to-do",
+  "newTitle": "New to-do",
+  "created": "To-do created successfully.",
+  "updated": "To-do updated successfully.",
+  "deleted": "To-do deleted successfully.",
+  "deleteTitle": "Delete to-do",
+  "deleteDescription": "Are you sure you want to delete \"{{name}}\"? Its checks will also be removed. This action cannot be undone.",
+  "checksTitle": "Checks — {{name}}",
+  "checks": "Checks",
+  "list": {
+    "startFrom": "From {{start}}",
+    "startTo": "From {{start}} to {{end}}"
+  },
+  "form": {
+    "name": "Name",
+    "namePlaceholder": "e.g. Work out",
+    "description": "Description (optional)",
+    "descriptionPlaceholder": "To-do details",
+    "start": "Start",
+    "end": "End (optional)",
+    "weekdays": "Weekdays",
+    "tag": "Tag (optional)",
+    "tagPlaceholder": "Pick an existing one or type a new one",
+    "selectDay": "Select at least one weekday.",
+    "submitCreate": "Create"
+  },
+  "today": {
+    "title": "To-dos",
+    "manage": "Manage",
+    "instruction": "Check off what you did today.",
+    "progress_one": " {{done}}/{{total}} done.",
+    "progress_other": " {{done}}/{{total}} done.",
+    "empty": "No to-dos for today. Create one in",
+    "emptyLink": "Manage",
+    "fallbackName": "To-do"
+  },
+  "checksModal": {
+    "addDate": "Add date",
+    "add": "Add",
+    "added": "Check added.",
+    "empty": "No checks yet. Add a date above.",
+    "remove": "Remove",
+    "title": "Checks"
+  },
+  "weekday": {
+    "short": {
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat",
+      "7": "Sun"
+    },
+    "long": {
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday",
+      "7": "Sunday"
+    }
+  }
+}

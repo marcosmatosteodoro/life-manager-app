@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
 import { toast } from '@/hooks/useToastStore';
@@ -23,6 +24,7 @@ export function FlashCardQuiz({
   groupId: number;
   onExit?: () => void;
 }) {
+  const { t } = useTranslation(['flashcards', 'common']);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
@@ -44,10 +46,10 @@ export function FlashCardQuiz({
       setDone(false);
       setLoadState('loaded');
     } catch (error) {
-      setLoadError(toMessages(error));
+      setLoadError(toMessages(error, t('common:unexpectedError')));
       setLoadState('error');
     }
-  }, [groupId]);
+  }, [groupId, t]);
 
   useEffect(() => {
     void load();
@@ -66,7 +68,7 @@ export function FlashCardQuiz({
       // Salva a cada clique (mesmo review do modo um a um).
       await flashCardService.review(current.id, correct);
     } catch (error) {
-      toast.errors(toMessages(error));
+      toast.errors(toMessages(error, t('common:unexpectedError')));
     }
   }
 
@@ -86,7 +88,7 @@ export function FlashCardQuiz({
       <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
         <p className="whitespace-pre-line">{loadError.join('\n')}</p>
         <Button variant="secondary" className="mt-3" onClick={() => void load()}>
-          Tentar novamente
+          {t('common:retry')}
         </Button>
       </div>
     );
@@ -95,7 +97,7 @@ export function FlashCardQuiz({
   if (questions.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-edge-strong px-4 py-16 text-center text-sm text-fg-muted">
-        Cadastre ao menos 2 termos com tradução neste grupo para a avaliação.
+        {t('quizMinTerms')}
       </p>
     );
   }
@@ -107,16 +109,16 @@ export function FlashCardQuiz({
           🎉
         </span>
         <p className="text-lg font-semibold text-emerald-800">
-          Avaliação concluída!
+          {t('quizFinished')}
         </p>
         <p className="text-sm text-emerald-700">
-          {hits} de {questions.length} corretas.
+          {t('quizScore', { hits, total: questions.length })}
         </p>
         <div className="flex flex-wrap justify-center gap-2">
-          <Button onClick={() => void load()}>Refazer</Button>
+          <Button onClick={() => void load()}>{t('redo')}</Button>
           {onExit && (
             <Button variant="secondary" onClick={onExit}>
-              Trocar modo
+              {t('switchMode')}
             </Button>
           )}
         </div>
@@ -128,15 +130,15 @@ export function FlashCardQuiz({
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between text-sm font-medium text-fg-muted">
         <span>
-          {index + 1} / {questions.length}
+          {t('progress', { current: index + 1, total: questions.length })}
         </span>
-        <span>{hits} acerto{hits === 1 ? '' : 's'}</span>
+        <span>{t('hitCount', { count: hits })}</span>
       </div>
 
       {/* Termo */}
       <div className="rounded-2xl border border-edge bg-surface p-6 text-center shadow-sm">
         <span className="mb-2 block text-xs font-medium uppercase tracking-wide text-fg-subtle">
-          Termo
+          {t('labelTerm')}
         </span>
         <span className="text-3xl font-semibold break-words text-fg">
           {current.term}
@@ -177,14 +179,14 @@ export function FlashCardQuiz({
 
       {answered && (
         <Button onClick={next} className="self-end">
-          {isLast ? 'Finalizar' : 'Avançar'}
+          {isLast ? t('finish') : t('next')}
         </Button>
       )}
     </div>
   );
 }
 
-function toMessages(error: unknown): string[] {
+function toMessages(error: unknown, fallback: string): string[] {
   if (error instanceof ApiError) return error.messages;
-  return ['Ocorreu um erro inesperado.'];
+  return [fallback];
 }

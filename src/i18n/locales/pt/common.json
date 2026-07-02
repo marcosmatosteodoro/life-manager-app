@@ -49,6 +49,7 @@
   "groupCount_other": "{{count}} grupos",
   "applications": "Candidaturas",
   "jobsApplied": "vagas aplicadas",
+  "jobsAppliedToday": "{{count}} hoje",
   "pendingToday": "Pendências de hoje",
   "allDone": "Tudo em dia por hoje! 🎉",
   "taskTodos": "Conclua seus afazeres de hoje — faltam {{pending}} de {{total}}",

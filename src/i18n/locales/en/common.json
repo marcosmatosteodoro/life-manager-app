@@ -49,6 +49,7 @@
   "groupCount_other": "{{count}} groups",
   "applications": "Applications",
   "jobsApplied": "jobs applied",
+  "jobsAppliedToday": "{{count}} today",
   "pendingToday": "Today's tasks",
   "allDone": "All done for today! 🎉",
   "taskTodos": "Finish your to-dos for today — {{pending}} of {{total}} left",

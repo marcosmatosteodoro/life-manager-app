@@ -57,7 +57,8 @@ export function HomeDashboard() {
   }
 
   // ----- Derivados (dados já processados no back) -----
-  const { streak, weight, todos, study, flashcards, appliesCount } = data;
+  const { streak, weight, todos, study, flashcards, appliesCount, appliesToday } =
+    data;
   const todosPending = todos.total - todos.done;
   const studyPending = !study.todayStatus || study.todayStatus !== 'COMPLETED';
 
@@ -125,8 +126,8 @@ export function HomeDashboard() {
         <StatCard
           href="/vagas/aplicacoes"
           title={t('applications')}
-          value={`${appliesCount}`}
-          hint={t('jobsApplied')}
+          value={`${appliesCount} (${appliesToday})`}
+          hint={t('jobsAppliedToday', { count: appliesToday })}
         />
       </div>
 

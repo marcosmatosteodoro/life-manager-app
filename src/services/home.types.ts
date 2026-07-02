@@ -8,4 +8,5 @@ export interface Dashboard {
   study: { todayStatus: ArticleStatus | null };
   flashcards: { totalCards: number; groupCount: number };
   appliesCount: number;
+  appliesToday: number;
 }

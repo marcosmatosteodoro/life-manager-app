@@ -5,17 +5,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Loading } from '@/components/ui/Loading';
-import { articleService } from '@/services/articleService';
-import { type Article, type ArticleStatus } from '@/services/article.types';
-import { applyService } from '@/services/applyService';
-import { todoCheckService } from '@/services/todoCheckService';
-import type { TodoCheck } from '@/services/todo.types';
-import { flashCardGroupService } from '@/services/flashCardGroupService';
-import type { FlashCardGroup } from '@/services/flashCardGroup.types';
-import { ApiError } from '@/services/http';
-import { weightService } from '@/services/weightService';
-import type { Weight } from '@/services/weight.types';
-import { isToday } from '@/utils/date';
+import { type ArticleStatus } from '@/services/article.types';
+import { ApiError, homeService } from '@/services/homeService';
+import type { Dashboard } from '@/services/home.types';
 
 type LoadState = 'loading' | 'loaded' | 'error';
 
@@ -27,38 +19,17 @@ const ARTICLE_STATUS_KEYS: Record<ArticleStatus, string> = {
   COMPLETED: 'statusCompleted',
 };
 
-interface DashboardData {
-  todayChecks: TodoCheck[];
-  articles: Article[];
-  weights: Weight[];
-  groups: FlashCardGroup[];
-  appliesCount: number;
-}
-
 export function HomeDashboard() {
   const { t } = useTranslation(['common', 'articles']);
-  const [data, setData] = useState<DashboardData | null>(null);
+  const [data, setData] = useState<Dashboard | null>(null);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
 
   const load = useCallback(async () => {
     setLoadState('loading');
     try {
-      const [todayChecks, articlesRes, weightsRes, groupsRes, appliesRes] =
-        await Promise.all([
-          todoCheckService.today(),
-          articleService.list(),
-          weightService.list(),
-          flashCardGroupService.list(),
-          applyService.list(),
-        ]);
-      setData({
-        todayChecks,
-        articles: articlesRes.rows,
-        weights: weightsRes.rows,
-        groups: groupsRes.rows,
-        appliesCount: appliesRes.count,
-      });
+      // Uma única requisição agregada (GET /home) em vez de várias em paralelo.
+      setData(await homeService.get());
       setLoadState('loaded');
     } catch (error) {
       setLoadError(toMessages(error, t('common:unexpectedError')));
@@ -85,48 +56,25 @@ export function HomeDashboard() {
     );
   }
 
-  // ----- Derivados -----
-  const todosTotal = data.todayChecks.length;
-  const todosDone = data.todayChecks.filter((c) => c.checked).length;
-  const todosPending = todosTotal - todosDone;
-
-  const todayStudy = data.articles.find((a) => isToday(a.createdAt)) ?? null;
-  const studyPending = !todayStudy || todayStudy.status !== 'COMPLETED';
-
-  // Peso é semanal: conta como feito se houver registro nesta semana.
-  const weekStart = startOfWeek();
-  const loggedWeightThisWeek = data.weights.some((w) => w.date >= weekStart);
-  const sortedWeights = [...data.weights].sort((a, b) =>
-    a.date.localeCompare(b.date),
-  );
-  const latestWeight = sortedWeights[sortedWeights.length - 1] ?? null;
-
-  const totalCards = data.groups.reduce(
-    (sum, g) => sum + (g.flashCardsCount ?? 0),
-    0,
-  );
-
-  // Ofensiva: dias seguidos com pelo menos um artigo (mín. 0).
-  const studyDays = new Set(data.articles.map((a) => localDay(a.createdAt)));
-  const streak = studyStreak(studyDays);
+  // ----- Derivados (dados já processados no back) -----
+  const { streak, weight, todos, study, flashcards, appliesCount } = data;
+  const todosPending = todos.total - todos.done;
+  const studyPending = !study.todayStatus || study.todayStatus !== 'COMPLETED';
 
   // ----- Pendências de hoje (chamam o usuário à ação) -----
   const tasks: { label: string; href: string }[] = [];
   if (todosPending > 0) {
     tasks.push({
-      label: t('taskTodos', { pending: todosPending, total: todosTotal }),
+      label: t('taskTodos', { pending: todosPending, total: todos.total }),
       href: '/afazeres',
     });
   }
-  if (!loggedWeightThisWeek) {
-    tasks.push({
-      label: t('taskWeight'),
-      href: '/gerenciamento-de-peso',
-    });
+  if (!weight.loggedThisWeek) {
+    tasks.push({ label: t('taskWeight'), href: '/gerenciamento-de-peso' });
   }
   if (studyPending) {
     tasks.push({
-      label: todayStudy ? t('taskStudyFinish') : t('taskStudyLog'),
+      label: study.todayStatus ? t('taskStudyFinish') : t('taskStudyLog'),
       href: '/estudando-ingles',
     });
   }
@@ -145,9 +93,9 @@ export function HomeDashboard() {
         <StatCard
           href="/gerenciamento-de-peso"
           title={t('currentWeight')}
-          value={latestWeight ? `${latestWeight.value} kg` : '—'}
+          value={weight.latest != null ? `${weight.latest} kg` : '—'}
           hint={
-            loggedWeightThisWeek
+            weight.loggedThisWeek
               ? t('weightLoggedThisWeek')
               : t('weightNotLoggedThisWeek')
           }
@@ -155,29 +103,29 @@ export function HomeDashboard() {
         <StatCard
           href="/afazeres"
           title={t('todos')}
-          value={`${todosDone}/${todosTotal}`}
+          value={`${todos.done}/${todos.total}`}
           hint={t('todosToday')}
         />
         <StatCard
           href="/estudando-ingles"
           title={t('todayStudy')}
           value={
-            todayStudy
-              ? t(`articles:${ARTICLE_STATUS_KEYS[todayStudy.status]}`)
+            study.todayStatus
+              ? t(`articles:${ARTICLE_STATUS_KEYS[study.todayStatus]}`)
               : t('none')
           }
-          hint={todayStudy ? undefined : t('logAStudy')}
+          hint={study.todayStatus ? undefined : t('logAStudy')}
         />
         <StatCard
           href="/revisar"
           title={t('flashcards')}
-          value={`${totalCards}`}
-          hint={t('groupCount', { count: data.groups.length })}
+          value={`${flashcards.totalCards}`}
+          hint={t('groupCount', { count: flashcards.groupCount })}
         />
         <StatCard
           href="/vagas/aplicacoes"
           title={t('applications')}
-          value={`${data.appliesCount}`}
+          value={`${appliesCount}`}
           hint={t('jobsApplied')}
         />
       </div>
@@ -243,43 +191,6 @@ function StatCard({
       {hint && <span className="mt-0.5 text-xs text-fg-muted">{hint}</span>}
     </Link>
   );
-}
-
-/** Início da semana atual (segunda-feira) no formato YYYY-MM-DD local. */
-function startOfWeek(): string {
-  const d = new Date();
-  const daysSinceMonday = (d.getDay() + 6) % 7; // 0=Dom..6=Sáb → dias após segunda
-  d.setDate(d.getDate() - daysSinceMonday);
-  return dayStr(d);
-}
-
-/** Data local (YYYY-MM-DD) de uma Date. */
-function dayStr(d: Date): string {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-}
-
-/** Data local (YYYY-MM-DD) de um timestamp ISO. */
-function localDay(iso: string): string {
-  return dayStr(new Date(iso));
-}
-
-/**
- * Conta dias seguidos com estudo a partir de hoje (mín. 0). Se hoje ainda não
- * tem estudo mas ontem teve, a ofensiva continua válida (conta a partir de ontem).
- */
-function studyStreak(days: Set<string>): number {
-  const cursor = new Date();
-  if (!days.has(dayStr(cursor))) {
-    cursor.setDate(cursor.getDate() - 1);
-    if (!days.has(dayStr(cursor))) return 0;
-  }
-  let streak = 0;
-  while (days.has(dayStr(cursor))) {
-    streak++;
-    cursor.setDate(cursor.getDate() - 1);
-  }
-  return streak;
 }
 
 function toMessages(error: unknown, fallback: string): string[] {

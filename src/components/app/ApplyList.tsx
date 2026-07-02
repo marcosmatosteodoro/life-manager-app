@@ -40,16 +40,16 @@ export function ApplyList({ applies, onEdit, onDelete }: ApplyListProps) {
       {applies.map((apply) => (
         <li
           key={apply.id}
-          className="flex items-start justify-between gap-4 rounded-lg border border-edge bg-surface px-4 py-3"
+          className="flex flex-col gap-3 rounded-lg border border-edge bg-surface px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4"
         >
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="truncate font-medium text-fg">
+              <span className="min-w-0 truncate font-medium text-fg">
                 {apply.name}
               </span>
               <span
                 className={cn(
-                  'rounded-full px-2 py-0.5 text-xs font-medium',
+                  'shrink-0 rounded-full px-2 py-0.5 text-xs font-medium',
                   STATUS_CLASSES[apply.status],
                 )}
               >
@@ -77,7 +77,7 @@ export function ApplyList({ applies, onEdit, onDelete }: ApplyListProps) {
               ) : null}
             </p>
           </div>
-          <div className="flex shrink-0 gap-1">
+          <div className="flex shrink-0 gap-1 self-end sm:self-auto">
             <Button variant="ghost" onClick={() => onEdit(apply)}>
               {t('common:edit')}
             </Button>

@@ -51,7 +51,7 @@ function CompanyRow({
 
   return (
     <li className="rounded-lg border border-edge bg-surface">
-      <div className="flex items-start justify-between gap-3 px-4 py-3">
+      <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-start gap-2">
           {/* Setinha: abre/fecha as observações (mesma seta, gira ao abrir) */}
           <button
@@ -94,7 +94,7 @@ function CompanyRow({
           </div>
         </div>
 
-        <div className="flex shrink-0 gap-1">
+        <div className="flex shrink-0 gap-1 self-end sm:self-auto">
           <Button variant="ghost" onClick={() => onEdit(company)}>
             {t('common:edit')}
           </Button>

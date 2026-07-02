@@ -64,7 +64,7 @@ export function BacklogItem({
   return (
     <div className="rounded-lg border border-edge bg-surface">
       {/* Cabeçalho */}
-      <div className="flex items-center gap-2 px-3 py-2.5">
+      <div className="flex flex-wrap items-center gap-2 px-3 py-2.5">
         {dragHandle}
 
         {item.position != null && (
@@ -96,8 +96,8 @@ export function BacklogItem({
           />
         </button>
 
-        {/* Ações */}
-        <div className="flex shrink-0 items-center gap-1">
+        {/* Ações — no mobile quebram para uma 2ª linha (w-full); em sm ficam inline */}
+        <div className="flex w-full shrink-0 items-center justify-end gap-1 sm:w-auto">
           {onComplete && (
             <IconButton
               onClick={() => onComplete(item.id)}

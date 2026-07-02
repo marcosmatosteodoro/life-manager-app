@@ -53,6 +53,11 @@ export function TodoTodayManager() {
   }
 
   const doneCount = checks.filter((c) => c.checked).length;
+  // Marcados descem para o fim (sort estável preserva a ordem dentro de cada
+  // grupo). Derivado no render → reordena na hora ao marcar, sem recarregar.
+  const orderedChecks = [...checks].sort(
+    (a, b) => Number(a.checked) - Number(b.checked),
+  );
 
   return (
     <section className="mx-auto w-full max-w-2xl">
@@ -106,7 +111,7 @@ export function TodoTodayManager() {
 
         {loadState === 'loaded' && checks.length > 0 && (
           <ul className="flex flex-col gap-2">
-            {checks.map((check) => (
+            {orderedChecks.map((check) => (
               <li key={check.id}>
                 <label
                   className={cn(

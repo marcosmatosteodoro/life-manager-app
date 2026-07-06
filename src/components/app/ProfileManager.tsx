@@ -132,45 +132,47 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
             className={inputClass}
           />
         </Field>
-        <Field label={t('fieldHeight')} htmlFor="profile-height">
-          <input
-            id="profile-height"
-            type="number"
-            min={50}
-            max={300}
-            value={heightCm}
-            onChange={(e) => setHeightCm(e.target.value)}
-            className={inputClass}
-          />
-        </Field>
-        <Field label={t('fieldTheme')} htmlFor="profile-theme">
-          <select
-            id="profile-theme"
-            value={theme}
-            onChange={(e) => setTheme(e.target.value as Theme)}
-            className={inputClass}
-          >
-            {THEME_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {t(o.labelKey)}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label={t('fieldLanguage')} htmlFor="profile-language">
-          <select
-            id="profile-language"
-            value={language}
-            onChange={(e) => setLanguage(e.target.value as Language)}
-            className={inputClass}
-          >
-            {LANGUAGE_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {t(o.labelKey)}
-              </option>
-            ))}
-          </select>
-        </Field>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Field label={t('fieldHeight')} htmlFor="profile-height">
+            <input
+              id="profile-height"
+              type="number"
+              min={50}
+              max={300}
+              value={heightCm}
+              onChange={(e) => setHeightCm(e.target.value)}
+              className={inputClass}
+            />
+          </Field>
+          <Field label={t('fieldLanguage')} htmlFor="profile-language">
+            <select
+              id="profile-language"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as Language)}
+              className={inputClass}
+            >
+              {LANGUAGE_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {t(o.labelKey)}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label={t('fieldTheme')} htmlFor="profile-theme">
+            <select
+              id="profile-theme"
+              value={theme}
+              onChange={(e) => setTheme(e.target.value as Theme)}
+              className={inputClass}
+            >
+              {THEME_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {t(o.labelKey)}
+                </option>
+              ))}
+            </select>
+          </Field>
+        </div>
         <Button type="submit" disabled={saving} className="self-start">
           {saving ? t('common:saving') : t('saveProfile')}
         </Button>

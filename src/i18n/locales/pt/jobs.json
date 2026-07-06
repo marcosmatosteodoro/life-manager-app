@@ -43,7 +43,10 @@
     "createCompany": "Criar empresa",
     "companyFallback": "Empresa #{{id}}",
     "link": "link",
-    "staleWarning": "Aplicada há mais de um mês. Considere encerrar esta candidatura."
+    "staleWarning": "Aplicada há mais de um mês. Considere encerrar esta candidatura.",
+    "filterStatus": "Status:",
+    "filterAll": "Todas",
+    "filterEmpty": "Nenhuma candidatura com esse status."
   },
   "search": {
     "title": "Buscar vagas",

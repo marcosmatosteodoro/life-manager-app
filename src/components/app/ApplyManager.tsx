@@ -7,15 +7,19 @@ import { Button } from '@/components/ui/Button';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
 import { Modal } from '@/components/ui/Modal';
+import { inputClass } from '@/components/ui/Field';
 import { toast } from '@/hooks/useToastStore';
-import type { Apply, ApplyInput } from '@/services/apply.types';
-import { ApiError, applyService } from '@/services/applyService';
+import type { Apply, ApplyInput, ApplyStatus } from '@/services/apply.types';
+import { ApiError, APPLY_STATUSES, applyService } from '@/services/applyService';
 import { companyService } from '@/services/companyService';
 import type { Company } from '@/services/company.types';
+import { cn } from '@/utils/cn';
 import { ApplyForm } from './ApplyForm';
 import { ApplyList } from './ApplyList';
 
 type LoadState = 'loading' | 'loaded' | 'error';
+// 'ALL' = todas (padrão). O back já devolve ordenado por data (mais recente primeiro).
+type StatusFilter = ApplyStatus | 'ALL';
 
 export function ApplyManager() {
   const { t } = useTranslation(['jobs', 'common']);
@@ -31,7 +35,14 @@ export function ApplyManager() {
   const [deleting, setDeleting] = useState<Apply | null>(null);
   const [deleteInProgress, setDeleteInProgress] = useState(false);
 
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
+
   const hasCompanies = companies.length > 0;
+
+  const filteredApplies =
+    statusFilter === 'ALL'
+      ? applies
+      : applies.filter((apply) => apply.status === statusFilter);
 
   const load = useCallback(async () => {
     setLoadState('loading');
@@ -122,6 +133,27 @@ export function ApplyManager() {
         </div>
       )}
 
+      {loadState === 'loaded' && applies.length > 0 && (
+        <div className="mt-6 flex items-center gap-2">
+          <label htmlFor="statusFilter" className="text-sm text-fg-muted">
+            {t('jobs:applies.filterStatus')}
+          </label>
+          <select
+            id="statusFilter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+            className={cn(inputClass, 'max-w-xs')}
+          >
+            <option value="ALL">{t('jobs:applies.filterAll')}</option>
+            {APPLY_STATUSES.map((value) => (
+              <option key={value} value={value}>
+                {t(`jobs:applyStatus.${value}`)}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
       <div className="mt-6">
         {loadState === 'loading' && <Loading />}
         {loadState === 'error' && (
@@ -132,9 +164,18 @@ export function ApplyManager() {
             </Button>
           </div>
         )}
-        {loadState === 'loaded' && (
-          <ApplyList applies={applies} onEdit={openEdit} onDelete={setDeleting} />
-        )}
+        {loadState === 'loaded' &&
+          (applies.length > 0 && filteredApplies.length === 0 ? (
+            <p className="rounded-lg border border-dashed border-edge-strong px-4 py-10 text-center text-sm text-fg-muted">
+              {t('jobs:applies.filterEmpty')}
+            </p>
+          ) : (
+            <ApplyList
+              applies={filteredApplies}
+              onEdit={openEdit}
+              onDelete={setDeleting}
+            />
+          ))}
       </div>
 
       <Modal

@@ -43,7 +43,10 @@
     "createCompany": "Create company",
     "companyFallback": "Company #{{id}}",
     "link": "link",
-    "staleWarning": "Applied over a month ago. Consider closing this application."
+    "staleWarning": "Applied over a month ago. Consider closing this application.",
+    "filterStatus": "Status:",
+    "filterAll": "All",
+    "filterEmpty": "No applications with this status."
   },
   "search": {
     "title": "Search jobs",

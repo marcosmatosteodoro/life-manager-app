@@ -26,7 +26,9 @@
     "createCountry": "Create country",
     "showObservations": "Show notes",
     "hideObservations": "Hide notes",
-    "noObservations": "No notes."
+    "noObservations": "No notes.",
+    "applyCount_one": "{{count}} application",
+    "applyCount_other": "{{count}} applications"
   },
   "applies": {
     "title": "Applications",

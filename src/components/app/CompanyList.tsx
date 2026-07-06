@@ -75,9 +75,14 @@ function CompanyRow({
 
           {/* Título / país / link */}
           <div className="min-w-0">
-            <p className="truncate font-medium text-fg">
-              {company.name}
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="truncate font-medium text-fg">
+                {company.name}
+              </p>
+              <span className="shrink-0 rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium text-fg-muted">
+                {t('companies.applyCount', { count: company.applyCount ?? 0 })}
+              </span>
+            </div>
             <p className="mt-0.5 truncate text-sm text-fg-muted">
               {company.country ? company.country.name : '—'}
             </p>

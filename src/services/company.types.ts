@@ -9,6 +9,8 @@ export interface Company {
   /** Anotações livres sobre a empresa. */
   observation: string | null;
   country?: Country;
+  /** Quantidade de candidaturas da empresa (presente nas leituras de listagem). */
+  applyCount?: number;
   createdAt: string;
   updatedAt: string;
   creatorId: number | null;

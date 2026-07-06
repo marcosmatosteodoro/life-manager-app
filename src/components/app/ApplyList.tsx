@@ -24,6 +24,23 @@ const STATUS_CLASSES: Record<Apply['status'], string> = {
   APPROVED: 'bg-emerald-100 text-emerald-800',
 };
 
+// Status ainda em andamento — só nesses faz sentido sugerir encerrar.
+const OPEN_STATUSES: ReadonlySet<Apply['status']> = new Set([
+  'APPLIED',
+  'INTERVIEW_SCHEDULED',
+  'TECHNICAL_TEST',
+  'AWAITING_RESPONSE',
+]);
+
+// Candidatura aberta há mais de um mês desde a data de aplicação.
+function isStale(apply: Apply): boolean {
+  if (!OPEN_STATUSES.has(apply.status)) return false;
+  const applied = new Date(`${apply.date}T00:00:00Z`);
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  return applied < oneMonthAgo;
+}
+
 export function ApplyList({ applies, onEdit, onDelete }: ApplyListProps) {
   const { t } = useTranslation(['jobs', 'common']);
 
@@ -76,6 +93,11 @@ export function ApplyList({ applies, onEdit, onDelete }: ApplyListProps) {
                 </>
               ) : null}
             </p>
+            {isStale(apply) && (
+              <p className="mt-2 rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-800">
+                {t('jobs:applies.staleWarning')}
+              </p>
+            )}
           </div>
           <div className="flex shrink-0 gap-1 self-end sm:self-auto">
             <Button variant="ghost" onClick={() => onEdit(apply)}>

@@ -42,7 +42,8 @@
     "needCompany": "You need to register a company before creating an application.",
     "createCompany": "Create company",
     "companyFallback": "Company #{{id}}",
-    "link": "link"
+    "link": "link",
+    "staleWarning": "Applied over a month ago. Consider closing this application."
   },
   "search": {
     "title": "Search jobs",

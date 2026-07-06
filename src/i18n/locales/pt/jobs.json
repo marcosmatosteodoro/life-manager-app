@@ -42,7 +42,8 @@
     "needCompany": "Você precisa cadastrar uma empresa antes de criar uma candidatura.",
     "createCompany": "Criar empresa",
     "companyFallback": "Empresa #{{id}}",
-    "link": "link"
+    "link": "link",
+    "staleWarning": "Aplicada há mais de um mês. Considere encerrar esta candidatura."
   },
   "search": {
     "title": "Buscar vagas",

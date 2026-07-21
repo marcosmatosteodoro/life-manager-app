@@ -152,11 +152,19 @@ export function Sidebar() {
               />
             </button>
           ))}
-        {!isCollapsed && (
-          <nav className="flex flex-col gap-1 pt-1">
-            {group.items.map((item) => renderItem(item, opts))}
-          </nav>
-        )}
+        {/* Collapse animado (grid-rows 0fr→1fr), como no resto do app. */}
+        <div
+          className={cn(
+            'grid transition-[grid-template-rows] duration-300 ease-in-out',
+            isCollapsed ? 'grid-rows-[0fr]' : 'grid-rows-[1fr]',
+          )}
+        >
+          <div className="overflow-hidden">
+            <nav className="flex flex-col gap-1 pt-1">
+              {group.items.map((item) => renderItem(item, opts))}
+            </nav>
+          </div>
+        </div>
       </div>
     );
   }

@@ -1,12 +1,19 @@
 import { apiRequest } from './http';
 import type {
   Problem,
+  ProblemCategoryListResponse,
   ProblemInput,
   ProblemListResponse,
   ProblemStatus,
 } from './problem.types';
 
 export { ApiError } from './http';
+
+export const problemCategoryService = {
+  list(): Promise<ProblemCategoryListResponse> {
+    return apiRequest<ProblemCategoryListResponse>('/problem-category');
+  },
+};
 
 export const problemService = {
   list(status?: ProblemStatus): Promise<ProblemListResponse> {

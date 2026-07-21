@@ -23,6 +23,8 @@
     "title": "Título",
     "titlePlaceholder": "Ex.: Login lento em produção",
     "status": "Status",
+    "category": "Categoria (opcional)",
+    "categoryNone": "Sem categoria",
     "description": "Descrição (opcional)",
     "descriptionPlaceholder": "Detalhes do problema...",
     "saving": "Salvando...",

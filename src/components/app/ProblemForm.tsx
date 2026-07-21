@@ -4,11 +4,17 @@ import { type FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
-import type { Problem, ProblemInput, ProblemStatus } from '@/services/problem.types';
+import type {
+  Problem,
+  ProblemCategory,
+  ProblemInput,
+  ProblemStatus,
+} from '@/services/problem.types';
 import { PROBLEM_STATUSES } from '@/services/problemService';
 
 interface ProblemFormProps {
   initial?: Problem | null;
+  categories: ProblemCategory[];
   submitting: boolean;
   onSubmit: (input: ProblemInput) => void;
   onCancel: () => void;
@@ -16,6 +22,7 @@ interface ProblemFormProps {
 
 export function ProblemForm({
   initial,
+  categories,
   submitting,
   onSubmit,
   onCancel,
@@ -26,6 +33,10 @@ export function ProblemForm({
   const [status, setStatus] = useState<ProblemStatus>(
     initial?.status ?? 'pendente',
   );
+  // '' = sem categoria (opcional).
+  const [categoryId, setCategoryId] = useState(
+    initial?.categoryId != null ? String(initial.categoryId) : '',
+  );
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -33,6 +44,7 @@ export function ProblemForm({
       title: title.trim(),
       status,
       description: description.trim() ? description.trim() : null,
+      categoryId: categoryId === '' ? null : Number(categoryId),
     });
   }
 
@@ -61,6 +73,22 @@ export function ProblemForm({
           {PROBLEM_STATUSES.map((value) => (
             <option key={value} value={value}>
               {t(`status.${value}`)}
+            </option>
+          ))}
+        </select>
+      </Field>
+
+      <Field label={t('form.category')} htmlFor="problem-category">
+        <select
+          id="problem-category"
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+          className={inputClass}
+        >
+          <option value="">{t('form.categoryNone')}</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
             </option>
           ))}
         </select>

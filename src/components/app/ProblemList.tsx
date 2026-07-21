@@ -177,6 +177,14 @@ function ProblemRow({
             >
               {t(`status.${problem.status}`)}
             </span>
+            {problem.category && (
+              <span
+                className="shrink-0 rounded-full px-2 py-0.5 text-xs font-medium text-white"
+                style={{ backgroundColor: problem.category.color }}
+              >
+                {problem.category.name}
+              </span>
+            )}
           </div>
           {problem.description ? (
             <p className="mt-1 whitespace-pre-line text-sm text-fg-muted">

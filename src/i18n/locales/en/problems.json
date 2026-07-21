@@ -23,6 +23,8 @@
     "title": "Title",
     "titlePlaceholder": "e.g. Slow login in production",
     "status": "Status",
+    "category": "Category (optional)",
+    "categoryNone": "No category",
     "description": "Description (optional)",
     "descriptionPlaceholder": "Problem details...",
     "saving": "Saving...",

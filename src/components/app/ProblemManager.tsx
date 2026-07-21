@@ -8,8 +8,18 @@ import { inputClass } from '@/components/ui/Field';
 import { Loading } from '@/components/ui/Loading';
 import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/hooks/useToastStore';
-import type { Problem, ProblemInput, ProblemStatus } from '@/services/problem.types';
-import { ApiError, PROBLEM_STATUSES, problemService } from '@/services/problemService';
+import type {
+  Problem,
+  ProblemCategory,
+  ProblemInput,
+  ProblemStatus,
+} from '@/services/problem.types';
+import {
+  ApiError,
+  PROBLEM_STATUSES,
+  problemCategoryService,
+  problemService,
+} from '@/services/problemService';
 import { cn } from '@/utils/cn';
 import { ProblemForm } from './ProblemForm';
 import { ProblemList } from './ProblemList';
@@ -21,6 +31,7 @@ type StatusFilter = ProblemStatus | 'ALL';
 export function ProblemManager() {
   const { t } = useTranslation(['problems', 'common']);
   const [problems, setProblems] = useState<Problem[]>([]);
+  const [categories, setCategories] = useState<ProblemCategory[]>([]);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
 
@@ -41,8 +52,12 @@ export function ProblemManager() {
   const load = useCallback(async () => {
     setLoadState('loading');
     try {
-      const { rows } = await problemService.list();
-      setProblems(rows);
+      const [problemRes, categoryRes] = await Promise.all([
+        problemService.list(),
+        problemCategoryService.list(),
+      ]);
+      setProblems(problemRes.rows);
+      setCategories(categoryRes.rows);
       setLoadState('loaded');
     } catch (error) {
       setLoadError(toMessages(error, t('common:unexpectedError')));
@@ -186,6 +201,7 @@ export function ProblemManager() {
         <ProblemForm
           key={editing?.id ?? 'new'}
           initial={editing}
+          categories={categories}
           submitting={submitting}
           onSubmit={handleSubmit}
           onCancel={closeForm}

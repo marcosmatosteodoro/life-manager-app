@@ -14,6 +14,20 @@
   "filterAll": "All",
   "filterEmpty": "No problems with this status.",
   "dragToReorder": "Drag to reorder",
+  "categories": {
+    "manage": "Categories",
+    "title": "Manage categories",
+    "empty": "No categories created yet.",
+    "newTitle": "New category",
+    "editTitle": "Edit category",
+    "name": "Name",
+    "namePlaceholder": "e.g. Bug",
+    "color": "Color",
+    "created": "Category created.",
+    "updated": "Category updated.",
+    "deleted": "Category deleted.",
+    "confirmDelete": "Delete category \"{{name}}\"? Problems using it will become uncategorized."
+  },
   "status": {
     "pendente": "Pending",
     "em_progresso": "In progress",

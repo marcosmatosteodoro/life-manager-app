@@ -7,6 +7,11 @@ export interface ProblemCategory {
   color: string;
 }
 
+export interface ProblemCategoryInput {
+  name: string;
+  color: string;
+}
+
 export interface ProblemCategoryListResponse {
   count: number;
   rows: ProblemCategory[];

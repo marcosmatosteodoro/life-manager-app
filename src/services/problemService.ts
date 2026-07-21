@@ -1,6 +1,8 @@
 import { apiRequest } from './http';
 import type {
   Problem,
+  ProblemCategory,
+  ProblemCategoryInput,
   ProblemCategoryListResponse,
   ProblemInput,
   ProblemListResponse,
@@ -12,6 +14,24 @@ export { ApiError } from './http';
 export const problemCategoryService = {
   list(): Promise<ProblemCategoryListResponse> {
     return apiRequest<ProblemCategoryListResponse>('/problem-category');
+  },
+
+  create(input: ProblemCategoryInput): Promise<ProblemCategory> {
+    return apiRequest<ProblemCategory>('/problem-category', {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  },
+
+  update(id: number, input: ProblemCategoryInput): Promise<ProblemCategory> {
+    return apiRequest<ProblemCategory>(`/problem-category/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(input),
+    });
+  },
+
+  remove(id: number): Promise<void> {
+    return apiRequest<void>(`/problem-category/${id}`, { method: 'DELETE' });
   },
 };
 

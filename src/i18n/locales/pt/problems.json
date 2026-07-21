@@ -14,6 +14,20 @@
   "filterAll": "Todos",
   "filterEmpty": "Nenhum problema com esse status.",
   "dragToReorder": "Arraste para reordenar",
+  "categories": {
+    "manage": "Categorias",
+    "title": "Gerenciar categorias",
+    "empty": "Nenhuma categoria criada ainda.",
+    "newTitle": "Nova categoria",
+    "editTitle": "Editar categoria",
+    "name": "Nome",
+    "namePlaceholder": "Ex.: Bug",
+    "color": "Cor",
+    "created": "Categoria criada.",
+    "updated": "Categoria atualizada.",
+    "deleted": "Categoria excluída.",
+    "confirmDelete": "Excluir a categoria \"{{name}}\"? Os problemas com ela ficarão sem categoria."
+  },
   "status": {
     "pendente": "Pendente",
     "em_progresso": "Em progresso",

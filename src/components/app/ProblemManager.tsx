@@ -21,6 +21,7 @@ import {
   problemService,
 } from '@/services/problemService';
 import { cn } from '@/utils/cn';
+import { ProblemCategoryManager } from './ProblemCategoryManager';
 import { ProblemForm } from './ProblemForm';
 import { ProblemList } from './ProblemList';
 
@@ -43,6 +44,7 @@ export function ProblemManager() {
   const [deleteInProgress, setDeleteInProgress] = useState(false);
 
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
 
   const filteredProblems =
     statusFilter === 'ALL'
@@ -143,7 +145,12 @@ export function ProblemManager() {
           </h1>
           <p className="mt-1 text-sm text-fg-muted">{t('subtitle')}</p>
         </div>
-        <Button onClick={openCreate}>{t('new')}</Button>
+        <div className="flex shrink-0 gap-2">
+          <Button variant="secondary" onClick={() => setCategoriesOpen(true)}>
+            {t('categories.manage')}
+          </Button>
+          <Button onClick={openCreate}>{t('new')}</Button>
+        </div>
       </div>
 
       {loadState === 'loaded' && problems.length > 0 && (
@@ -205,6 +212,17 @@ export function ProblemManager() {
           submitting={submitting}
           onSubmit={handleSubmit}
           onCancel={closeForm}
+        />
+      </Modal>
+
+      <Modal
+        open={categoriesOpen}
+        title={t('categories.title')}
+        onClose={() => setCategoriesOpen(false)}
+      >
+        <ProblemCategoryManager
+          categories={categories}
+          onChanged={() => void load()}
         />
       </Modal>
 

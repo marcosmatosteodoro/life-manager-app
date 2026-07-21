@@ -13,6 +13,17 @@ interface ProfileState {
   clear: () => void;
 }
 
+/** Reconcilia o tema (e as cores custom) com o do servidor, a fonte da verdade. */
+function applyProfileTheme(profile: UserProfile): void {
+  const theme = useThemeStore.getState();
+  if (profile.theme === 'custom' && profile.customColors) {
+    theme.setCustomColors(profile.customColors);
+  } else {
+    theme.setTheme(profile.theme);
+  }
+  useLocaleStore.getState().setLocale(toLocale(profile.language));
+}
+
 /**
  * Perfil do usuário logado (não persistido — vem do back a cada sessão).
  * Ao carregar, reconcilia o tema com o do servidor (fonte da verdade entre
@@ -26,8 +37,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
     set({ loading: true });
     try {
       const profile = await userService.getMe();
-      useThemeStore.getState().setTheme(profile.theme);
-      useLocaleStore.getState().setLocale(toLocale(profile.language));
+      applyProfileTheme(profile);
       set({ profile, loading: false });
       return profile;
     } catch {
@@ -37,8 +47,7 @@ export const useProfileStore = create<ProfileState>((set) => ({
   },
 
   setProfile: (profile) => {
-    useThemeStore.getState().setTheme(profile.theme);
-    useLocaleStore.getState().setLocale(toLocale(profile.language));
+    applyProfileTheme(profile);
     set({ profile });
   },
 

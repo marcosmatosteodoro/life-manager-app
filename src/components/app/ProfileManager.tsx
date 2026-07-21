@@ -9,7 +9,9 @@ import { useProfileStore } from '@/hooks/useProfileStore';
 import { toast } from '@/hooks/useToastStore';
 import { ApiError, userService } from '@/services/userService';
 import type { Language, Theme, UserProfile } from '@/services/user.types';
+import { applyTheme } from '@/utils/theme';
 import { ChangePasswordForm } from './ChangePasswordForm';
+import { CustomColorsEditor } from './CustomColorsEditor';
 
 const THEME_OPTIONS: { value: Theme; labelKey: string }[] = [
   { value: 'light', labelKey: 'themeLight' },
@@ -76,6 +78,13 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
   const [theme, setTheme] = useState<Theme>(profile.theme);
   const [language, setLanguage] = useState<Language>(profile.language);
   const [saving, setSaving] = useState(false);
+
+  // Troca de tema: aplica o preview na hora (light/dark limpam as cores custom;
+  // custom mostra o editor abaixo). Só persiste ao salvar / confirmar.
+  function handleThemeChange(value: Theme) {
+    setTheme(value);
+    applyTheme(value, profile.customColors);
+  }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -162,7 +171,7 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
             <select
               id="profile-theme"
               value={theme}
-              onChange={(e) => setTheme(e.target.value as Theme)}
+              onChange={(e) => handleThemeChange(e.target.value as Theme)}
               className={inputClass}
             >
               {THEME_OPTIONS.map((o) => (
@@ -173,6 +182,9 @@ function ProfileForm({ profile }: { profile: UserProfile }) {
             </select>
           </Field>
         </div>
+
+        {/* Tema custom: editor com preview ao vivo (renderizado só quando ativo). */}
+        {theme === 'custom' && <CustomColorsEditor profile={profile} />}
         <Button type="submit" disabled={saving} className="self-start">
           {saving ? t('common:saving') : t('saveProfile')}
         </Button>

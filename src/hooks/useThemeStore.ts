@@ -1,22 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Theme } from '@/services/user.types';
+import type { CustomColors, Theme } from '@/services/user.types';
+import { applyTheme } from '@/utils/theme';
 
 export type { Theme };
 
-/**
- * Aplica/remove a classe `.dark` no <html> (a fonte do tema para o CSS).
- * `custom` ainda não faz nada — renderiza como claro por ora.
- */
-function applyThemeClass(theme: Theme): void {
-  if (typeof document === 'undefined') return;
-  document.documentElement.classList.toggle('dark', theme === 'dark');
-}
-
 interface ThemeState {
   theme: Theme;
+  /** Paleta do tema custom (token → hex). Null enquanto não personalizado. */
+  customColors: CustomColors | null;
   setTheme: (theme: Theme) => void;
-  toggle: () => void;
+  setCustomColors: (colors: CustomColors) => void;
 }
 
 /**
@@ -24,26 +18,33 @@ interface ThemeState {
  *
  * Mesma estratégia dos outros stores: `skipHydration` evita mismatch de
  * hidratação no Next (nasce em 'light', igual ao SSR) e o estado salvo é
- * carregado via `rehydrate()` no mount. A classe `.dark` é aplicada no
- * `setTheme` e ao reidratar; no primeiro paint quem aplica é o script inline
- * do layout (anti-FOUC), lendo este mesmo localStorage.
+ * carregado via `rehydrate()` no mount. O visual (classe `.dark` e as variáveis
+ * do custom) é aplicado no `setTheme`/`setCustomColors` e ao reidratar; no
+ * primeiro paint quem aplica é o script inline do layout (anti-FOUC).
  */
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
       theme: 'light',
+      customColors: null,
       setTheme: (theme) => {
-        applyThemeClass(theme);
+        applyTheme(theme, get().customColors);
         set({ theme });
       },
-      toggle: () => get().setTheme(get().theme === 'dark' ? 'light' : 'dark'),
+      setCustomColors: (colors) => {
+        applyTheme('custom', colors);
+        set({ theme: 'custom', customColors: colors });
+      },
     }),
     {
       name: 'lm_theme',
       skipHydration: true,
-      partialize: (state) => ({ theme: state.theme }),
+      partialize: (state) => ({
+        theme: state.theme,
+        customColors: state.customColors,
+      }),
       onRehydrateStorage: () => (state) => {
-        if (state) applyThemeClass(state.theme);
+        if (state) applyTheme(state.theme, state.customColors);
       },
     },
   ),

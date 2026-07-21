@@ -35,8 +35,16 @@ export const viewport: Viewport = {
 
 // Aplica tema e idioma salvos ANTES do primeiro paint (evita flash e mismatch
 // de hidratação). Lê os mesmos localStorage dos stores (persist serializa
-// { state: {...} }). Conteúdo estático, sem input do usuário — sem injeção.
-const initScript = `(function(){try{var t=localStorage.getItem("lm_theme");if(t&&JSON.parse(t).state.theme==="dark"){document.documentElement.classList.add("dark")}}catch(e){}try{var l=localStorage.getItem("lm_locale");if(l){document.documentElement.lang=JSON.parse(l).state.locale==="en"?"en-US":"pt-BR"}}catch(e){}})();`;
+// { state: {...} }). Chaves de cor e nomes de var são fixos aqui; os valores
+// vêm do localStorage do próprio usuário e entram via setProperty (sem injeção).
+const CUSTOM_COLOR_KEYS = [
+  'background', 'foreground', 'surface', 'surface-muted', 'surface-subtle',
+  'surface-inverse', 'fg', 'fg-soft', 'fg-muted', 'fg-subtle', 'edge',
+  'edge-strong', 'edge-inverse',
+];
+const initScript = `(function(){try{var t=localStorage.getItem("lm_theme");if(t){var s=JSON.parse(t).state;if(s.theme==="dark"){document.documentElement.classList.add("dark")}else if(s.theme==="custom"&&s.customColors){var k=${JSON.stringify(
+  CUSTOM_COLOR_KEYS,
+)};for(var i=0;i<k.length;i++){var v=s.customColors[k[i]];if(v){document.documentElement.style.setProperty("--"+k[i],v)}}}}}catch(e){}try{var l=localStorage.getItem("lm_locale");if(l){document.documentElement.lang=JSON.parse(l).state.locale==="en"?"en-US":"pt-BR"}}catch(e){}})();`;
 
 export default function RootLayout({
   children,

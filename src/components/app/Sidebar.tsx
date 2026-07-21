@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { type ComponentType, type SVGProps, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton } from '@/components/ui/IconButton';
+import { useNavGroupsStore } from '@/hooks/useNavGroupsStore';
 import { useSidebarStore } from '@/hooks/useSidebarStore';
 import { cn } from '@/utils/cn';
 
@@ -78,6 +79,13 @@ export function Sidebar() {
   const mobileOpen = useSidebarStore((state) => state.mobileOpen);
   const toggleMobile = useSidebarStore((state) => state.toggleMobile);
   const closeMobile = useSidebarStore((state) => state.closeMobile);
+  const collapsedGroups = useNavGroupsStore((state) => state.collapsed);
+  const toggleGroup = useNavGroupsStore((state) => state.toggle);
+
+  // Carrega a preferência de grupos recolhidos salva no localStorage.
+  useEffect(() => {
+    void useNavGroupsStore.persist.rehydrate();
+  }, []);
 
   // Fecha o drawer mobile sempre que a rota muda.
   useEffect(() => {
@@ -117,6 +125,11 @@ export function Sidebar() {
     index: number,
     opts: { iconOnly?: boolean; onClick?: () => void } = {},
   ) {
+    // Só grupos com label são recolhíveis, e nunca no modo só-ícones (sem
+    // cabeçalho para clicar). Os itens soltos do topo ficam sempre visíveis.
+    const collapsible = Boolean(group.label) && !opts.iconOnly;
+    const isCollapsed = collapsible ? !!collapsedGroups[group.label!] : false;
+
     return (
       <div key={group.label ?? index} className={index === 0 ? '' : 'mt-4'}>
         {group.label &&
@@ -124,13 +137,26 @@ export function Sidebar() {
             // Recolhido: só um divisor entre grupos (sem texto).
             <div className="mx-2 border-t border-edge" />
           ) : (
-            <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-fg-subtle">
-              {t(group.label)}
-            </p>
+            <button
+              type="button"
+              onClick={() => toggleGroup(group.label!)}
+              aria-expanded={!isCollapsed}
+              className="flex w-full items-center justify-between rounded-md px-3 pb-1 pt-1 text-xs font-semibold uppercase tracking-wide text-fg-subtle transition-colors hover:text-fg-soft"
+            >
+              <span className="truncate">{t(group.label)}</span>
+              <CaretIcon
+                className={cn(
+                  'h-4 w-4 shrink-0 transition-transform duration-200',
+                  isCollapsed && '-rotate-90',
+                )}
+              />
+            </button>
           ))}
-        <nav className="flex flex-col gap-1 pt-1">
-          {group.items.map((item) => renderItem(item, opts))}
-        </nav>
+        {!isCollapsed && (
+          <nav className="flex flex-col gap-1 pt-1">
+            {group.items.map((item) => renderItem(item, opts))}
+          </nav>
+        )}
       </div>
     );
   }
@@ -465,6 +491,24 @@ function ChevronIcon(props: SVGProps<SVGSVGElement>) {
       {...props}
     >
       <path d="m15 6-6 6 6 6" />
+    </svg>
+  );
+}
+
+// Chevron para baixo (expandido); gira -90° quando o grupo está recolhido.
+function CaretIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d="m6 9 6 6 6-6" />
     </svg>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { type FormEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
 import type { FlashCardGroup } from '@/services/flashCardGroup.types';
@@ -12,13 +13,24 @@ interface FlashCardGroupFormProps {
   onCancel: () => void;
 }
 
+/** Sugestão de nome: data de hoje com o mês por extenso no idioma (ex.: 21-julho-2026). */
+function suggestedName(language: string): string {
+  const now = new Date();
+  const month = new Intl.DateTimeFormat(language, { month: 'long' }).format(now);
+  return `${now.getDate()}-${month}-${now.getFullYear()}`;
+}
+
 export function FlashCardGroupForm({
   initial,
   submitting,
   onSubmit,
   onCancel,
 }: FlashCardGroupFormProps) {
-  const [name, setName] = useState(initial?.name ?? '');
+  const { i18n } = useTranslation();
+  // Ao criar, pré-preenche com a data de hoje (editável); ao editar, mantém o nome.
+  const [name, setName] = useState(
+    initial?.name ?? suggestedName(i18n.language),
+  );
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();

@@ -13,6 +13,7 @@
   "filterStatus": "Status:",
   "filterAll": "All",
   "filterEmpty": "No problems with this status.",
+  "dragToReorder": "Drag to reorder",
   "status": {
     "pendente": "Pending",
     "em_progresso": "In progress",

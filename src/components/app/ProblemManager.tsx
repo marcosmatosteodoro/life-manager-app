@@ -87,6 +87,23 @@ export function ProblemManager() {
     }
   }
 
+  // Reordena de forma otimista e persiste; em erro, reverte.
+  async function handleReorder(orderedIds: number[]) {
+    const previous = problems;
+    const byId = new Map(problems.map((p) => [p.id, p]));
+    const reordered = orderedIds.map((id, index) => ({
+      ...byId.get(id)!,
+      position: index + 1,
+    }));
+    setProblems(reordered);
+    try {
+      await problemService.reorder(orderedIds);
+    } catch (error) {
+      setProblems(previous);
+      toast.errors(toMessages(error, t('common:unexpectedError')));
+    }
+  }
+
   async function confirmDelete() {
     if (!deleting) return;
     setDeleteInProgress(true);
@@ -155,6 +172,8 @@ export function ProblemManager() {
               problems={filteredProblems}
               onEdit={openEdit}
               onDelete={setDeleting}
+              sortable={statusFilter === 'ALL'}
+              onReorder={(ids) => void handleReorder(ids)}
             />
           ))}
       </div>

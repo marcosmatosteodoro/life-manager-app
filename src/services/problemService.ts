@@ -31,6 +31,14 @@ export const problemService = {
   remove(id: number): Promise<void> {
     return apiRequest<void>(`/problem/${id}`, { method: 'DELETE' });
   },
+
+  /** Reordena todos os problemas (position = índice + 1). */
+  reorder(orderedIds: number[]): Promise<ProblemListResponse> {
+    return apiRequest<ProblemListResponse>('/problem/reorder', {
+      method: 'PATCH',
+      body: JSON.stringify({ orderedIds }),
+    });
+  },
 };
 
 /**

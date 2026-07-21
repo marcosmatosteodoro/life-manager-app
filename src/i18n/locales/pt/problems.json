@@ -1,0 +1,31 @@
+{
+  "title": "Problemas a resolver",
+  "subtitle": "Liste os problemas que você precisa resolver e acompanhe o status de cada um.",
+  "new": "Novo problema",
+  "empty": "Nenhum problema registrado ainda.",
+  "editTitle": "Editar problema",
+  "newTitle": "Novo problema",
+  "created": "Problema criado com sucesso.",
+  "updated": "Problema atualizado com sucesso.",
+  "deleted": "Problema excluído com sucesso.",
+  "deleteTitle": "Excluir problema",
+  "deleteDescription": "Tem certeza que deseja excluir \"{{title}}\"? Essa ação não pode ser desfeita.",
+  "filterStatus": "Status:",
+  "filterAll": "Todos",
+  "filterEmpty": "Nenhum problema com esse status.",
+  "status": {
+    "pendente": "Pendente",
+    "em_progresso": "Em progresso",
+    "concluido": "Concluído"
+  },
+  "form": {
+    "title": "Título",
+    "titlePlaceholder": "Ex.: Login lento em produção",
+    "status": "Status",
+    "description": "Descrição (opcional)",
+    "descriptionPlaceholder": "Detalhes do problema...",
+    "saving": "Salvando...",
+    "save": "Salvar",
+    "create": "Criar"
+  }
+}

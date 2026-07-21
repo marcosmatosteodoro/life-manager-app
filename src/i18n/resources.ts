@@ -14,6 +14,7 @@ import enConverters from './locales/en/converters.json';
 import enTodo from './locales/en/todo.json';
 import enFeedback from './locales/en/feedback.json';
 import enJobs from './locales/en/jobs.json';
+import enProblems from './locales/en/problems.json';
 
 import ptCommon from './locales/pt/common.json';
 import ptNav from './locales/pt/nav.json';
@@ -29,6 +30,7 @@ import ptConverters from './locales/pt/converters.json';
 import ptTodo from './locales/pt/todo.json';
 import ptFeedback from './locales/pt/feedback.json';
 import ptJobs from './locales/pt/jobs.json';
+import ptProblems from './locales/pt/problems.json';
 
 export const defaultNS = 'common';
 
@@ -47,6 +49,7 @@ export const ns = [
   'todo',
   'feedback',
   'jobs',
+  'problems',
 ] as const;
 
 export const resources = {
@@ -65,6 +68,7 @@ export const resources = {
     todo: enTodo,
     feedback: enFeedback,
     jobs: enJobs,
+    problems: enProblems,
   },
   pt: {
     common: ptCommon,
@@ -81,5 +85,6 @@ export const resources = {
     todo: ptTodo,
     feedback: ptFeedback,
     jobs: ptJobs,
+    problems: ptProblems,
   },
 } as const;

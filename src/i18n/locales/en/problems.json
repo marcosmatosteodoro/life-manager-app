@@ -1,0 +1,31 @@
+{
+  "title": "Problems to solve",
+  "subtitle": "List the problems you need to solve and track the status of each one.",
+  "new": "New problem",
+  "empty": "No problems recorded yet.",
+  "editTitle": "Edit problem",
+  "newTitle": "New problem",
+  "created": "Problem created successfully.",
+  "updated": "Problem updated successfully.",
+  "deleted": "Problem deleted successfully.",
+  "deleteTitle": "Delete problem",
+  "deleteDescription": "Are you sure you want to delete \"{{title}}\"? This action cannot be undone.",
+  "filterStatus": "Status:",
+  "filterAll": "All",
+  "filterEmpty": "No problems with this status.",
+  "status": {
+    "pendente": "Pending",
+    "em_progresso": "In progress",
+    "concluido": "Done"
+  },
+  "form": {
+    "title": "Title",
+    "titlePlaceholder": "e.g. Slow login in production",
+    "status": "Status",
+    "description": "Description (optional)",
+    "descriptionPlaceholder": "Problem details...",
+    "saving": "Saving...",
+    "save": "Save",
+    "create": "Create"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "title": "Problems to solve",
-  "subtitle": "List the problems you need to solve and track the status of each one.",
+  "subtitle": "List the problems in your life you want to solve, in priority order, and track the status of each one.",
   "new": "New problem",
   "empty": "No problems recorded yet.",
   "editTitle": "Edit problem",
@@ -21,7 +21,7 @@
     "newTitle": "New category",
     "editTitle": "Edit category",
     "name": "Name",
-    "namePlaceholder": "e.g. Bug",
+    "namePlaceholder": "e.g. Health",
     "color": "Color",
     "created": "Category created.",
     "updated": "Category updated.",
@@ -35,12 +35,12 @@
   },
   "form": {
     "title": "Title",
-    "titlePlaceholder": "e.g. Slow login in production",
+    "titlePlaceholder": "e.g. Book a dentist appointment",
     "status": "Status",
     "category": "Category (optional)",
     "categoryNone": "No category",
     "description": "Description (optional)",
-    "descriptionPlaceholder": "Problem details...",
+    "descriptionPlaceholder": "Details, next steps, what's left to solve...",
     "saving": "Saving...",
     "save": "Save",
     "create": "Create"

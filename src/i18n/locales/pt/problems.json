@@ -1,6 +1,6 @@
 {
   "title": "Problemas a resolver",
-  "subtitle": "Liste os problemas que você precisa resolver e acompanhe o status de cada um.",
+  "subtitle": "Liste os problemas da sua vida que você quer resolver, em ordem de prioridade, e acompanhe o status de cada um.",
   "new": "Novo problema",
   "empty": "Nenhum problema registrado ainda.",
   "editTitle": "Editar problema",
@@ -21,7 +21,7 @@
     "newTitle": "Nova categoria",
     "editTitle": "Editar categoria",
     "name": "Nome",
-    "namePlaceholder": "Ex.: Bug",
+    "namePlaceholder": "Ex.: Saúde",
     "color": "Cor",
     "created": "Categoria criada.",
     "updated": "Categoria atualizada.",
@@ -35,12 +35,12 @@
   },
   "form": {
     "title": "Título",
-    "titlePlaceholder": "Ex.: Login lento em produção",
+    "titlePlaceholder": "Ex.: Marcar consulta no dentista",
     "status": "Status",
     "category": "Categoria (opcional)",
     "categoryNone": "Sem categoria",
     "description": "Descrição (opcional)",
-    "descriptionPlaceholder": "Detalhes do problema...",
+    "descriptionPlaceholder": "Detalhes, próximos passos, o que falta resolver...",
     "saving": "Salvando...",
     "save": "Salvar",
     "create": "Criar"

@@ -1,4 +1,5 @@
 export type ProblemStatus = 'pendente' | 'em_progresso' | 'concluido';
+export type ProblemPriority = 'baixa' | 'media' | 'alta' | 'urgente';
 
 /** Categoria de um problema (nome + cor da tag). */
 export interface ProblemCategory {
@@ -24,6 +25,7 @@ export interface Problem {
   position: number;
   description: string | null;
   status: ProblemStatus;
+  priority: ProblemPriority;
   categoryId: number | null;
   category?: ProblemCategory | null;
   createdAt: string;
@@ -35,6 +37,7 @@ export interface ProblemInput {
   title: string;
   description?: string | null;
   status: ProblemStatus;
+  priority: ProblemPriority;
   categoryId: number | null;
 }
 

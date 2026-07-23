@@ -6,6 +6,7 @@ import type {
   ProblemCategoryListResponse,
   ProblemInput,
   ProblemListResponse,
+  ProblemPriority,
   ProblemStatus,
 } from './problem.types';
 
@@ -76,4 +77,12 @@ export const PROBLEM_STATUSES: ProblemStatus[] = [
   'pendente',
   'em_progresso',
   'concluido',
+];
+
+/** Ordem das prioridades para selects/filtros (rótulos via i18n `priority.<VALUE>`). */
+export const PROBLEM_PRIORITIES: ProblemPriority[] = [
+  'baixa',
+  'media',
+  'alta',
+  'urgente',
 ];

@@ -12,10 +12,12 @@ import type {
   Problem,
   ProblemCategory,
   ProblemInput,
+  ProblemPriority,
   ProblemStatus,
 } from '@/services/problem.types';
 import {
   ApiError,
+  PROBLEM_PRIORITIES,
   PROBLEM_STATUSES,
   problemCategoryService,
   problemService,
@@ -26,8 +28,11 @@ import { ProblemForm } from './ProblemForm';
 import { ProblemList } from './ProblemList';
 
 type LoadState = 'loading' | 'loaded' | 'error';
-// 'ALL' = todos (padrão). O back devolve ordenado por data (mais recente primeiro).
+// 'ALL' = todos (padrão). O back devolve ordenado por position.
 type StatusFilter = ProblemStatus | 'ALL';
+type PriorityFilter = ProblemPriority | 'ALL';
+// 'ALL' = todas; 'NONE' = sem categoria; senão o id (string) da categoria.
+type CategoryFilter = 'ALL' | 'NONE' | string;
 
 export function ProblemManager() {
   const { t } = useTranslation(['problems', 'common']);
@@ -44,12 +49,30 @@ export function ProblemManager() {
   const [deleteInProgress, setDeleteInProgress] = useState(false);
 
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
+  const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>('ALL');
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('ALL');
   const [categoriesOpen, setCategoriesOpen] = useState(false);
 
-  const filteredProblems =
-    statusFilter === 'ALL'
-      ? problems
-      : problems.filter((problem) => problem.status === statusFilter);
+  const filtersActive =
+    statusFilter !== 'ALL' ||
+    priorityFilter !== 'ALL' ||
+    categoryFilter !== 'ALL';
+
+  const filteredProblems = problems.filter((problem) => {
+    if (statusFilter !== 'ALL' && problem.status !== statusFilter) return false;
+    if (priorityFilter !== 'ALL' && problem.priority !== priorityFilter) {
+      return false;
+    }
+    if (categoryFilter === 'NONE' && problem.categoryId != null) return false;
+    if (
+      categoryFilter !== 'ALL' &&
+      categoryFilter !== 'NONE' &&
+      String(problem.categoryId) !== categoryFilter
+    ) {
+      return false;
+    }
+    return true;
+  });
 
   const load = useCallback(async () => {
     setLoadState('loading');
@@ -154,23 +177,57 @@ export function ProblemManager() {
       </div>
 
       {loadState === 'loaded' && problems.length > 0 && (
-        <div className="mt-6 flex items-center gap-2">
-          <label htmlFor="problem-filter" className="text-sm text-fg-muted">
+        <div className="mt-6 flex flex-wrap gap-3">
+          <label className="flex items-center gap-2 text-sm text-fg-muted">
             {t('filterStatus')}
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+              className={cn(inputClass, 'w-auto')}
+            >
+              <option value="ALL">{t('filterAll')}</option>
+              {PROBLEM_STATUSES.map((value) => (
+                <option key={value} value={value}>
+                  {t(`status.${value}`)}
+                </option>
+              ))}
+            </select>
           </label>
-          <select
-            id="problem-filter"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-            className={cn(inputClass, 'max-w-xs')}
-          >
-            <option value="ALL">{t('filterAll')}</option>
-            {PROBLEM_STATUSES.map((value) => (
-              <option key={value} value={value}>
-                {t(`status.${value}`)}
-              </option>
-            ))}
-          </select>
+
+          <label className="flex items-center gap-2 text-sm text-fg-muted">
+            {t('filterPriority')}
+            <select
+              value={priorityFilter}
+              onChange={(e) =>
+                setPriorityFilter(e.target.value as PriorityFilter)
+              }
+              className={cn(inputClass, 'w-auto')}
+            >
+              <option value="ALL">{t('filterAllF')}</option>
+              {PROBLEM_PRIORITIES.map((value) => (
+                <option key={value} value={value}>
+                  {t(`priority.${value}`)}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="flex items-center gap-2 text-sm text-fg-muted">
+            {t('filterCategory')}
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className={cn(inputClass, 'w-auto')}
+            >
+              <option value="ALL">{t('filterAllF')}</option>
+              <option value="NONE">{t('filterNoCategory')}</option>
+              {categories.map((category) => (
+                <option key={category.id} value={String(category.id)}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       )}
 
@@ -194,7 +251,7 @@ export function ProblemManager() {
               problems={filteredProblems}
               onEdit={openEdit}
               onDelete={setDeleting}
-              sortable={statusFilter === 'ALL'}
+              sortable={!filtersActive}
               onReorder={(ids) => void handleReorder(ids)}
             />
           ))}

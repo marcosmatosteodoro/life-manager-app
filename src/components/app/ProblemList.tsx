@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import type { Problem } from '@/services/problem.types';
@@ -36,6 +36,14 @@ const STATUS_CLASSES: Record<Problem['status'], string> = {
   pendente: 'bg-amber-100 text-amber-800',
   em_progresso: 'bg-sky-100 text-sky-800',
   concluido: 'bg-emerald-100 text-emerald-800',
+};
+
+// Cor do selo por prioridade (paleta distinta da de status).
+const PRIORITY_CLASSES: Record<Problem['priority'], string> = {
+  baixa: 'bg-slate-100 text-slate-700',
+  media: 'bg-blue-100 text-blue-800',
+  alta: 'bg-orange-100 text-orange-800',
+  urgente: 'bg-red-100 text-red-800',
 };
 
 export function ProblemList({
@@ -159,16 +167,19 @@ function ProblemRow({
   dragHandle?: ReactNode;
 }) {
   const { t } = useTranslation(['problems', 'common']);
+  const [open, setOpen] = useState(false);
+  const hasDescription = Boolean(problem.description?.trim());
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-edge bg-surface px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-      <div className="flex min-w-0 items-start gap-2">
+    <div className="rounded-lg border border-edge bg-surface px-4 py-3">
+      {/* Linha 1: (handle) título ......... ações */}
+      <div className="flex items-start gap-2">
         {dragHandle}
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="min-w-0 truncate font-medium text-fg">
-              {problem.title}
-            </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-medium text-fg">{problem.title}</p>
+
+          {/* Linha 2: status · prioridade · categoria */}
+          <div className="mt-1 flex flex-wrap items-center gap-2">
             <span
               className={cn(
                 'shrink-0 rounded-full px-2 py-0.5 text-xs font-medium',
@@ -176,6 +187,14 @@ function ProblemRow({
               )}
             >
               {t(`status.${problem.status}`)}
+            </span>
+            <span
+              className={cn(
+                'shrink-0 rounded-full px-2 py-0.5 text-xs font-medium',
+                PRIORITY_CLASSES[problem.priority],
+              )}
+            >
+              {t(`priority.${problem.priority}`)}
             </span>
             {problem.category && (
               <span
@@ -186,26 +205,68 @@ function ProblemRow({
               </span>
             )}
           </div>
-          {problem.description ? (
-            <p className="mt-1 whitespace-pre-line text-sm text-fg-muted">
-              {problem.description}
-            </p>
-          ) : null}
+        </div>
+
+        <div className="flex shrink-0 items-center gap-1">
+          {hasDescription && (
+            <button
+              type="button"
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              aria-label={open ? t('collapseDescription') : t('expandDescription')}
+              className="rounded-md p-1 text-fg-subtle transition-colors hover:bg-surface-subtle hover:text-fg-soft"
+            >
+              <ChevronDownIcon
+                className={cn('h-4 w-4 transition-transform', open && 'rotate-180')}
+              />
+            </button>
+          )}
+          <Button variant="ghost" onClick={() => onEdit(problem)}>
+            {t('common:edit')}
+          </Button>
+          <Button
+            variant="ghost"
+            className="text-red-600 hover:bg-red-50 hover:text-red-700"
+            onClick={() => onDelete(problem)}
+          >
+            {t('common:delete')}
+          </Button>
         </div>
       </div>
-      <div className="flex shrink-0 gap-1 self-end sm:self-auto">
-        <Button variant="ghost" onClick={() => onEdit(problem)}>
-          {t('common:edit')}
-        </Button>
-        <Button
-          variant="ghost"
-          className="text-red-600 hover:bg-red-50 hover:text-red-700"
-          onClick={() => onDelete(problem)}
+
+      {/* Descrição colapsável (grid-rows 0fr→1fr, como no resto do app) */}
+      {hasDescription && (
+        <div
+          className={cn(
+            'grid transition-[grid-template-rows] duration-300 ease-in-out',
+            open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
+          )}
         >
-          {t('common:delete')}
-        </Button>
-      </div>
+          <div className="overflow-hidden">
+            <p className="mt-2 whitespace-pre-line border-t border-edge pt-2 text-sm text-fg-muted">
+              {problem.description}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+function ChevronDownIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      {...props}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
   );
 }
 

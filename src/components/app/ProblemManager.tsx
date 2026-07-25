@@ -178,12 +178,12 @@ export function ProblemManager() {
 
       {loadState === 'loaded' && problems.length > 0 && (
         <div className="mt-6 flex flex-wrap gap-3">
-          <label className="flex items-center gap-2 text-sm text-fg-muted">
+          <label className="flex w-full items-center gap-2 text-sm text-fg-muted sm:w-auto">
             {t('filterStatus')}
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-              className={cn(inputClass, 'w-auto')}
+              className={cn(inputClass, 'flex-1 sm:w-auto sm:flex-none')}
             >
               <option value="ALL">{t('filterAll')}</option>
               {PROBLEM_STATUSES.map((value) => (
@@ -194,14 +194,14 @@ export function ProblemManager() {
             </select>
           </label>
 
-          <label className="flex items-center gap-2 text-sm text-fg-muted">
+          <label className="flex w-full items-center gap-2 text-sm text-fg-muted sm:w-auto">
             {t('filterPriority')}
             <select
               value={priorityFilter}
               onChange={(e) =>
                 setPriorityFilter(e.target.value as PriorityFilter)
               }
-              className={cn(inputClass, 'w-auto')}
+              className={cn(inputClass, 'flex-1 sm:w-auto sm:flex-none')}
             >
               <option value="ALL">{t('filterAllF')}</option>
               {PROBLEM_PRIORITIES.map((value) => (
@@ -212,12 +212,12 @@ export function ProblemManager() {
             </select>
           </label>
 
-          <label className="flex items-center gap-2 text-sm text-fg-muted">
+          <label className="flex w-full items-center gap-2 text-sm text-fg-muted sm:w-auto">
             {t('filterCategory')}
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className={cn(inputClass, 'w-auto')}
+              className={cn(inputClass, 'flex-1 sm:w-auto sm:flex-none')}
             >
               <option value="ALL">{t('filterAllF')}</option>
               <option value="NONE">{t('filterNoCategory')}</option>

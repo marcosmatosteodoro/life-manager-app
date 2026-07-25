@@ -189,8 +189,8 @@ function ProblemRow({
 
   return (
     <div className="rounded-lg border border-edge bg-surface px-4 py-3">
-      {/* Linha 1: (handle) título ......... ações */}
-      <div className="flex items-start gap-2">
+      {/* Linha 1: (handle) título ......... ações (no mobile as ações quebram). */}
+      <div className="flex flex-wrap items-start gap-2">
         {dragHandle}
         <div className="min-w-0 flex-1">
           <p className="truncate font-medium text-fg">{problem.title}</p>
@@ -224,7 +224,7 @@ function ProblemRow({
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex w-full items-center justify-end gap-1 sm:w-auto">
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}

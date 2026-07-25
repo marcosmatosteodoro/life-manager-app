@@ -72,11 +72,15 @@ export function FlashCardGroupManager() {
     router.push(`/revisar/${group.id}/estudar`);
   }
 
-  async function handleSubmit(input: { name: string }) {
+  async function handleSubmit(input: {
+    name: string;
+    type: FlashCardGroup['type'];
+  }) {
     setSubmitting(true);
     try {
       if (editing) {
-        await flashCardGroupService.update(editing.id, input);
+        // Tipo não muda na edição; envia só o nome.
+        await flashCardGroupService.update(editing.id, { name: input.name });
         toast.success(t('groupUpdated'));
       } else {
         await flashCardGroupService.create(input);

@@ -14,9 +14,11 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
 import { toast } from '@/hooks/useToastStore';
 import type { FlashCard } from '@/services/flashCard.types';
+import type { FlashCardGroupType } from '@/services/flashCardGroup.types';
 import { ApiError, flashCardService } from '@/services/flashCardService';
 import { flashCardGroupService } from '@/services/flashCardGroupService';
 import { cn } from '@/utils/cn';
+import { type CompressedImage, compressImage, toDataUrl } from '@/utils/image';
 
 type LoadState = 'loading' | 'loaded' | 'error';
 
@@ -31,9 +33,14 @@ function cleanTerm(raw: string): string {
 export function FlashCardTermsManager({ groupId }: { groupId: number }) {
   const { t } = useTranslation(['flashcards', 'common']);
   const [groupName, setGroupName] = useState('');
+  const [groupType, setGroupType] = useState<FlashCardGroupType>('text');
   const [cards, setCards] = useState<FlashCard[]>([]);
+  // Data URLs das imagens dos cards (grupos tipo 'image').
+  const [cardImages, setCardImages] = useState<Record<number, string>>({});
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [loadError, setLoadError] = useState<string[]>([]);
+
+  const isImage = groupType === 'image';
 
   // Edição inline (apenas um card por vez).
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -47,6 +54,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
   // Adicionar novo termo.
   const [newTerm, setNewTerm] = useState('');
   const [newValue, setNewValue] = useState('');
+  const [newImage, setNewImage] = useState<CompressedImage | null>(null);
   const [adding, setAdding] = useState(false);
   const newTermRef = useRef<HTMLInputElement>(null);
   const addFormRef = useRef<HTMLFormElement>(null);
@@ -58,7 +66,24 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
     try {
       const group = await flashCardGroupService.get(groupId);
       setGroupName(group.name);
-      setCards(group.flashCards ?? []);
+      setGroupType(group.type);
+      const rows = group.flashCards ?? [];
+      setCards(rows);
+      // Em grupos de imagem, busca o base64 dos cards que já têm imagem.
+      if (group.type === 'image') {
+        const withImage = rows.filter((c) => c.hasImage);
+        const loaded = await Promise.all(
+          withImage.map((c) =>
+            flashCardService
+              .getImage(c.id)
+              .then((p) => [c.id, toDataUrl(p)] as const)
+              .catch(() => null),
+          ),
+        );
+        setCardImages(
+          Object.fromEntries(loaded.filter((e) => e !== null)),
+        );
+      }
       setLoadState('loaded');
     } catch (error) {
       setLoadError(toMessages(error, t('common:unexpectedError')));
@@ -70,8 +95,7 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
     void load();
   }, [load]);
 
-  // Ao terminar de carregar pela 1ª vez, começa embaixo (no "Adicionar termo"),
-  // que é onde o usuário quer estar para seguir adicionando.
+  // Ao terminar de carregar pela 1ª vez, começa embaixo (no "Adicionar termo").
   useEffect(() => {
     if (loadState !== 'loaded' || didInitialScroll.current) return;
     didInitialScroll.current = true;
@@ -95,7 +119,8 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
     try {
       await flashCardService.update(card.id, {
         term: cleanTerm(draftTerm),
-        value: draftValue.trim() ? draftValue.trim() : null,
+        // Grupos de imagem não usam o campo "value".
+        value: isImage ? null : draftValue.trim() ? draftValue.trim() : null,
       });
       toast.success(t('termUpdated'));
       setEditingId(null);
@@ -126,15 +151,20 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
     event.preventDefault();
     setAdding(true);
     try {
-      await flashCardService.create({
+      const created = await flashCardService.create({
         term: cleanTerm(newTerm),
-        value: newValue.trim() ? newValue.trim() : null,
+        value: isImage ? null : newValue.trim() ? newValue.trim() : null,
         flashCardGroupId: groupId,
       });
+      // No modo imagem, sobe a imagem escolhida para o card recém-criado.
+      if (isImage && newImage) {
+        await flashCardService.setImage(created.id, newImage);
+      }
       toast.success(t('termAdded'));
       // Continua na tela para adicionar quantos quiser.
       setNewTerm('');
       setNewValue('');
+      setNewImage(null);
       newTermRef.current?.focus();
       await load();
     } catch (error) {
@@ -144,8 +174,32 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
     }
   }
 
-  // Aviso em tempo de escrita: termo já existente (comparação case-insensitive).
-  // Usa o termo já limpo (sem ":" no final) para casar com o que será enviado.
+  /** Sobe/troca a imagem de um card existente (efeito imediato). */
+  async function changeCardImage(cardId: number, image: CompressedImage) {
+    try {
+      const saved = await flashCardService.setImage(cardId, image);
+      setCardImages((prev) => ({ ...prev, [cardId]: toDataUrl(saved) }));
+      toast.success(t('imageUpdated'));
+    } catch (error) {
+      toast.errors(toMessages(error, t('common:unexpectedError')));
+    }
+  }
+
+  async function removeCardImage(cardId: number) {
+    try {
+      await flashCardService.removeImage(cardId);
+      setCardImages((prev) => {
+        const next = { ...prev };
+        delete next[cardId];
+        return next;
+      });
+      toast.success(t('imageRemoved'));
+    } catch (error) {
+      toast.errors(toMessages(error, t('common:unexpectedError')));
+    }
+  }
+
+  // Aviso em tempo de escrita: termo já existente (case-insensitive).
   const normalizedNewTerm = cleanTerm(newTerm).toLowerCase();
   const duplicateIndex = normalizedNewTerm
     ? cards.findIndex((c) => c.term.trim().toLowerCase() === normalizedNewTerm)
@@ -197,32 +251,48 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                       {index + 1}
                     </span>
                     <div className="flex flex-1 flex-col gap-2">
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <input
-                          aria-label={t('fieldTerm')}
-                          value={isEditing ? draftTerm : card.term}
-                          readOnly={!isEditing}
-                          onChange={(e) => setDraftTerm(e.target.value)}
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+                        {isImage && (
+                          <ImagePicker
+                            src={cardImages[card.id] ?? null}
+                            onPick={(img) => void changeCardImage(card.id, img)}
+                            onRemove={() => void removeCardImage(card.id)}
+                          />
+                        )}
+                        <div
                           className={cn(
-                            baseInput,
-                            isEditing
-                              ? 'border-edge-strong focus:border-edge-inverse'
-                              : 'border-transparent bg-surface-muted',
+                            'grid flex-1 grid-cols-1 gap-3',
+                            !isImage && 'sm:grid-cols-2',
                           )}
-                        />
-                        <input
-                          aria-label={t('fieldTranslation')}
-                          value={isEditing ? draftValue : (card.value ?? '')}
-                          readOnly={!isEditing}
-                          placeholder={isEditing ? t('translationPlaceholder') : ''}
-                          onChange={(e) => setDraftValue(e.target.value)}
-                          className={cn(
-                            baseInput,
-                            isEditing
-                              ? 'border-edge-strong focus:border-edge-inverse'
-                              : 'border-transparent bg-surface-muted',
+                        >
+                          <input
+                            aria-label={isImage ? t('imageTextLabel') : t('fieldTerm')}
+                            value={isEditing ? draftTerm : card.term}
+                            readOnly={!isEditing}
+                            onChange={(e) => setDraftTerm(e.target.value)}
+                            className={cn(
+                              baseInput,
+                              isEditing
+                                ? 'border-edge-strong focus:border-edge-inverse'
+                                : 'border-transparent bg-surface-muted',
+                            )}
+                          />
+                          {!isImage && (
+                            <input
+                              aria-label={t('fieldTranslation')}
+                              value={isEditing ? draftValue : (card.value ?? '')}
+                              readOnly={!isEditing}
+                              placeholder={isEditing ? t('translationPlaceholder') : ''}
+                              onChange={(e) => setDraftValue(e.target.value)}
+                              className={cn(
+                                baseInput,
+                                isEditing
+                                  ? 'border-edge-strong focus:border-edge-inverse'
+                                  : 'border-transparent bg-surface-muted',
+                              )}
+                            />
                           )}
-                        />
+                        </div>
                       </div>
                       <div className="flex items-center gap-3 px-1 text-xs">
                         <span className="font-medium text-emerald-600">
@@ -273,29 +343,47 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
                 <span className="mt-2 w-6 shrink-0 text-center text-sm font-medium text-fg-subtle">
                   +
                 </span>
-                <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
-                  <input
-                    ref={newTermRef}
-                    aria-label={t('newTerm')}
-                    required
-                    value={newTerm}
-                    onChange={(e) => setNewTerm(e.target.value)}
-                    placeholder={t('termPlaceholder')}
-                    aria-invalid={duplicateTerm ? true : undefined}
+                <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-start">
+                  {isImage && (
+                    <ImagePicker
+                      src={newImage ? toDataUrl(newImage) : null}
+                      onPick={(img) => setNewImage(img)}
+                      onRemove={() => setNewImage(null)}
+                    />
+                  )}
+                  <div
                     className={cn(
-                      baseInput,
-                      duplicateTerm
-                        ? 'border-amber-400 focus:border-amber-500'
-                        : 'border-edge-strong focus:border-edge-inverse',
+                      'grid flex-1 grid-cols-1 gap-3',
+                      !isImage && 'sm:grid-cols-2',
                     )}
-                  />
-                  <input
-                    aria-label={t('newTranslation')}
-                    value={newValue}
-                    onChange={(e) => setNewValue(e.target.value)}
-                    placeholder={t('translationPlaceholder')}
-                    className={cn(baseInput, 'border-edge-strong focus:border-edge-inverse')}
-                  />
+                  >
+                    <input
+                      ref={newTermRef}
+                      aria-label={isImage ? t('imageTextLabel') : t('newTerm')}
+                      required
+                      value={newTerm}
+                      onChange={(e) => setNewTerm(e.target.value)}
+                      placeholder={
+                        isImage ? t('imageTextPlaceholder') : t('termPlaceholder')
+                      }
+                      aria-invalid={duplicateTerm ? true : undefined}
+                      className={cn(
+                        baseInput,
+                        duplicateTerm
+                          ? 'border-amber-400 focus:border-amber-500'
+                          : 'border-edge-strong focus:border-edge-inverse',
+                      )}
+                    />
+                    {!isImage && (
+                      <input
+                        aria-label={t('newTranslation')}
+                        value={newValue}
+                        onChange={(e) => setNewValue(e.target.value)}
+                        placeholder={t('translationPlaceholder')}
+                        className={cn(baseInput, 'border-edge-strong focus:border-edge-inverse')}
+                      />
+                    )}
+                  </div>
                 </div>
                 <div className="shrink-0">
                   <Button type="submit" disabled={adding}>
@@ -332,6 +420,76 @@ export function FlashCardTermsManager({ groupId }: { groupId: number }) {
         }}
       />
     </section>
+  );
+}
+
+/** Miniatura + escolher/trocar/remover imagem de um card. */
+function ImagePicker({
+  src,
+  onPick,
+  onRemove,
+}: {
+  src: string | null;
+  onPick: (image: CompressedImage) => void | Promise<void>;
+  onRemove: () => void | Promise<void>;
+}) {
+  const { t } = useTranslation(['flashcards', 'common']);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function handleFile(file: File | undefined | null) {
+    if (!file || !file.type.startsWith('image/')) return;
+    setBusy(true);
+    try {
+      await onPick(await compressImage(file));
+    } catch {
+      toast.errors([t('common:avatar.loadError')]);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="flex shrink-0 flex-col items-center gap-1">
+      <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-md border border-edge bg-surface-subtle text-xl text-fg-subtle">
+        {src ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={src} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <span aria-hidden>🖼️</span>
+        )}
+      </div>
+      <div className="flex gap-2 text-xs">
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => inputRef.current?.click()}
+          className="text-fg-muted underline hover:text-fg disabled:opacity-50"
+        >
+          {src ? t('changeImage') : t('addImage')}
+        </button>
+        {src && (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => void onRemove()}
+            className="text-red-600 underline hover:text-red-700 disabled:opacity-50"
+          >
+            {t('common:delete')}
+          </button>
+        )}
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        hidden
+        onChange={(e) => {
+          void handleFile(e.target.files?.[0]);
+          e.target.value = '';
+        }}
+      />
+    </div>
   );
 }
 

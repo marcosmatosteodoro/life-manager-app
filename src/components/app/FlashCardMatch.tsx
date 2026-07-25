@@ -12,10 +12,13 @@ import { cn } from '@/utils/cn';
 const MAX_KEYS = 6;
 const WRONG_MS = 650;
 
+type MatchVariant = 'text' | 'image';
+
 interface Tile {
   uid: string;
   cardId: number;
-  kind: 'term' | 'value';
+  /** true = ladrilho de imagem (grupos tipo 'image'); false = texto. */
+  isImage: boolean;
   text: string;
 }
 
@@ -28,18 +31,34 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-/** Monta os 12 cards embaralhados a partir de até 6 keys com tradução. */
-function buildTiles(cards: FlashCard[]): Tile[] {
+/**
+ * Monta os ladrilhos embaralhados a partir de até 6 keys. No texto: termo↔value.
+ * Na imagem: imagem↔termo (o texto do card).
+ */
+function buildTiles(cards: FlashCard[], variant: MatchVariant): Tile[] {
+  const tiles: Tile[] = [];
+  if (variant === 'image') {
+    const usable = cards.filter((c) => c.hasImage).slice(0, MAX_KEYS);
+    for (const c of usable) {
+      tiles.push({ uid: `${c.id}-i`, cardId: c.id, isImage: true, text: '' });
+      tiles.push({
+        uid: `${c.id}-t`,
+        cardId: c.id,
+        isImage: false,
+        text: c.term,
+      });
+    }
+    return shuffle(tiles);
+  }
   const usable = cards
     .filter((c) => c.value && c.value.trim())
     .slice(0, MAX_KEYS);
-  const tiles: Tile[] = [];
   for (const c of usable) {
-    tiles.push({ uid: `${c.id}-t`, cardId: c.id, kind: 'term', text: c.term });
+    tiles.push({ uid: `${c.id}-t`, cardId: c.id, isImage: false, text: c.term });
     tiles.push({
       uid: `${c.id}-v`,
       cardId: c.id,
-      kind: 'value',
+      isImage: false,
       text: c.value as string,
     });
   }
@@ -48,16 +67,22 @@ function buildTiles(cards: FlashCard[]): Tile[] {
 
 export function FlashCardMatch({
   cards,
+  variant = 'text',
+  images = {},
   onReplay,
   onExit,
 }: {
   cards: FlashCard[];
+  /** 'text' (termo↔value) ou 'image' (imagem↔termo). */
+  variant?: MatchVariant;
+  /** Data URLs das imagens dos cards (grupos tipo 'image'). */
+  images?: Record<number, string>;
   /** Busca um novo sorteio no back (remonta o jogo). Sem ele, reembaralha os mesmos cards. */
   onReplay?: () => void;
   onExit?: () => void;
 }) {
   const { t } = useTranslation(['flashcards', 'common']);
-  const [tiles, setTiles] = useState<Tile[]>(() => buildTiles(cards));
+  const [tiles, setTiles] = useState<Tile[]>(() => buildTiles(cards, variant));
   const [selected, setSelected] = useState<string | null>(null);
   const [matched, setMatched] = useState<Set<number>>(new Set());
   const [wrong, setWrong] = useState<Record<number, number>>({});
@@ -77,7 +102,7 @@ export function FlashCardMatch({
   }
 
   function replay() {
-    setTiles(buildTiles(cards));
+    setTiles(buildTiles(cards, variant));
     setSelected(null);
     setMatched(new Set());
     setWrong({});
@@ -204,7 +229,20 @@ export function FlashCardMatch({
                     'border-edge bg-surface text-fg hover:border-edge-strong',
                 )}
               >
-                {tile.text}
+                {tile.isImage ? (
+                  images[tile.cardId] ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={images[tile.cardId]}
+                      alt=""
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  ) : (
+                    <span aria-hidden>🖼️</span>
+                  )
+                ) : (
+                  tile.text
+                )}
               </button>
             );
           })}

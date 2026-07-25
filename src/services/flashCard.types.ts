@@ -12,6 +12,8 @@ export interface FlashCard {
   lastReview: string | null;
   flashCardGroupId: number;
   totalReviews?: number;
+  /** Tem imagem no Blob? (grupos do tipo `image`). Binário vem sob demanda. */
+  hasImage?: boolean;
   createdAt: string;
   updatedAt: string;
   creatorId: number | null;

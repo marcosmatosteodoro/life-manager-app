@@ -4,12 +4,15 @@ import { type FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
-import type { FlashCardGroup } from '@/services/flashCardGroup.types';
+import type {
+  FlashCardGroup,
+  FlashCardGroupType,
+} from '@/services/flashCardGroup.types';
 
 interface FlashCardGroupFormProps {
   initial?: FlashCardGroup | null;
   submitting: boolean;
-  onSubmit: (input: { name: string }) => void;
+  onSubmit: (input: { name: string; type: FlashCardGroupType }) => void;
   onCancel: () => void;
 }
 
@@ -31,10 +34,12 @@ export function FlashCardGroupForm({
   const [name, setName] = useState(
     initial?.name ?? suggestedName(i18n.language),
   );
+  // Tipo só é escolhido na criação; ao editar, mantém o do grupo.
+  const [type, setType] = useState<FlashCardGroupType>(initial?.type ?? 'text');
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    onSubmit({ name: name.trim() });
+    onSubmit({ name: name.trim(), type });
   }
 
   return (
@@ -50,6 +55,19 @@ export function FlashCardGroupForm({
           className={inputClass}
         />
       </Field>
+      {!initial && (
+        <Field label="Tipo dos cards" htmlFor="group-type">
+          <select
+            id="group-type"
+            value={type}
+            onChange={(e) => setType(e.target.value as FlashCardGroupType)}
+            className={inputClass}
+          >
+            <option value="text">Texto</option>
+            <option value="image">Imagem</option>
+          </select>
+        </Field>
+      )}
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="secondary" type="button" onClick={onCancel} disabled={submitting}>
           Cancelar

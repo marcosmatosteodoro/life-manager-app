@@ -1,3 +1,5 @@
+import type { CompressedImage } from '@/utils/image';
+import type { ProfilePhoto } from './common.types';
 import { apiRequest } from './http';
 import type { FlashCard, FlashCardInput } from './flashCard.types';
 
@@ -48,5 +50,19 @@ export const flashCardService = {
     return apiRequest<FlashCard>(`/flash-card/${id}/translate`, {
       method: 'POST',
     });
+  },
+
+  /** Imagem do card (grupos tipo `image`), em base64. 404 quando não há. */
+  getImage(id: number): Promise<ProfilePhoto> {
+    return apiRequest<ProfilePhoto>(`/flash-card/${id}/image`);
+  },
+  setImage(id: number, image: CompressedImage): Promise<ProfilePhoto> {
+    return apiRequest<ProfilePhoto>(`/flash-card/${id}/image`, {
+      method: 'PUT',
+      body: JSON.stringify(image),
+    });
+  },
+  removeImage(id: number): Promise<void> {
+    return apiRequest<void>(`/flash-card/${id}/image`, { method: 'DELETE' });
   },
 };

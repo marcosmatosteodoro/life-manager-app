@@ -1,9 +1,14 @@
 import type { FlashCard } from './flashCard.types';
 
+/** Tipo do grupo: cards de texto (padrão) ou de imagem. */
+export type FlashCardGroupType = 'text' | 'image';
+
 /** Grupo de flashcards retornado pela API. */
 export interface FlashCardGroup {
   id: number;
   name: string;
+  /** 'text' (padrão) ou 'image' — decide os modos de estudo disponíveis. */
+  type: FlashCardGroupType;
   createdAt: string;
   updatedAt: string;
   creatorId: number | null;
@@ -15,6 +20,8 @@ export interface FlashCardGroup {
 
 export interface FlashCardGroupInput {
   name: string;
+  /** Só enviado na criação; omitido = 'text' no back. */
+  type?: FlashCardGroupType;
 }
 
 export interface FlashCardGroupListResponse {

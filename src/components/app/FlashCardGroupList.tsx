@@ -49,8 +49,13 @@ export function FlashCardGroupList({
             className="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-edge bg-surface px-4 py-3 transition-colors hover:border-edge-strong hover:bg-surface-muted"
           >
             <div className="min-w-0">
-              <p className="truncate font-medium text-fg">
-                {group.name}
+              <p className="flex items-center gap-2 truncate font-medium text-fg">
+                <span className="truncate">{group.name}</span>
+                {group.type === 'image' && (
+                  <span className="shrink-0 rounded-full border border-edge bg-surface-muted px-2 py-0.5 text-xs font-medium text-fg-muted">
+                    {t('typeImage')}
+                  </span>
+                )}
               </p>
               <p className="mt-0.5 text-sm text-fg-muted">
                 {t('flashcardCount', {

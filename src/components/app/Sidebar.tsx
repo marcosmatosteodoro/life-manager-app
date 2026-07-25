@@ -26,7 +26,6 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/cronometro', label: 'stopwatch', Icon: ClockIcon },
       { href: '/pomodoro', label: 'pomodoro', Icon: PomodoroIcon },
       { href: '/afazeres', label: 'todos', Icon: ListCheckIcon },
-      { href: '/backlog', label: 'backlog', Icon: RoadmapIcon },
     ],
   },
   {
@@ -67,7 +66,10 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: 'groupSettings',
-    items: [{ href: '/perfil', label: 'profile', Icon: UserIcon }],
+    items: [
+      { href: '/backlog', label: 'backlog', Icon: RoadmapIcon },
+      { href: '/perfil', label: 'profile', Icon: UserIcon },
+    ],
   },
 ];
 

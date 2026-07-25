@@ -1,0 +1,47 @@
+{
+  "title": "Gastos",
+  "subtitle": "Registre tudo que você gasta e veja para onde vai o dinheiro.",
+  "new": "Novo gasto",
+  "empty": "Nenhum gasto registrado ainda.",
+  "editTitle": "Editar gasto",
+  "newTitle": "Novo gasto",
+  "created": "Gasto registrado.",
+  "updated": "Gasto atualizado.",
+  "deleted": "Gasto excluído.",
+  "deleteTitle": "Excluir gasto",
+  "deleteDescription": "Excluir \"{{title}}\"? Essa ação não pode ser desfeita.",
+  "type": {
+    "debito": "Débito",
+    "credito": "Crédito",
+    "a_vista": "À vista",
+    "pix": "Pix"
+  },
+  "form": {
+    "type": "Tipo",
+    "installments": "Parcelas",
+    "title": "Título",
+    "titlePlaceholder": "Ex.: Mercado do mês",
+    "value": "Valor (R$)",
+    "date": "Data",
+    "category": "Categoria (opcional)",
+    "categoryPlaceholder": "Escreva uma nova ou escolha…",
+    "description": "Descrição (opcional)",
+    "audio": "Descrição em áudio (opcional)",
+    "recordAudio": "Gravar áudio",
+    "rerecord": "Regravar",
+    "removeAudio": "Excluir áudio",
+    "listen": "Ouvir",
+    "audioRecorded": "Áudio gravado ✓",
+    "audioWillRemove": "O áudio será removido ao salvar.",
+    "photos": "Fotos (opcional)",
+    "photosNote": "As fotos ainda não são salvas — só pré-visualização por enquanto.",
+    "create": "Salvar"
+  },
+  "summary": {
+    "monthTotal": "Total do mês",
+    "count_one": "{{count}} gasto",
+    "count_other": "{{count}} gastos",
+    "empty": "Sem gastos neste mês.",
+    "noCategory": "Sem categoria"
+  }
+}

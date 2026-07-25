@@ -1,0 +1,47 @@
+{
+  "title": "Expenses",
+  "subtitle": "Log everything you spend and see where your money goes.",
+  "new": "New expense",
+  "empty": "No expenses recorded yet.",
+  "editTitle": "Edit expense",
+  "newTitle": "New expense",
+  "created": "Expense recorded.",
+  "updated": "Expense updated.",
+  "deleted": "Expense deleted.",
+  "deleteTitle": "Delete expense",
+  "deleteDescription": "Delete \"{{title}}\"? This action cannot be undone.",
+  "type": {
+    "debito": "Debit",
+    "credito": "Credit",
+    "a_vista": "Cash",
+    "pix": "Pix"
+  },
+  "form": {
+    "type": "Type",
+    "installments": "Installments",
+    "title": "Title",
+    "titlePlaceholder": "e.g. Monthly groceries",
+    "value": "Amount (R$)",
+    "date": "Date",
+    "category": "Category (optional)",
+    "categoryPlaceholder": "Type a new one or pick…",
+    "description": "Description (optional)",
+    "audio": "Audio description (optional)",
+    "recordAudio": "Record audio",
+    "rerecord": "Re-record",
+    "removeAudio": "Delete audio",
+    "listen": "Listen",
+    "audioRecorded": "Audio recorded ✓",
+    "audioWillRemove": "Audio will be removed on save.",
+    "photos": "Photos (optional)",
+    "photosNote": "Photos aren't saved yet — preview only for now.",
+    "create": "Save"
+  },
+  "summary": {
+    "monthTotal": "Month total",
+    "count_one": "{{count}} expense",
+    "count_other": "{{count}} expenses",
+    "empty": "No expenses this month.",
+    "noCategory": "No category"
+  }
+}

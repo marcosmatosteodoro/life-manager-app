@@ -23,5 +23,22 @@
   "namePlaceholder": "Nome",
   "descriptionFieldPlaceholder": "Descrição",
   "noDescription": "Sem descrição.",
-  "copy": "Copiar"
+  "copy": "Copiar",
+  "audio": {
+    "title": "Nota de voz",
+    "record": "Gravar áudio",
+    "rerecord": "Regravar",
+    "recording": "Gravando…",
+    "stop": "Parar",
+    "listen": "Ouvir",
+    "save": "Salvar",
+    "discard": "Descartar",
+    "delete": "Excluir áudio",
+    "saved": "Áudio salvo.",
+    "deleted": "Áudio excluído.",
+    "confirmDelete": "Excluir a nota de voz deste item?",
+    "permissionDenied": "Permissão de microfone negada.",
+    "unsupported": "Seu navegador não suporta gravação de áudio.",
+    "tooLarge": "Áudio muito longo (máx. ~3 MB). Grave uma nota mais curta."
+  }
 }

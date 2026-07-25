@@ -220,6 +220,7 @@ export function BacklogManager() {
                   onSave={(id, data) =>
                     void runAndReload(backlogService.update(id, data))
                   }
+                  onAudioChanged={() => void load(status)}
                 />
               ))}
             </div>
@@ -238,6 +239,7 @@ export function BacklogManager() {
               onSave={(id, data) =>
                 void runAndReload(backlogService.update(id, data))
               }
+              onAudioChanged={() => void load(status)}
             />
           ))}
         </div>
@@ -252,11 +254,13 @@ function SortableBacklogItem({
   onComplete,
   onDelete,
   onSave,
+  onAudioChanged,
 }: {
   item: BacklogItem;
   onComplete: (id: number) => void;
   onDelete: (id: number) => void;
   onSave: (id: number, data: { name: string; description: string }) => void;
+  onAudioChanged?: () => void;
 }) {
   const { t } = useTranslation('backlog');
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -276,6 +280,7 @@ function SortableBacklogItem({
         onComplete={onComplete}
         onDelete={onDelete}
         onSave={onSave}
+        onAudioChanged={onAudioChanged}
         dragHandle={
           <button
             type="button"

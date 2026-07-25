@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
 import { inputClass } from '@/components/ui/Field';
 import { toast } from '@/hooks/useToastStore';
+import { ApiError, backlogService } from '@/services/backlogService';
 import type { BacklogItem as BacklogItemType } from '@/services/backlog.types';
 import { formatDateTime } from '@/utils/date';
 import { cn } from '@/utils/cn';
+import { AudioRecorder } from './AudioRecorder';
 
 interface BacklogItemProps {
   item: BacklogItemType;
@@ -16,6 +18,8 @@ interface BacklogItemProps {
   onReopen?: (id: number) => void;
   onDelete: (id: number) => void;
   onSave: (id: number, data: { name: string; description: string }) => void;
+  /** Recarrega a lista após gravar/excluir áudio (atualiza hasAudio). */
+  onAudioChanged?: () => void;
   /** Handle de arraste (só nos pendentes). */
   dragHandle?: ReactNode;
 }
@@ -27,6 +31,7 @@ export function BacklogItem({
   onReopen,
   onDelete,
   onSave,
+  onAudioChanged,
   dragHandle,
 }: BacklogItemProps) {
   const { t } = useTranslation(['backlog', 'common']);
@@ -187,11 +192,120 @@ export function BacklogItem({
                     {t('copy')}
                   </Button>
                 )}
+                <BacklogAudioSection item={item} onChanged={onAudioChanged} />
               </div>
             )}
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Nota de voz do item: ouvir (sob demanda), gravar/regravar e excluir. */
+function BacklogAudioSection({
+  item,
+  onChanged,
+}: {
+  item: BacklogItemType;
+  onChanged?: () => void;
+}) {
+  const { t } = useTranslation(['backlog', 'common']);
+  const [src, setSrc] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [recording, setRecording] = useState(false);
+
+  function errors(error: unknown): string[] {
+    return error instanceof ApiError
+      ? error.messages
+      : [t('common:unexpectedError')];
+  }
+
+  async function loadAudio() {
+    setLoading(true);
+    try {
+      const audio = await backlogService.getAudio(item.id);
+      setSrc(`data:${audio.mimeType};base64,${audio.data}`);
+    } catch (error) {
+      toast.errors(errors(error));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSave(audio: { data: string; mimeType: string }) {
+    setSaving(true);
+    try {
+      await backlogService.setAudio(item.id, audio);
+      toast.success(t('backlog:audio.saved'));
+      setRecording(false);
+      setSrc(null);
+      onChanged?.();
+    } catch (error) {
+      toast.errors(errors(error));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!window.confirm(t('backlog:audio.confirmDelete'))) return;
+    try {
+      await backlogService.removeAudio(item.id);
+      toast.success(t('backlog:audio.deleted'));
+      setSrc(null);
+      onChanged?.();
+    } catch (error) {
+      toast.errors(errors(error));
+    }
+  }
+
+  const hasAudio = Boolean(item.hasAudio);
+
+  return (
+    <div className="flex flex-col gap-2 border-t border-edge pt-2">
+      <p className="text-xs font-medium uppercase tracking-wide text-fg-subtle">
+        {t('backlog:audio.title')}
+      </p>
+
+      {recording || !hasAudio ? (
+        <AudioRecorder
+          onSave={handleSave}
+          saving={saving}
+          recordLabel={
+            hasAudio ? t('backlog:audio.rerecord') : t('backlog:audio.record')
+          }
+          onCancel={hasAudio ? () => setRecording(false) : undefined}
+        />
+      ) : (
+        <>
+          {src ? (
+            <audio controls autoPlay src={src} className="w-full" />
+          ) : (
+            <Button
+              variant="secondary"
+              onClick={() => void loadAudio()}
+              disabled={loading}
+              className="self-start"
+            >
+              {t('backlog:audio.listen')}
+            </Button>
+          )}
+          <div className="flex gap-2">
+            <Button variant="ghost" onClick={() => setRecording(true)}>
+              {t('backlog:audio.rerecord')}
+            </Button>
+            <Button
+              variant="ghost"
+              className="text-red-600 hover:bg-red-50 hover:text-red-700"
+              onClick={() => void handleDelete()}
+            >
+              {t('backlog:audio.delete')}
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

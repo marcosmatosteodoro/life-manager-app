@@ -23,5 +23,22 @@
   "namePlaceholder": "Name",
   "descriptionFieldPlaceholder": "Description",
   "noDescription": "No description.",
-  "copy": "Copy"
+  "copy": "Copy",
+  "audio": {
+    "title": "Voice note",
+    "record": "Record audio",
+    "rerecord": "Re-record",
+    "recording": "Recording…",
+    "stop": "Stop",
+    "listen": "Listen",
+    "save": "Save",
+    "discard": "Discard",
+    "delete": "Delete audio",
+    "saved": "Audio saved.",
+    "deleted": "Audio deleted.",
+    "confirmDelete": "Delete this item's voice note?",
+    "permissionDenied": "Microphone permission denied.",
+    "unsupported": "Your browser doesn't support audio recording.",
+    "tooLarge": "Audio too long (max ~3 MB). Record a shorter note."
+  }
 }

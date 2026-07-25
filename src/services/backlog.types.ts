@@ -11,6 +11,14 @@ export interface BacklogItem {
   createdAt: string;
   updatedAt: string;
   creatorId: number | null;
+  /** Indica se o item tem nota de voz (o blob vem sob demanda). */
+  hasAudio?: boolean;
+}
+
+/** Nota de voz (base64 + mimeType) retornada sob demanda. */
+export interface BacklogAudio {
+  data: string;
+  mimeType: string;
 }
 
 export interface CreateBacklogItemInput {

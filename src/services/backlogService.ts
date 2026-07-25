@@ -1,5 +1,6 @@
 import { apiRequest } from './http';
 import type {
+  BacklogAudio,
   BacklogItem,
   BacklogListResponse,
   BacklogStatus,
@@ -52,5 +53,22 @@ export const backlogService = {
 
   remove(id: number): Promise<void> {
     return apiRequest<void>(`/backlog/${id}`, { method: 'DELETE' });
+  },
+
+  /** Busca a nota de voz do item (base64) sob demanda. */
+  getAudio(id: number): Promise<BacklogAudio> {
+    return apiRequest<BacklogAudio>(`/backlog/${id}/audio`);
+  },
+
+  /** Grava/atualiza a nota de voz do item. */
+  setAudio(id: number, input: BacklogAudio): Promise<BacklogAudio> {
+    return apiRequest<BacklogAudio>(`/backlog/${id}/audio`, {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  },
+
+  removeAudio(id: number): Promise<void> {
+    return apiRequest<void>(`/backlog/${id}/audio`, { method: 'DELETE' });
   },
 };

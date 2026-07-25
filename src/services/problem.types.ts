@@ -28,9 +28,17 @@ export interface Problem {
   priority: ProblemPriority;
   categoryId: number | null;
   category?: ProblemCategory | null;
+  /** Tem nota de voz? (o áudio vem sob demanda em GET /problem/:id/audio). */
+  hasAudio?: boolean;
   createdAt: string;
   updatedAt: string;
   creatorId: number | null;
+}
+
+/** Nota de voz de um problema (base64 + mimeType). */
+export interface ProblemAudio {
+  data: string;
+  mimeType: string;
 }
 
 export interface ProblemInput {

@@ -18,8 +18,11 @@ import { CSS } from '@dnd-kit/utilities';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
+import { toast } from '@/hooks/useToastStore';
 import type { Problem } from '@/services/problem.types';
+import { ApiError, problemService } from '@/services/problemService';
 import { cn } from '@/utils/cn';
+import { AudioRecorder } from './AudioRecorder';
 
 interface ProblemListProps {
   problems: Problem[];
@@ -29,6 +32,8 @@ interface ProblemListProps {
   sortable?: boolean;
   /** Recebe a nova ordem de ids após o arraste. */
   onReorder?: (orderedIds: number[]) => void;
+  /** Recarrega a lista após gravar/excluir a nota de voz (atualiza hasAudio). */
+  onAudioChanged?: () => void;
 }
 
 // Cor do selo por status.
@@ -52,6 +57,7 @@ export function ProblemList({
   onDelete,
   sortable = false,
   onReorder,
+  onAudioChanged,
 }: ProblemListProps) {
   const { t } = useTranslation(['problems', 'common']);
   const sensors = useSensors(
@@ -81,7 +87,12 @@ export function ProblemList({
       <ul className="flex flex-col gap-2">
         {problems.map((problem) => (
           <li key={problem.id}>
-            <ProblemRow problem={problem} onEdit={onEdit} onDelete={onDelete} />
+            <ProblemRow
+              problem={problem}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              onAudioChanged={onAudioChanged}
+            />
           </li>
         ))}
       </ul>
@@ -105,6 +116,7 @@ export function ProblemList({
               problem={problem}
               onEdit={onEdit}
               onDelete={onDelete}
+              onAudioChanged={onAudioChanged}
             />
           ))}
         </div>
@@ -118,10 +130,12 @@ function SortableProblemRow({
   problem,
   onEdit,
   onDelete,
+  onAudioChanged,
 }: {
   problem: Problem;
   onEdit: (problem: Problem) => void;
   onDelete: (problem: Problem) => void;
+  onAudioChanged?: () => void;
 }) {
   const { t } = useTranslation('problems');
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -139,6 +153,7 @@ function SortableProblemRow({
         problem={problem}
         onEdit={onEdit}
         onDelete={onDelete}
+        onAudioChanged={onAudioChanged}
         dragHandle={
           <button
             type="button"
@@ -159,11 +174,13 @@ function ProblemRow({
   problem,
   onEdit,
   onDelete,
+  onAudioChanged,
   dragHandle,
 }: {
   problem: Problem;
   onEdit: (problem: Problem) => void;
   onDelete: (problem: Problem) => void;
+  onAudioChanged?: () => void;
   dragHandle?: ReactNode;
 }) {
   const { t } = useTranslation(['problems', 'common']);
@@ -208,19 +225,17 @@ function ProblemRow({
         </div>
 
         <div className="flex shrink-0 items-center gap-1">
-          {hasDescription && (
-            <button
-              type="button"
-              onClick={() => setOpen((o) => !o)}
-              aria-expanded={open}
-              aria-label={open ? t('collapseDescription') : t('expandDescription')}
-              className="rounded-md p-1 text-fg-subtle transition-colors hover:bg-surface-subtle hover:text-fg-soft"
-            >
-              <ChevronDownIcon
-                className={cn('h-4 w-4 transition-transform', open && 'rotate-180')}
-              />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-label={open ? t('collapseDescription') : t('expandDescription')}
+            className="rounded-md p-1 text-fg-subtle transition-colors hover:bg-surface-subtle hover:text-fg-soft"
+          >
+            <ChevronDownIcon
+              className={cn('h-4 w-4 transition-transform', open && 'rotate-180')}
+            />
+          </button>
           <Button variant="ghost" onClick={() => onEdit(problem)}>
             {t('common:edit')}
           </Button>
@@ -234,20 +249,131 @@ function ProblemRow({
         </div>
       </div>
 
-      {/* Descrição colapsável (grid-rows 0fr→1fr, como no resto do app) */}
-      {hasDescription && (
-        <div
-          className={cn(
-            'grid transition-[grid-template-rows] duration-300 ease-in-out',
-            open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
-          )}
-        >
-          <div className="overflow-hidden">
-            <p className="mt-2 whitespace-pre-line border-t border-edge pt-2 text-sm text-fg-muted">
-              {problem.description}
-            </p>
+      {/* Colapsável (grid-rows 0fr→1fr): descrição + nota de voz */}
+      <div
+        className={cn(
+          'grid transition-[grid-template-rows] duration-300 ease-in-out',
+          open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
+        )}
+      >
+        <div className="overflow-hidden">
+          <div className="mt-2 flex flex-col gap-2 border-t border-edge pt-2">
+            {hasDescription && (
+              <p className="whitespace-pre-line text-sm text-fg-muted">
+                {problem.description}
+              </p>
+            )}
+            <ProblemAudioSection problem={problem} onChanged={onAudioChanged} />
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** Nota de voz do problema: ouvir (sob demanda), gravar/regravar e excluir. */
+function ProblemAudioSection({
+  problem,
+  onChanged,
+}: {
+  problem: Problem;
+  onChanged?: () => void;
+}) {
+  const { t } = useTranslation(['backlog', 'common']);
+  const [src, setSrc] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [recording, setRecording] = useState(false);
+
+  function errors(error: unknown): string[] {
+    return error instanceof ApiError
+      ? error.messages
+      : [t('common:unexpectedError')];
+  }
+
+  async function loadAudio() {
+    setLoading(true);
+    try {
+      const audio = await problemService.getAudio(problem.id);
+      setSrc(`data:${audio.mimeType};base64,${audio.data}`);
+    } catch (error) {
+      toast.errors(errors(error));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSave(audio: { data: string; mimeType: string }) {
+    setSaving(true);
+    try {
+      await problemService.setAudio(problem.id, audio);
+      toast.success(t('backlog:audio.saved'));
+      setRecording(false);
+      setSrc(null);
+      onChanged?.();
+    } catch (error) {
+      toast.errors(errors(error));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!window.confirm(t('backlog:audio.confirmDelete'))) return;
+    try {
+      await problemService.removeAudio(problem.id);
+      toast.success(t('backlog:audio.deleted'));
+      setSrc(null);
+      onChanged?.();
+    } catch (error) {
+      toast.errors(errors(error));
+    }
+  }
+
+  const hasAudio = Boolean(problem.hasAudio);
+
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-xs font-medium uppercase tracking-wide text-fg-subtle">
+        {t('backlog:audio.title')}
+      </p>
+
+      {recording || !hasAudio ? (
+        <AudioRecorder
+          onSave={handleSave}
+          saving={saving}
+          recordLabel={
+            hasAudio ? t('backlog:audio.rerecord') : t('backlog:audio.record')
+          }
+          onCancel={hasAudio ? () => setRecording(false) : undefined}
+        />
+      ) : (
+        <>
+          {src ? (
+            <audio controls autoPlay src={src} className="w-full" />
+          ) : (
+            <Button
+              variant="secondary"
+              onClick={() => void loadAudio()}
+              disabled={loading}
+              className="self-start"
+            >
+              {t('backlog:audio.listen')}
+            </Button>
+          )}
+          <div className="flex gap-2">
+            <Button variant="ghost" onClick={() => setRecording(true)}>
+              {t('backlog:audio.rerecord')}
+            </Button>
+            <Button
+              variant="ghost"
+              className="text-red-600 hover:bg-red-50 hover:text-red-700"
+              onClick={() => void handleDelete()}
+            >
+              {t('backlog:audio.delete')}
+            </Button>
+          </div>
+        </>
       )}
     </div>
   );

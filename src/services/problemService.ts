@@ -1,6 +1,7 @@
 import { apiRequest } from './http';
 import type {
   Problem,
+  ProblemAudio,
   ProblemCategory,
   ProblemCategoryInput,
   ProblemCategoryListResponse,
@@ -66,6 +67,20 @@ export const problemService = {
       method: 'PATCH',
       body: JSON.stringify({ orderedIds }),
     });
+  },
+
+  /** Nota de voz do problema (base64). 404 quando não há. */
+  getAudio(id: number): Promise<ProblemAudio> {
+    return apiRequest<ProblemAudio>(`/problem/${id}/audio`);
+  },
+  setAudio(id: number, input: ProblemAudio): Promise<ProblemAudio> {
+    return apiRequest<ProblemAudio>(`/problem/${id}/audio`, {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  },
+  removeAudio(id: number): Promise<void> {
+    return apiRequest<void>(`/problem/${id}/audio`, { method: 'DELETE' });
   },
 };
 

@@ -253,6 +253,7 @@ export function ProblemManager() {
               onDelete={setDeleting}
               sortable={!filtersActive}
               onReorder={(ids) => void handleReorder(ids)}
+              onAudioChanged={() => void load()}
             />
           ))}
       </div>

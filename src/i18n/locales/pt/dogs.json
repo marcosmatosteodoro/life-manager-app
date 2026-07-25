@@ -1,0 +1,96 @@
+{
+  "title": "Cães",
+  "new": "Novo cão",
+  "empty": "Nenhum cão cadastrado ainda.",
+  "editTitle": "Editar cão",
+  "newTitle": "Novo cão",
+  "created": "Cão cadastrado.",
+  "updated": "Cão atualizado.",
+  "deleted": "Cão excluído.",
+  "deleteTitle": "Excluir cão",
+  "deleteDescription": "Excluir \"{{name}}\"? As pesagens dele também serão removidas.",
+  "sex": {
+    "macho": "Macho",
+    "femea": "Fêmea"
+  },
+  "form": {
+    "name": "Nome",
+    "namePlaceholder": "Ex.: Puffy",
+    "breed": "Raça",
+    "breedPlaceholder": "Ex.: Poodle",
+    "sex": "Sexo",
+    "create": "Cadastrar"
+  },
+  "locations": {
+    "title": "Locais de passeio",
+    "new": "Novo local",
+    "empty": "Nenhum local cadastrado ainda.",
+    "editTitle": "Editar local",
+    "newTitle": "Novo local",
+    "created": "Local cadastrado.",
+    "updated": "Local atualizado.",
+    "deleted": "Local excluído.",
+    "deleteTitle": "Excluir local",
+    "deleteDescription": "Excluir \"{{name}}\"?",
+    "form": {
+      "title": "Título",
+      "titlePlaceholder": "Ex.: Parque da Cidade",
+      "address": "Endereço completo",
+      "addressPlaceholder": "Rua, número, bairro...",
+      "create": "Cadastrar"
+    }
+  },
+  "walks": {
+    "title": "Passeios",
+    "subtitle": "Escolha os cães e o local, inicie o cronômetro e finalize ao voltar.",
+    "pickDogs": "Cães do passeio",
+    "noDogs": "Cadastre os cães primeiro.",
+    "pickLocation": "Local",
+    "selectLocation": "Selecione um local",
+    "start": "Iniciar",
+    "pause": "Pausar",
+    "resume": "Retomar",
+    "finish": "Finalizar",
+    "finished": "Passeio registrado.",
+    "history": "Passeios registrados",
+    "empty": "Nenhum passeio registrado ainda.",
+    "deleted": "Passeio excluído.",
+    "deleteTitle": "Excluir passeio",
+    "deleteDescription": "Tem certeza que deseja excluir este passeio?"
+  },
+  "weights": {
+    "title": "Peso dos cães",
+    "subtitle": "Registre o peso de cada cão mensalmente.",
+    "reminder": "Pese este mês: {{names}}.",
+    "noDogs": "Cadastre os cães primeiro.",
+    "register": "Registrar",
+    "created": "Peso registrado.",
+    "deleted": "Registro excluído.",
+    "history": "Histórico",
+    "empty": "Nenhuma pesagem para este cão.",
+    "deleteTitle": "Excluir pesagem",
+    "deleteDescription": "Tem certeza que deseja excluir esta pesagem?",
+    "form": {
+      "dog": "Cão",
+      "value": "Peso (kg)",
+      "date": "Data"
+    }
+  },
+  "dashboard": {
+    "title": "Painel dos cães",
+    "needsWeighing": "Há cães sem pesagem neste mês.",
+    "total": "Total de passeios",
+    "thisWeek": "Nesta semana",
+    "thisMonth": "Neste mês",
+    "perWeek": "Média/semana",
+    "avgDuration": "Duração média",
+    "lastWalk": "Último passeio",
+    "byDog": "Passeios por cão",
+    "byLocation": "Passeios por local",
+    "noData": "Sem dados ainda.",
+    "weights": "Peso atual",
+    "noWeight": "Sem pesagem",
+    "weighed": "Pesado no mês",
+    "notWeighed": "Falta pesar"
+  }
+}

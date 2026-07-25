@@ -7,6 +7,7 @@ export interface Dashboard {
   todos: { done: number; total: number };
   study: { todayStatus: ArticleStatus | null };
   flashcards: { totalCards: number; groupCount: number };
+  dogs: { needsWeighing: boolean };
   appliesCount: number;
   appliesToday: number;
 }

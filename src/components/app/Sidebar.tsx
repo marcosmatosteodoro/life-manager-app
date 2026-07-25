@@ -65,6 +65,16 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    label: 'groupDogs',
+    items: [
+      { href: '/caes', label: 'dogsDashboard', Icon: PawIcon },
+      { href: '/caes/passeios', label: 'dogWalks', Icon: ClockIcon },
+      { href: '/caes/lista', label: 'dogsList', Icon: PawIcon },
+      { href: '/caes/locais', label: 'dogLocations', Icon: PinIcon },
+      { href: '/caes/peso', label: 'dogWeight', Icon: ScaleIcon },
+    ],
+  },
+  {
     label: 'groupSettings',
     items: [
       { href: '/backlog', label: 'backlog', Icon: RoadmapIcon },
@@ -435,6 +445,27 @@ function UserIcon(props: SVGProps<SVGSVGElement>) {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
       <circle cx="12" cy="8" r="4" />
       <path d="M4 20a8 8 0 0 1 16 0" />
+    </svg>
+  );
+}
+
+function PawIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <circle cx="6.5" cy="10" r="1.8" />
+      <circle cx="10.5" cy="6.5" r="1.8" />
+      <circle cx="14.5" cy="6.5" r="1.8" />
+      <circle cx="18" cy="10" r="1.8" />
+      <path d="M12 12c-2.5 0-4.5 1.8-4.5 4 0 1.6 1.4 2.5 3 2.5.8 0 1 .4 1.5.4s.7-.4 1.5-.4c1.6 0 3-.9 3-2.5 0-2.2-2-4-4.5-4Z" />
+    </svg>
+  );
+}
+
+function PinIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M12 21s7-6.3 7-11a7 7 0 0 0-14 0c0 4.7 7 11 7 11Z" />
+      <circle cx="12" cy="10" r="2.5" />
     </svg>
   );
 }

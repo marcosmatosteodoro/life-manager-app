@@ -57,7 +57,7 @@ export function HomeDashboard() {
   }
 
   // ----- Derivados (dados já processados no back) -----
-  const { streak, weight, todos, study, flashcards, appliesCount, appliesToday } =
+  const { streak, weight, todos, study, flashcards, dogs, appliesCount, appliesToday } =
     data;
   const todosPending = todos.total - todos.done;
   const studyPending = !study.todayStatus || study.todayStatus !== 'COMPLETED';
@@ -72,6 +72,9 @@ export function HomeDashboard() {
   }
   if (!weight.loggedThisWeek) {
     tasks.push({ label: t('taskWeight'), href: '/gerenciamento-de-peso' });
+  }
+  if (dogs.needsWeighing) {
+    tasks.push({ label: t('taskDogWeight'), href: '/caes/peso' });
   }
   if (studyPending) {
     tasks.push({

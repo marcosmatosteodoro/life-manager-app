@@ -54,6 +54,7 @@
   "allDone": "All done for today! 🎉",
   "taskTodos": "Finish your to-dos for today — {{pending}} of {{total}} left",
   "taskWeight": "Log this week's weight",
+  "taskDogWeight": "Weigh the dogs this month",
   "taskStudyFinish": "Finish your English study for today",
   "taskStudyLog": "Log your English study for today",
   "ctaFeedback": "Generate feedback for your period",

@@ -54,6 +54,7 @@
   "allDone": "Tudo em dia por hoje! 🎉",
   "taskTodos": "Conclua seus afazeres de hoje — faltam {{pending}} de {{total}}",
   "taskWeight": "Registre o peso desta semana",
+  "taskDogWeight": "Pese os cães este mês",
   "taskStudyFinish": "Termine seu estudo de inglês de hoje",
   "taskStudyLog": "Registre seu estudo de inglês de hoje",
   "ctaFeedback": "Gerar um feedback do seu período",

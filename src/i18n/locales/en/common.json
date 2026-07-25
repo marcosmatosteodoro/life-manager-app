@@ -21,6 +21,7 @@
   "retry": "Try again",
   "unexpectedError": "An unexpected error occurred.",
   "networkError": "Could not connect to the API. Check that the server is running.",
+  "adminOnly": "You don't have permission to access this page.",
   "avatar": {
     "add": "Add photo",
     "change": "Change photo",

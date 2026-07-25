@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { type ComponentType, type SVGProps, useEffect } from 'react';
+import { type ComponentType, type SVGProps, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton } from '@/components/ui/IconButton';
 import { useNavGroupsStore } from '@/hooks/useNavGroupsStore';
+import { useProfileStore } from '@/hooks/useProfileStore';
 import { useSidebarStore } from '@/hooks/useSidebarStore';
 import { cn } from '@/utils/cn';
 
@@ -13,6 +14,8 @@ type NavItem = {
   href: string;
   label: string;
   Icon: ComponentType<SVGProps<SVGSVGElement>>;
+  /** Visível apenas para admin (ex.: Próximos passos, Usuários). */
+  adminOnly?: boolean;
 };
 
 // Grupo de navegação; `label` ausente = itens soltos (sem cabeçalho).
@@ -81,7 +84,8 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: 'groupSettings',
     items: [
-      { href: '/backlog', label: 'backlog', Icon: RoadmapIcon },
+      { href: '/backlog', label: 'backlog', Icon: RoadmapIcon, adminOnly: true },
+      { href: '/usuarios', label: 'users', Icon: UsersIcon, adminOnly: true },
       { href: '/perfil', label: 'profile', Icon: UserIcon },
     ],
   },
@@ -101,6 +105,16 @@ export function Sidebar() {
       (href) => pathname === href || pathname.startsWith(`${href}/`),
     ) ?? null;
   const { t } = useTranslation('nav');
+  const isAdmin = useProfileStore((state) => state.profile?.role === 'admin');
+  // Esconde itens adminOnly de quem não é admin (e grupos que ficam vazios).
+  const visibleGroups = useMemo(
+    () =>
+      NAV_GROUPS.map((group) => ({
+        ...group,
+        items: group.items.filter((item) => !item.adminOnly || isAdmin),
+      })).filter((group) => group.items.length > 0),
+    [isAdmin],
+  );
   const collapsed = useSidebarStore((state) => state.collapsed);
   const toggle = useSidebarStore((state) => state.toggle);
   const mobileOpen = useSidebarStore((state) => state.mobileOpen);
@@ -207,7 +221,7 @@ export function Sidebar() {
         )}
       >
         <div className="flex flex-col px-2 pt-3">
-          {NAV_GROUPS.map((group, i) =>
+          {visibleGroups.map((group, i) =>
             renderGroup(group, i, { iconOnly: collapsed }),
           )}
         </div>
@@ -257,7 +271,7 @@ export function Sidebar() {
             </IconButton>
           </div>
           <div className="flex flex-col overflow-y-auto p-3 pb-20">
-            {NAV_GROUPS.map((group, i) =>
+            {visibleGroups.map((group, i) =>
               renderGroup(group, i, { onClick: closeMobile }),
             )}
           </div>
@@ -461,6 +475,17 @@ function UserIcon(props: SVGProps<SVGSVGElement>) {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
       <circle cx="12" cy="8" r="4" />
       <path d="M4 20a8 8 0 0 1 16 0" />
+    </svg>
+  );
+}
+
+function UsersIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <circle cx="9" cy="8" r="3.5" />
+      <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
+      <path d="M16 5.5a3.5 3.5 0 0 1 0 6.8" />
+      <path d="M17.5 14.3A6.5 6.5 0 0 1 21.5 20" />
     </svg>
   );
 }

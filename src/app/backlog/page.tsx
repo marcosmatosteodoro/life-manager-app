@@ -1,5 +1,10 @@
+import { AdminOnly } from '@/components/app/AdminOnly';
 import { BacklogManager } from '@/components/app/BacklogManager';
 
 export default function BacklogPage() {
-  return <BacklogManager />;
+  return (
+    <AdminOnly>
+      <BacklogManager />
+    </AdminOnly>
+  );
 }

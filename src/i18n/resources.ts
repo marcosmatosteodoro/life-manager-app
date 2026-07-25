@@ -17,6 +17,7 @@ import enJobs from './locales/en/jobs.json';
 import enProblems from './locales/en/problems.json';
 import enDogs from './locales/en/dogs.json';
 import enExpenses from './locales/en/expenses.json';
+import enUsers from './locales/en/users.json';
 
 import ptCommon from './locales/pt/common.json';
 import ptNav from './locales/pt/nav.json';
@@ -35,6 +36,7 @@ import ptJobs from './locales/pt/jobs.json';
 import ptProblems from './locales/pt/problems.json';
 import ptDogs from './locales/pt/dogs.json';
 import ptExpenses from './locales/pt/expenses.json';
+import ptUsers from './locales/pt/users.json';
 
 export const defaultNS = 'common';
 
@@ -56,6 +58,7 @@ export const ns = [
   'problems',
   'dogs',
   'expenses',
+  'users',
 ] as const;
 
 export const resources = {
@@ -77,6 +80,7 @@ export const resources = {
     problems: enProblems,
     dogs: enDogs,
     expenses: enExpenses,
+    users: enUsers,
   },
   pt: {
     common: ptCommon,
@@ -96,5 +100,6 @@ export const resources = {
     problems: ptProblems,
     dogs: ptDogs,
     expenses: ptExpenses,
+    users: ptUsers,
   },
 } as const;

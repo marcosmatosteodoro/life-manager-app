@@ -1,0 +1,25 @@
+{
+  "title": "Usuários",
+  "subtitle": "Cadastre e gerencie quem acessa o app.",
+  "new": "Novo usuário",
+  "newTitle": "Novo usuário",
+  "editTitle": "Editar usuário",
+  "create": "Criar",
+  "created": "Usuário criado.",
+  "updated": "Usuário atualizado.",
+  "deleted": "Usuário removido.",
+  "deleteTitle": "Remover usuário",
+  "deleteDescription": "Remover \"{{name}}\"? Essa ação não pode ser desfeita.",
+  "you": "(você)",
+  "roleLabel": "Papel",
+  "role": {
+    "admin": "Admin",
+    "member": "Membro"
+  },
+  "fieldName": "Nome",
+  "fieldUsername": "Usuário",
+  "fieldEmail": "E-mail",
+  "fieldPassword": "Senha",
+  "fieldNewPassword": "Nova senha",
+  "passwordEditHint": "Deixe em branco para manter a atual"
+}

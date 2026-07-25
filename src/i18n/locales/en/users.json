@@ -1,0 +1,25 @@
+{
+  "title": "Users",
+  "subtitle": "Create and manage who can access the app.",
+  "new": "New user",
+  "newTitle": "New user",
+  "editTitle": "Edit user",
+  "create": "Create",
+  "created": "User created.",
+  "updated": "User updated.",
+  "deleted": "User removed.",
+  "deleteTitle": "Remove user",
+  "deleteDescription": "Remove \"{{name}}\"? This can't be undone.",
+  "you": "(you)",
+  "roleLabel": "Role",
+  "role": {
+    "admin": "Admin",
+    "member": "Member"
+  },
+  "fieldName": "Name",
+  "fieldUsername": "Username",
+  "fieldEmail": "Email",
+  "fieldPassword": "Password",
+  "fieldNewPassword": "New password",
+  "passwordEditHint": "Leave blank to keep the current one"
+}

@@ -104,9 +104,31 @@
     "link": "Link (opcional)",
     "linkPlaceholder": "https://...",
     "description": "Descrição (opcional)",
+    "adviceStatus": "Conselho da extensão (opcional)",
+    "adviceNone": "— não avaliado —",
+    "decisionDescription": "Motivo da decisão (opcional)",
+    "decisionPlaceholder": "Ex.: extensão não soube; apliquei porque...",
+    "isHuman": "Registrado por mim (humano)",
     "saving": "Salvando...",
     "save": "Salvar",
     "create": "Criar"
+  },
+  "advice": {
+    "1": "Não aplique",
+    "2": "Avaliar você mesmo",
+    "3": "Aplique",
+    "4": "Ótimo match"
+  },
+  "advisor": {
+    "title": "Conselheiro",
+    "subtitle": "Relatório do que a extensão não soube avaliar e seus motivos, para melhorar o algoritmo.",
+    "filterAll": "Todos",
+    "notAdvised": "Não avaliado",
+    "empty": "Nenhuma candidatura neste filtro.",
+    "human": "Humano",
+    "robot": "Robô",
+    "reason": "Motivo",
+    "openLink": "Abrir vaga"
   },
   "applyStatus": {
     "APPLIED": "Aplicado",

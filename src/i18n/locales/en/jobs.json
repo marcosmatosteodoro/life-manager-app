@@ -104,9 +104,31 @@
     "link": "Link (optional)",
     "linkPlaceholder": "https://...",
     "description": "Description (optional)",
+    "adviceStatus": "Extension advice (optional)",
+    "adviceNone": "— not evaluated —",
+    "decisionDescription": "Decision reason (optional)",
+    "decisionPlaceholder": "e.g. extension was unsure; I applied because...",
+    "isHuman": "Logged by me (human)",
     "saving": "Saving...",
     "save": "Save",
     "create": "Create"
+  },
+  "advice": {
+    "1": "Don't apply",
+    "2": "Evaluate yourself",
+    "3": "Apply",
+    "4": "Great match"
+  },
+  "advisor": {
+    "title": "Advisor",
+    "subtitle": "Report of what the extension couldn't evaluate and your reasons, to improve the algorithm.",
+    "filterAll": "All",
+    "notAdvised": "Not evaluated",
+    "empty": "No applications in this filter.",
+    "human": "Human",
+    "robot": "Robot",
+    "reason": "Reason",
+    "openLink": "Open job"
   },
   "applyStatus": {
     "APPLIED": "Applied",

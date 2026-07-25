@@ -45,7 +45,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/vagas/empresas', label: 'companies', Icon: BuildingIcon },
       { href: '/vagas/aplicacoes', label: 'applications', Icon: SendIcon },
       { href: '/vagas/buscador', label: 'searchJobs', Icon: SearchIcon },
-      { href: '/vagas/aplicador', label: 'applier', Icon: BoltIcon },
+      { href: '/vagas/conselheiro', label: 'advisor', Icon: BoltIcon },
       { href: '/conversores', label: 'converters', Icon: SwapIcon },
     ],
   },

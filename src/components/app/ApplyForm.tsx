@@ -4,7 +4,13 @@ import { type FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
-import type { Apply, ApplyInput, ApplyStatus } from '@/services/apply.types';
+import {
+  ADVICE_STATUSES,
+  type AdviceStatus,
+  type Apply,
+  type ApplyInput,
+  type ApplyStatus,
+} from '@/services/apply.types';
 import { APPLY_STATUSES } from '@/services/applyService';
 import type { Company } from '@/services/company.types';
 
@@ -49,6 +55,18 @@ export function ApplyForm({
   const [description, setDescription] = useState(
     initial?.description ?? prefill?.description ?? '',
   );
+  // Conselho da extensão (vazio = não avaliado), motivo e flag humano.
+  const [adviceStatus, setAdviceStatus] = useState(
+    initial?.adviceStatus != null
+      ? String(initial.adviceStatus)
+      : prefill?.adviceStatus != null
+        ? String(prefill.adviceStatus)
+        : '',
+  );
+  const [decisionDescription, setDecisionDescription] = useState(
+    initial?.decisionDescription ?? prefill?.decisionDescription ?? '',
+  );
+  const [isHuman, setIsHuman] = useState(initial?.isHuman ?? true);
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -59,6 +77,13 @@ export function ApplyForm({
       date,
       link: link.trim() ? link.trim() : null,
       description: description.trim() ? description.trim() : null,
+      isHuman,
+      adviceStatus: adviceStatus
+        ? (Number(adviceStatus) as AdviceStatus)
+        : null,
+      decisionDescription: decisionDescription.trim()
+        ? decisionDescription.trim()
+        : null,
     });
   }
 
@@ -143,6 +168,43 @@ export function ApplyForm({
           className={inputClass}
         />
       </Field>
+
+      <Field label={t('applyForm.adviceStatus')} htmlFor="adviceStatus">
+        <select
+          id="adviceStatus"
+          value={adviceStatus}
+          onChange={(e) => setAdviceStatus(e.target.value)}
+          className={inputClass}
+        >
+          <option value="">{t('applyForm.adviceNone')}</option>
+          {ADVICE_STATUSES.map((value) => (
+            <option key={value} value={value}>
+              {t(`advice.${value}`)}
+            </option>
+          ))}
+        </select>
+      </Field>
+
+      <Field label={t('applyForm.decisionDescription')} htmlFor="decisionDescription">
+        <textarea
+          id="decisionDescription"
+          rows={2}
+          value={decisionDescription}
+          onChange={(e) => setDecisionDescription(e.target.value)}
+          placeholder={t('applyForm.decisionPlaceholder')}
+          className={inputClass}
+        />
+      </Field>
+
+      <label className="flex items-center gap-2 text-sm text-fg-soft">
+        <input
+          type="checkbox"
+          checked={isHuman}
+          onChange={(e) => setIsHuman(e.target.checked)}
+          className="h-4 w-4"
+        />
+        {t('applyForm.isHuman')}
+      </label>
 
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="secondary" type="button" onClick={onCancel} disabled={submitting}>

@@ -83,8 +83,19 @@ const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
+// Hrefs do mais longo p/ o mais curto: assim o item ATIVO é sempre o match mais
+// específico (evita o "pai" /caes acender junto do filho /caes/peso).
+const NAV_HREFS = NAV_GROUPS.flatMap((group) =>
+  group.items.map((i) => i.href),
+).sort((a, b) => b.length - a.length);
+
 export function Sidebar() {
   const pathname = usePathname();
+  // O item ativo é o href mais específico que casa com a rota atual.
+  const activeHref =
+    NAV_HREFS.find(
+      (href) => pathname === href || pathname.startsWith(`${href}/`),
+    ) ?? null;
   const { t } = useTranslation('nav');
   const collapsed = useSidebarStore((state) => state.collapsed);
   const toggle = useSidebarStore((state) => state.toggle);
@@ -108,9 +119,10 @@ export function Sidebar() {
     { href, label, Icon }: NavItem,
     opts: { iconOnly?: boolean; onClick?: () => void } = {},
   ) {
-    // Ativo só no match exato ou em sub-rota (href + '/'), nunca em prefixo
-    // parcial — evita que '/diario' acenda junto com '/diario-de-gratidao'.
-    const active = pathname === href || pathname.startsWith(`${href}/`);
+    // Ativo só quando este é o href mais específico que casa com a rota — evita
+    // o pai (/caes) acender junto do filho (/caes/peso) e prefixos parciais
+    // (/diario vs /diario-de-gratidao).
+    const active = href === activeHref;
     return (
       <Link
         key={href}

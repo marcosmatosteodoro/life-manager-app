@@ -34,8 +34,16 @@
     "audioRecorded": "Áudio gravado ✓",
     "audioWillRemove": "O áudio será removido ao salvar.",
     "photos": "Fotos (opcional)",
-    "photosNote": "As fotos ainda não são salvas — só pré-visualização por enquanto.",
     "create": "Salvar"
+  },
+  "photos": {
+    "drop": "Arraste imagens aqui ou clique para escolher",
+    "takePhoto": "Tirar foto",
+    "capture": "Capturar",
+    "processing": "Processando…",
+    "readError": "Não foi possível ler a imagem.",
+    "cameraUnsupported": "Seu navegador não suporta a câmera.",
+    "cameraDenied": "Permissão de câmera negada."
   },
   "summary": {
     "monthTotal": "Total do mês",

@@ -69,6 +69,7 @@ export function ExpenseList({ expenses, onEdit, onDelete }: ExpenseListProps) {
               {' · '}
               {dateFmt.format(new Date(`${expense.date}T00:00:00Z`))}
               {expense.hasAudio ? ' · 🎤' : ''}
+              {expense.photoCount ? ` · 📷 ${expense.photoCount}` : ''}
             </p>
             {expense.description ? (
               <p className="mt-1 whitespace-pre-line text-sm text-fg-subtle">

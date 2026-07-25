@@ -6,6 +6,7 @@ import type {
   ExpenseCategoryListResponse,
   ExpenseInput,
   ExpenseListResponse,
+  ExpensePhoto,
   ExpenseSummary,
   ExpenseType,
 } from './expense.types';
@@ -55,6 +56,23 @@ export const expenseService = {
   },
   removeAudio(id: number): Promise<void> {
     return apiRequest<void>(`/expense/${id}/audio`, { method: 'DELETE' });
+  },
+  listPhotos(id: number): Promise<ExpensePhoto[]> {
+    return apiRequest<ExpensePhoto[]>(`/expense/${id}/photos`);
+  },
+  addPhoto(
+    id: number,
+    input: { data: string; mimeType: string },
+  ): Promise<ExpensePhoto> {
+    return apiRequest<ExpensePhoto>(`/expense/${id}/photos`, {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
+  },
+  removePhoto(id: number, photoId: number): Promise<void> {
+    return apiRequest<void>(`/expense/${id}/photos/${photoId}`, {
+      method: 'DELETE',
+    });
   },
 };
 

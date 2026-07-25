@@ -25,6 +25,15 @@ export interface Expense {
   creatorId: number | null;
   /** Se tem descrição em áudio (blob vem sob demanda). */
   hasAudio?: boolean;
+  /** Quantidade de fotos (os blobs vêm sob demanda). */
+  photoCount?: number;
+}
+
+/** Foto de um gasto (base64 + mimeType). */
+export interface ExpensePhoto {
+  id: number;
+  data: string;
+  mimeType: string;
 }
 
 export interface ExpenseInput {

@@ -1,6 +1,6 @@
 'use client';
 
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
@@ -14,7 +14,11 @@ import type {
   ExpenseType,
 } from '@/services/expense.types';
 import { AudioRecorder } from './AudioRecorder';
-import { PhotoPicker } from './PhotoPicker';
+import {
+  type ExistingPhoto,
+  type PendingPhoto,
+  PhotoPicker,
+} from './PhotoPicker';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 const today = () => {
@@ -54,7 +58,35 @@ export function ExpenseForm({
   const [removeAudio, setRemoveAudio] = useState(false);
   const [showRecorder, setShowRecorder] = useState(false);
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
+
+  // Fotos: pendentes (novas) + existentes (edição) + ids removidos.
+  const [pendingPhotos, setPendingPhotos] = useState<PendingPhoto[]>([]);
+  const [existingPhotos, setExistingPhotos] = useState<ExistingPhoto[]>([]);
+  const [removedPhotoIds, setRemovedPhotoIds] = useState<number[]>([]);
+
   const [submitting, setSubmitting] = useState(false);
+
+  // Em edição com fotos, carrega as existentes para exibir/remover.
+  useEffect(() => {
+    if (!initial?.id || !initial.photoCount) return;
+    let active = true;
+    void expenseService
+      .listPhotos(initial.id)
+      .then((photos) => {
+        if (active) {
+          setExistingPhotos(
+            photos.map((p) => ({
+              id: p.id,
+              url: `data:${p.mimeType};base64,${p.data}`,
+            })),
+          );
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [initial?.id, initial?.photoCount]);
 
   function errors(error: unknown): string[] {
     return error instanceof ApiError
@@ -95,6 +127,17 @@ export function ExpenseForm({
         await expenseService.setAudio(saved.id, pendingAudio);
       } else if (removeAudio && initial?.hasAudio) {
         await expenseService.removeAudio(saved.id);
+      }
+
+      // Fotos: remove as descartadas e envia as novas (uma por request).
+      for (const photoId of removedPhotoIds) {
+        await expenseService.removePhoto(saved.id, photoId);
+      }
+      for (const photo of pendingPhotos) {
+        await expenseService.addPhoto(saved.id, {
+          data: photo.data,
+          mimeType: photo.mimeType,
+        });
       }
 
       toast.success(initial ? t('expenses:updated') : t('expenses:created'));
@@ -272,7 +315,18 @@ export function ExpenseForm({
         )}
       </div>
 
-      <PhotoPicker />
+      <PhotoPicker
+        pending={pendingPhotos}
+        existing={existingPhotos}
+        onAddPending={(p) => setPendingPhotos((prev) => [...prev, p])}
+        onRemovePending={(id) =>
+          setPendingPhotos((prev) => prev.filter((p) => p.id !== id))
+        }
+        onRemoveExisting={(id) => {
+          setExistingPhotos((prev) => prev.filter((p) => p.id !== id));
+          setRemovedPhotoIds((prev) => [...prev, id]);
+        }}
+      />
 
       <div className="mt-2 flex justify-end gap-2">
         <Button variant="secondary" type="button" onClick={onCancel} disabled={submitting}>

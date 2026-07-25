@@ -34,8 +34,16 @@
     "audioRecorded": "Audio recorded ✓",
     "audioWillRemove": "Audio will be removed on save.",
     "photos": "Photos (optional)",
-    "photosNote": "Photos aren't saved yet — preview only for now.",
     "create": "Save"
+  },
+  "photos": {
+    "drop": "Drag images here or click to choose",
+    "takePhoto": "Take photo",
+    "capture": "Capture",
+    "processing": "Processing…",
+    "readError": "Couldn't read the image.",
+    "cameraUnsupported": "Your browser doesn't support the camera.",
+    "cameraDenied": "Camera permission denied."
   },
   "summary": {
     "monthTotal": "Month total",

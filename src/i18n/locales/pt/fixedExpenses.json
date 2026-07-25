@@ -1,0 +1,26 @@
+{
+  "title": "Gastos fixos",
+  "subtitle": "Despesas que se pagam todo mês",
+  "new": "Novo gasto fixo",
+  "newTitle": "Novo gasto fixo",
+  "editTitle": "Editar gasto fixo",
+  "empty": "Nenhum gasto fixo cadastrado.",
+  "monthTotal": "Total por mês",
+  "variable": "Variável",
+  "paymentDay": "Dia {{day}}",
+  "created": "Gasto fixo criado.",
+  "updated": "Gasto fixo atualizado.",
+  "deleted": "Gasto fixo excluído.",
+  "deleteTitle": "Excluir gasto fixo",
+  "deleteDescription": "Excluir \"{{name}}\"? Esta ação não pode ser desfeita.",
+  "form": {
+    "name": "Nome",
+    "namePlaceholder": "Ex.: Conta de luz",
+    "value": "Valor",
+    "paymentDay": "Dia do pagamento",
+    "isVariable": "Valor variável",
+    "isVariableHint": "O valor muda um pouco a cada mês (ex.: conta de luz).",
+    "description": "Descrição",
+    "create": "Criar"
+  }
+}

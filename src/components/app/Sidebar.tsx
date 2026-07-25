@@ -51,7 +51,10 @@ const NAV_GROUPS: NavGroup[] = [
   },
   {
     label: 'groupFinance',
-    items: [{ href: '/gastos', label: 'expenses', Icon: WalletIcon }],
+    items: [
+      { href: '/gastos', label: 'expenses', Icon: WalletIcon },
+      { href: '/gastos-fixos', label: 'fixedExpenses', Icon: RepeatIcon },
+    ],
   },
   {
     label: 'groupAboutMe',
@@ -496,6 +499,17 @@ function WalletIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M3 7a2 2 0 0 1 2-2h12v4" />
       <path d="M3 7v10a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2Z" />
       <circle cx="16" cy="13" r="1.2" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function RepeatIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+      <path d="M17 2l4 4-4 4" />
+      <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+      <path d="M7 22l-4-4 4-4" />
+      <path d="M21 13v2a4 4 0 0 1-4 4H3" />
     </svg>
   );
 }

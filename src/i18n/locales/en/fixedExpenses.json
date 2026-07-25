@@ -1,0 +1,26 @@
+{
+  "title": "Fixed expenses",
+  "subtitle": "Bills you pay every month",
+  "new": "New fixed expense",
+  "newTitle": "New fixed expense",
+  "editTitle": "Edit fixed expense",
+  "empty": "No fixed expenses yet.",
+  "monthTotal": "Monthly total",
+  "variable": "Variable",
+  "paymentDay": "Day {{day}}",
+  "created": "Fixed expense created.",
+  "updated": "Fixed expense updated.",
+  "deleted": "Fixed expense deleted.",
+  "deleteTitle": "Delete fixed expense",
+  "deleteDescription": "Delete \"{{name}}\"? This action cannot be undone.",
+  "form": {
+    "name": "Name",
+    "namePlaceholder": "e.g. Electricity bill",
+    "value": "Amount",
+    "paymentDay": "Payment day",
+    "isVariable": "Variable amount",
+    "isVariableHint": "The amount changes slightly every month (e.g. electricity).",
+    "description": "Description",
+    "create": "Create"
+  }
+}

@@ -4,6 +4,11 @@ export interface CompressedImage {
   mimeType: string;
 }
 
+/** Monta o data URL de uma imagem base64 (para exibir em <img src>). */
+export function toDataUrl(photo: { data: string; mimeType: string }): string {
+  return `data:${photo.mimeType};base64,${photo.data}`;
+}
+
 const MAX_DIM = 1280; // px — recibo/nota fica legível e leve
 const QUALITY = 0.72;
 

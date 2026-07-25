@@ -1,3 +1,5 @@
+import type { CompressedImage } from '@/utils/image';
+import type { ProfilePhoto } from './common.types';
 import { apiRequest } from './http';
 import type {
   Dog,
@@ -39,6 +41,20 @@ export const dogService = {
   },
   remove(id: number): Promise<void> {
     return apiRequest<void>(`/dog/${id}`, { method: 'DELETE' });
+  },
+
+  /** Foto de perfil do cão (base64). 404 quando não há. */
+  getPhoto(id: number): Promise<ProfilePhoto> {
+    return apiRequest<ProfilePhoto>(`/dog/${id}/photo`);
+  },
+  setPhoto(id: number, image: CompressedImage): Promise<ProfilePhoto> {
+    return apiRequest<ProfilePhoto>(`/dog/${id}/photo`, {
+      method: 'PUT',
+      body: JSON.stringify(image),
+    });
+  },
+  removePhoto(id: number): Promise<void> {
+    return apiRequest<void>(`/dog/${id}/photo`, { method: 'DELETE' });
   },
 };
 

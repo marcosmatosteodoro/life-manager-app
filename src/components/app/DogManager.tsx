@@ -10,13 +10,22 @@ import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/hooks/useToastStore';
 import { ApiError, DOG_SEXES, dogService } from '@/services/dogService';
 import type { Dog, DogInput, DogSex } from '@/services/dog.types';
+import { type CompressedImage, toDataUrl } from '@/utils/image';
+import { AvatarUpload } from './AvatarUpload';
 
 type LoadState = 'loading' | 'loaded' | 'error';
 
-/** CRUD dos cães (nome, raça, sexo). */
+/** Ação de foto vinda do form: nova imagem, remoção, ou nada. */
+interface PhotoAction {
+  image?: CompressedImage;
+  remove?: boolean;
+}
+
+/** CRUD dos cães (nome, raça, sexo, foto de perfil). */
 export function DogManager() {
   const { t } = useTranslation(['dogs', 'common']);
   const [dogs, setDogs] = useState<Dog[]>([]);
+  const [photos, setPhotos] = useState<Record<number, string>>({});
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Dog | null>(null);
@@ -29,6 +38,17 @@ export function DogManager() {
     try {
       const { rows } = await dogService.list();
       setDogs(rows);
+      // Busca as fotos só dos que têm (o base64 não vem na listagem).
+      const withPhoto = rows.filter((d) => d.hasPhoto);
+      const loaded = await Promise.all(
+        withPhoto.map((d) =>
+          dogService
+            .getPhoto(d.id)
+            .then((p) => [d.id, toDataUrl(p)] as const)
+            .catch(() => null),
+        ),
+      );
+      setPhotos(Object.fromEntries(loaded.filter((e) => e !== null)));
       setLoadState('loaded');
     } catch {
       setLoadState('error');
@@ -39,16 +59,18 @@ export function DogManager() {
     void load();
   }, [load]);
 
-  async function handleSubmit(input: DogInput) {
+  async function handleSubmit(input: DogInput, photo: PhotoAction) {
     setSubmitting(true);
     try {
-      if (editing) {
-        await dogService.update(editing.id, input);
-        toast.success(t('dogs:updated'));
-      } else {
-        await dogService.create(input);
-        toast.success(t('dogs:created'));
+      const dog = editing
+        ? await dogService.update(editing.id, input)
+        : await dogService.create(input);
+      if (photo.image) {
+        await dogService.setPhoto(dog.id, photo.image);
+      } else if (photo.remove && editing) {
+        await dogService.removePhoto(dog.id);
       }
+      toast.success(editing ? t('dogs:updated') : t('dogs:created'));
       setFormOpen(false);
       await load();
     } catch (error) {
@@ -111,11 +133,17 @@ export function DogManager() {
                   key={dog.id}
                   className="flex items-center justify-between gap-3 rounded-lg border border-edge bg-surface px-4 py-3"
                 >
-                  <div className="min-w-0">
-                    <p className="truncate font-medium text-fg">{dog.name}</p>
-                    <p className="mt-0.5 text-sm text-fg-muted">
-                      {dog.breed} · {t(`dogs:sex.${dog.sex}`)}
-                    </p>
+                  <div className="flex min-w-0 items-center gap-3">
+                    <DogAvatar
+                      src={photos[dog.id] ?? null}
+                      name={dog.name}
+                    />
+                    <div className="min-w-0">
+                      <p className="truncate font-medium text-fg">{dog.name}</p>
+                      <p className="mt-0.5 text-sm text-fg-muted">
+                        {dog.breed} · {t(`dogs:sex.${dog.sex}`)}
+                      </p>
+                    </div>
                   </div>
                   <div className="flex shrink-0 gap-1">
                     <Button
@@ -149,6 +177,7 @@ export function DogManager() {
         <DogForm
           key={editing?.id ?? 'new'}
           initial={editing}
+          initialPhoto={editing ? (photos[editing.id] ?? null) : null}
           submitting={submitting}
           onSubmit={handleSubmit}
           onCancel={() => !submitting && setFormOpen(false)}
@@ -168,29 +197,69 @@ export function DogManager() {
   );
 }
 
+/** Avatar redondo pequeno para a lista (foto ou inicial do nome). */
+function DogAvatar({ src, name }: { src: string | null; name: string }) {
+  return (
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-edge bg-surface-subtle text-sm font-medium text-fg-subtle">
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt={name} className="h-full w-full object-cover" />
+      ) : (
+        <span aria-hidden>{name.charAt(0).toUpperCase() || '🐾'}</span>
+      )}
+    </div>
+  );
+}
+
 function DogForm({
   initial,
+  initialPhoto,
   submitting,
   onSubmit,
   onCancel,
 }: {
   initial: Dog | null;
+  initialPhoto: string | null;
   submitting: boolean;
-  onSubmit: (input: DogInput) => void;
+  onSubmit: (input: DogInput, photo: PhotoAction) => void;
   onCancel: () => void;
 }) {
   const { t } = useTranslation(['dogs', 'common']);
   const [name, setName] = useState(initial?.name ?? '');
   const [breed, setBreed] = useState(initial?.breed ?? '');
   const [sex, setSex] = useState<DogSex>(initial?.sex ?? 'macho');
+  const [photoSrc, setPhotoSrc] = useState<string | null>(initialPhoto);
+  const [pendingImage, setPendingImage] = useState<CompressedImage | null>(null);
+  const [removePhoto, setRemovePhoto] = useState(false);
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    onSubmit({ name: name.trim(), breed: breed.trim(), sex });
+    onSubmit(
+      { name: name.trim(), breed: breed.trim(), sex },
+      { image: pendingImage ?? undefined, remove: removePhoto },
+    );
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <Field label={t('dogs:form.photo')} htmlFor="dog-photo">
+        <AvatarUpload
+          src={photoSrc}
+          alt={name || t('dogs:form.photo')}
+          fallback={name.charAt(0).toUpperCase() || '🐾'}
+          busy={submitting}
+          onPick={(image) => {
+            setPendingImage(image);
+            setRemovePhoto(false);
+            setPhotoSrc(toDataUrl(image));
+          }}
+          onRemove={() => {
+            setPendingImage(null);
+            setRemovePhoto(true);
+            setPhotoSrc(null);
+          }}
+        />
+      </Field>
       <Field label={t('dogs:form.name')} htmlFor="dog-name">
         <input
           id="dog-name"

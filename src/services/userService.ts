@@ -1,3 +1,5 @@
+import type { CompressedImage } from '@/utils/image';
+import type { ProfilePhoto } from './common.types';
 import { apiRequest } from './http';
 import type { UpdateProfileInput, UserProfile } from './user.types';
 
@@ -23,5 +25,19 @@ export const userService = {
       method: 'POST',
       body: JSON.stringify({ currentPassword, newPassword }),
     });
+  },
+
+  /** Foto de perfil do usuário (base64). 404 quando não há. */
+  getPhoto(): Promise<ProfilePhoto> {
+    return apiRequest<ProfilePhoto>('/me/photo');
+  },
+  setPhoto(image: CompressedImage): Promise<ProfilePhoto> {
+    return apiRequest<ProfilePhoto>('/me/photo', {
+      method: 'PUT',
+      body: JSON.stringify(image),
+    });
+  },
+  removePhoto(): Promise<void> {
+    return apiRequest<void>('/me/photo', { method: 'DELETE' });
   },
 };

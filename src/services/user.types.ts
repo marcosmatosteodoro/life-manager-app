@@ -31,6 +31,7 @@ export interface UserProfile {
   language: Language;
   customColors: CustomColors | null;
   mustChangePassword: boolean;
+  hasPhoto: boolean;
 }
 
 /** Campos editáveis do próprio perfil. */

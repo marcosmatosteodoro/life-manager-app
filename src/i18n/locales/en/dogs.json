@@ -19,6 +19,7 @@
     "breed": "Breed",
     "breedPlaceholder": "e.g. Poodle",
     "sex": "Sex",
+    "photo": "Profile photo",
     "create": "Register"
   },
   "locations": {

@@ -21,6 +21,12 @@
   "retry": "Tentar novamente",
   "unexpectedError": "Ocorreu um erro inesperado.",
   "networkError": "Não foi possível conectar à API. Verifique se o servidor está no ar.",
+  "avatar": {
+    "add": "Adicionar foto",
+    "change": "Alterar foto",
+    "remove": "Remover foto",
+    "loadError": "Não foi possível carregar a foto."
+  },
   "notImplemented": "Ainda não implementado",
   "notImplementedHint": "Este recurso estará disponível em breve.",
   "footerRights": "© 2026 Life Manager. Todos os direitos reservados.",

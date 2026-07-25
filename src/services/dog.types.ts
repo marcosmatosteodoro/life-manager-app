@@ -5,6 +5,7 @@ export interface Dog {
   name: string;
   breed: string;
   sex: DogSex;
+  hasPhoto?: boolean;
   createdAt: string;
   updatedAt: string;
   creatorId: number | null;

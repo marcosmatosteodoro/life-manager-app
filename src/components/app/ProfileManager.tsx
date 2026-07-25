@@ -9,7 +9,9 @@ import { useProfileStore } from '@/hooks/useProfileStore';
 import { toast } from '@/hooks/useToastStore';
 import { ApiError, userService } from '@/services/userService';
 import type { Language, Theme, UserProfile } from '@/services/user.types';
+import { type CompressedImage, toDataUrl } from '@/utils/image';
 import { applyTheme } from '@/utils/theme';
+import { AvatarUpload } from './AvatarUpload';
 import { ChangePasswordForm } from './ChangePasswordForm';
 import { CustomColorsEditor } from './CustomColorsEditor';
 
@@ -49,6 +51,8 @@ export function ProfileManager() {
         </p>
       </div>
 
+      <ProfilePhotoSection profile={profile} />
+
       {/* key por id: reinicializa o form com os valores do perfil carregado. */}
       <ProfileForm key={profile.id} profile={profile} />
 
@@ -62,6 +66,78 @@ export function ProfileManager() {
         <ChangePasswordForm />
       </div>
     </section>
+  );
+}
+
+/** Foto de perfil: carrega a atual (se houver), envia nova ou remove. */
+function ProfilePhotoSection({ profile }: { profile: UserProfile }) {
+  const { t } = useTranslation(['profile', 'common']);
+  const setProfile = useProfileStore((s) => s.setProfile);
+  const [src, setSrc] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    // Sem foto: nada a buscar (o estado já inicia null e handleRemove zera).
+    if (!profile.hasPhoto) return;
+    let active = true;
+    void userService
+      .getPhoto()
+      .then((photo) => {
+        if (active) setSrc(toDataUrl(photo));
+      })
+      .catch(() => {
+        if (active) setSrc(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [profile.hasPhoto]);
+
+  async function handlePick(image: CompressedImage) {
+    setBusy(true);
+    try {
+      const saved = await userService.setPhoto(image);
+      setSrc(toDataUrl(saved));
+      setProfile({ ...profile, hasPhoto: true });
+      toast.success(t('profile:photoUpdated'));
+    } catch (error) {
+      toast.errors(
+        error instanceof ApiError ? error.messages : [t('profile:saveError')],
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleRemove() {
+    setBusy(true);
+    try {
+      await userService.removePhoto();
+      setSrc(null);
+      setProfile({ ...profile, hasPhoto: false });
+      toast.success(t('profile:photoRemoved'));
+    } catch (error) {
+      toast.errors(
+        error instanceof ApiError ? error.messages : [t('profile:saveError')],
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <span className="text-sm font-medium text-fg-soft">
+        {t('profile:photoLabel')}
+      </span>
+      <AvatarUpload
+        src={src}
+        alt={profile.name}
+        busy={busy}
+        onPick={handlePick}
+        onRemove={handleRemove}
+      />
+    </div>
   );
 }
 

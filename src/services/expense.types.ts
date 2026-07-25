@@ -61,3 +61,15 @@ export interface ExpenseSummary {
   count: number;
   byCategory: ExpenseSummaryCategory[];
 }
+
+/** Análise de gastos por IA de um período. */
+export interface ExpenseAnalysis {
+  from: string;
+  to: string;
+  total: number;
+  count: number;
+  byCategory: { name: string; total: number; count: number }[];
+  byType: { type: ExpenseType; total: number; count: number }[];
+  /** HTML restrito (renderizar com SafeHtml). */
+  analysis: string;
+}

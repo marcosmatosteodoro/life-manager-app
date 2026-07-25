@@ -43,5 +43,17 @@
     "count_other": "{{count}} expenses",
     "empty": "No expenses this month.",
     "noCategory": "No category"
+  },
+  "analysis": {
+    "open": "AI analysis",
+    "title": "Expense analysis",
+    "subtitle": "Pick a period and the AI analyzes where your money went.",
+    "from": "From",
+    "to": "To",
+    "run": "Analyze",
+    "running": "Analyzing…",
+    "invalidRange": "Start date can't be after the end date.",
+    "periodTotal": "Total in period: {{total}} ({{count}} expenses).",
+    "aiNote": "AI-generated from your data — double-check before deciding."
   }
 }

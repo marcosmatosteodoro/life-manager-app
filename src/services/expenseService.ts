@@ -1,6 +1,7 @@
 import { apiRequest } from './http';
 import type {
   Expense,
+  ExpenseAnalysis,
   ExpenseAudio,
   ExpenseCategoryListResponse,
   ExpenseInput,
@@ -20,6 +21,13 @@ export const expenseService = {
   },
   summary(): Promise<ExpenseSummary> {
     return apiRequest<ExpenseSummary>('/expense/summary');
+  },
+  /** Análise dos gastos do período via IA (chamada paga no back). */
+  analyze(from: string, to: string): Promise<ExpenseAnalysis> {
+    return apiRequest<ExpenseAnalysis>('/expense/analysis', {
+      method: 'POST',
+      body: JSON.stringify({ from, to }),
+    });
   },
   create(input: ExpenseInput): Promise<Expense> {
     return apiRequest<Expense>('/expense', {

@@ -43,5 +43,17 @@
     "count_other": "{{count}} gastos",
     "empty": "Sem gastos neste mês.",
     "noCategory": "Sem categoria"
+  },
+  "analysis": {
+    "open": "Análise IA",
+    "title": "Análise dos gastos",
+    "subtitle": "Escolha o período e a IA analisa para onde foi o seu dinheiro.",
+    "from": "De",
+    "to": "Até",
+    "run": "Analisar",
+    "running": "Analisando…",
+    "invalidRange": "A data inicial não pode ser depois da final.",
+    "periodTotal": "Total no período: {{total}} ({{count}} gastos).",
+    "aiNote": "Gerado por IA a partir dos seus dados — confira antes de decidir."
   }
 }

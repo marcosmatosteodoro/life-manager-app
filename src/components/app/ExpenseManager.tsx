@@ -17,6 +17,7 @@ import type {
   ExpenseCategory,
   ExpenseSummary as ExpenseSummaryData,
 } from '@/services/expense.types';
+import { ExpenseAnalysisPanel } from './ExpenseAnalysisPanel';
 import { ExpenseForm } from './ExpenseForm';
 import { ExpenseList } from './ExpenseList';
 import { ExpenseSummary } from './ExpenseSummary';
@@ -35,6 +36,7 @@ export function ExpenseManager() {
   const [editing, setEditing] = useState<Expense | null>(null);
   const [deleting, setDeleting] = useState<Expense | null>(null);
   const [deleteInProgress, setDeleteInProgress] = useState(false);
+  const [analysisOpen, setAnalysisOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoadState('loading');
@@ -93,7 +95,12 @@ export function ExpenseManager() {
           </h1>
           <p className="mt-1 text-sm text-fg-muted">{t('expenses:subtitle')}</p>
         </div>
-        <Button onClick={openCreate}>{t('expenses:new')}</Button>
+        <div className="flex shrink-0 gap-2">
+          <Button variant="secondary" onClick={() => setAnalysisOpen(true)}>
+            {t('expenses:analysis.open')}
+          </Button>
+          <Button onClick={openCreate}>{t('expenses:new')}</Button>
+        </div>
       </div>
 
       {loadState === 'loading' && <Loading />}
@@ -132,6 +139,14 @@ export function ExpenseManager() {
           onSaved={handleSaved}
           onCancel={() => setFormOpen(false)}
         />
+      </Modal>
+
+      <Modal
+        open={analysisOpen}
+        title={t('expenses:analysis.title')}
+        onClose={() => setAnalysisOpen(false)}
+      >
+        <ExpenseAnalysisPanel />
       </Modal>
 
       <ConfirmDialog

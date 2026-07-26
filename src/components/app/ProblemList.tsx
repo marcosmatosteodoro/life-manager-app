@@ -18,6 +18,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
+import { dialog } from '@/hooks/useDialogStore';
 import { toast } from '@/hooks/useToastStore';
 import type { Problem } from '@/services/problem.types';
 import { ApiError, problemService } from '@/services/problemService';
@@ -319,7 +320,13 @@ function ProblemAudioSection({
   }
 
   async function handleDelete() {
-    if (!window.confirm(t('backlog:audio.confirmDelete'))) return;
+    const ok = await dialog.confirm({
+      title: t('common:delete'),
+      description: t('backlog:audio.confirmDelete'),
+      confirmLabel: t('common:delete'),
+      tone: 'danger',
+    });
+    if (!ok) return;
     try {
       await problemService.removeAudio(problem.id);
       toast.success(t('backlog:audio.deleted'));

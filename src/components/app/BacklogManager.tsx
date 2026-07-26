@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
 import { Loading } from '@/components/ui/Loading';
+import { dialog } from '@/hooks/useDialogStore';
 import { toast } from '@/hooks/useToastStore';
 import { ApiError, backlogService } from '@/services/backlogService';
 import type { BacklogItem, BacklogStatus } from '@/services/backlog.types';
@@ -87,8 +88,14 @@ export function BacklogManager() {
     }
   }
 
-  function handleDelete(id: number) {
-    if (!window.confirm(t('confirmDelete'))) return;
+  async function handleDelete(id: number) {
+    const ok = await dialog.confirm({
+      title: t('common:delete'),
+      description: t('confirmDelete'),
+      confirmLabel: t('common:delete'),
+      tone: 'danger',
+    });
+    if (!ok) return;
     void runAndReload(backlogService.remove(id));
   }
 

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
 import { inputClass } from '@/components/ui/Field';
+import { dialog } from '@/hooks/useDialogStore';
 import { toast } from '@/hooks/useToastStore';
 import { ApiError, backlogService } from '@/services/backlogService';
 import type { BacklogItem as BacklogItemType } from '@/services/backlog.types';
@@ -250,7 +251,13 @@ function BacklogAudioSection({
   }
 
   async function handleDelete() {
-    if (!window.confirm(t('backlog:audio.confirmDelete'))) return;
+    const ok = await dialog.confirm({
+      title: t('common:delete'),
+      description: t('backlog:audio.confirmDelete'),
+      confirmLabel: t('common:delete'),
+      tone: 'danger',
+    });
+    if (!ok) return;
     try {
       await backlogService.removeAudio(item.id);
       toast.success(t('backlog:audio.deleted'));

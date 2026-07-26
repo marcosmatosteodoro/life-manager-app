@@ -4,6 +4,7 @@ import { type FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
 import { Field, inputClass } from '@/components/ui/Field';
+import { dialog } from '@/hooks/useDialogStore';
 import { toast } from '@/hooks/useToastStore';
 import type { ProblemCategory } from '@/services/problem.types';
 import { ApiError, problemCategoryService } from '@/services/problemService';
@@ -64,9 +65,13 @@ export function ProblemCategoryManager({
   }
 
   async function handleDelete(category: ProblemCategory) {
-    if (!window.confirm(t('categories.confirmDelete', { name: category.name }))) {
-      return;
-    }
+    const ok = await dialog.confirm({
+      title: t('common:delete'),
+      description: t('categories.confirmDelete', { name: category.name }),
+      confirmLabel: t('common:delete'),
+      tone: 'danger',
+    });
+    if (!ok) return;
     try {
       await problemCategoryService.remove(category.id);
       toast.success(t('categories.deleted'));

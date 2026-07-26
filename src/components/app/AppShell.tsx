@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { type ReactNode, useEffect, useState } from 'react';
+import { DialogHost } from '@/components/ui/DialogHost';
 import { Toaster } from '@/components/ui/Toaster';
 import { useProfileStore } from '@/hooks/useProfileStore';
 import { getToken } from '@/services/authToken';
@@ -57,6 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <>
         {children}
         <Toaster />
+        <DialogHost />
       </>
     );
   }
@@ -73,6 +75,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
       <Footer />
       <Toaster />
+      <DialogHost />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import type {
   ExpenseCategoryListResponse,
   ExpenseInput,
   ExpenseListResponse,
+  ExpensePageResponse,
   ExpensePhoto,
   ExpenseSummary,
   ExpenseType,
@@ -19,6 +20,10 @@ export const EXPENSE_TYPES: ExpenseType[] = ['debito', 'credito', 'a_vista', 'pi
 export const expenseService = {
   list(): Promise<ExpenseListResponse> {
     return apiRequest<ExpenseListResponse>('/expense');
+  },
+  /** Dados agregados da página (lista + categorias + resumo) em 1 requisição. */
+  page(): Promise<ExpensePageResponse> {
+    return apiRequest<ExpensePageResponse>('/expense/page');
   },
   summary(): Promise<ExpenseSummary> {
     return apiRequest<ExpenseSummary>('/expense/summary');

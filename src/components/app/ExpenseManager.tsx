@@ -7,11 +7,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { Loading } from '@/components/ui/Loading';
 import { Modal } from '@/components/ui/Modal';
 import { toast } from '@/hooks/useToastStore';
-import {
-  ApiError,
-  expenseCategoryService,
-  expenseService,
-} from '@/services/expenseService';
+import { ApiError, expenseService } from '@/services/expenseService';
 import type {
   Expense,
   ExpenseCategory,
@@ -41,14 +37,10 @@ export function ExpenseManager() {
   const load = useCallback(async () => {
     setLoadState('loading');
     try {
-      const [expenseRes, categoryRes, summaryRes] = await Promise.all([
-        expenseService.list(),
-        expenseCategoryService.list(),
-        expenseService.summary(),
-      ]);
-      setExpenses(expenseRes.rows);
-      setCategories(categoryRes.rows);
-      setSummary(summaryRes);
+      const page = await expenseService.page();
+      setExpenses(page.expenses);
+      setCategories(page.categories);
+      setSummary(page.summary);
       setLoadState('loaded');
     } catch {
       setLoadState('error');

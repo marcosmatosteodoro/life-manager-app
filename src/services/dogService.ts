@@ -9,6 +9,7 @@ import type {
   DogWalk,
   DogWalkInput,
   DogWalkListResponse,
+  DogWalkPageResponse,
   DogWalkLocation,
   DogWalkLocationInput,
   DogWalkLocationListResponse,
@@ -82,6 +83,10 @@ export const dogWalkLocationService = {
 export const dogWalkService = {
   list(): Promise<DogWalkListResponse> {
     return apiRequest<DogWalkListResponse>('/dog-walk');
+  },
+  /** Dados agregados da página (passeios + cães + locais) em 1 requisição. */
+  page(): Promise<DogWalkPageResponse> {
+    return apiRequest<DogWalkPageResponse>('/dog-walk/page');
   },
   create(input: DogWalkInput): Promise<DogWalk> {
     return apiRequest<DogWalk>('/dog-walk', {

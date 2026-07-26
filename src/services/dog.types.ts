@@ -67,6 +67,13 @@ export interface DogWalkListResponse {
   rows: DogWalk[];
 }
 
+/** Payload agregado da página de Passeios (passeios + cães + locais). */
+export interface DogWalkPageResponse {
+  walks: DogWalk[];
+  dogs: Dog[];
+  locations: DogWalkLocation[];
+}
+
 export interface DogWeight {
   id: number;
   dogId: number;

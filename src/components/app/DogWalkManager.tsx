@@ -8,12 +8,7 @@ import { inputClass } from '@/components/ui/Field';
 import { Loading } from '@/components/ui/Loading';
 import { useDogWalkTimerStore } from '@/hooks/useDogWalkTimerStore';
 import { toast } from '@/hooks/useToastStore';
-import {
-  ApiError,
-  dogService,
-  dogWalkLocationService,
-  dogWalkService,
-} from '@/services/dogService';
+import { ApiError, dogWalkService } from '@/services/dogService';
 import type { Dog, DogWalk, DogWalkLocation } from '@/services/dog.types';
 import { cn } from '@/utils/cn';
 
@@ -52,14 +47,10 @@ export function DogWalkManager() {
   const load = useCallback(async () => {
     setLoadState('loading');
     try {
-      const [dogRes, locRes, walkRes] = await Promise.all([
-        dogService.list(),
-        dogWalkLocationService.list(),
-        dogWalkService.list(),
-      ]);
-      setDogs(dogRes.rows);
-      setLocations(locRes.rows);
-      setWalks(walkRes.rows);
+      const page = await dogWalkService.page();
+      setDogs(page.dogs);
+      setLocations(page.locations);
+      setWalks(page.walks);
       setLoadState('loaded');
     } catch {
       setLoadState('error');

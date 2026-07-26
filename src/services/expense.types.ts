@@ -56,6 +56,13 @@ export interface ExpenseListResponse {
   rows: Expense[];
 }
 
+/** Payload agregado da página de Gastos (lista + categorias + resumo). */
+export interface ExpensePageResponse {
+  expenses: Expense[];
+  categories: ExpenseCategory[];
+  summary: ExpenseSummary;
+}
+
 /** Áudio (base64 + mimeType) sob demanda. */
 export interface ExpenseAudio {
   data: string;

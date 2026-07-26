@@ -16,6 +16,10 @@ export interface Expense {
   value: number;
   type: ExpenseType;
   installments: number | null;
+  /** Agrupa as parcelas de uma mesma compra (null = à vista). */
+  parcelGroupId: string | null;
+  /** Número desta parcela (1..installments), null se não parcelado. */
+  parcelNumber: number | null;
   date: string;
   categoryId: number | null;
   category?: ExpenseCategory | null;

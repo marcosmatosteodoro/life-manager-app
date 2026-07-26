@@ -10,6 +10,7 @@
   "deleted": "Expense deleted.",
   "deleteTitle": "Delete expense",
   "deleteDescription": "Delete \"{{title}}\"? This action cannot be undone.",
+  "deleteParcelsDescription": "\"{{title}}\" is an installment purchase. Deleting removes all {{count}} installments. This action cannot be undone.",
   "type": {
     "debito": "Debit",
     "credito": "Credit",
@@ -19,6 +20,7 @@
   "form": {
     "type": "Type",
     "installments": "Installments",
+    "installmentsHint": "2 or more create one entry per month starting from the date. The amount is per installment.",
     "title": "Title",
     "titlePlaceholder": "e.g. Monthly groceries",
     "value": "Amount (R$)",

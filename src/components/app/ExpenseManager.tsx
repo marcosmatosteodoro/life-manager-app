@@ -153,7 +153,14 @@ export function ExpenseManager() {
         open={deleting !== null}
         title={t('expenses:deleteTitle')}
         description={
-          deleting ? t('expenses:deleteDescription', { title: deleting.title }) : ''
+          deleting
+            ? deleting.parcelGroupId && deleting.installments
+              ? t('expenses:deleteParcelsDescription', {
+                  title: deleting.title,
+                  count: deleting.installments,
+                })
+              : t('expenses:deleteDescription', { title: deleting.title })
+            : ''
         }
         confirmLabel={t('common:delete')}
         loading={deleteInProgress}

@@ -10,6 +10,7 @@
   "deleted": "Gasto excluído.",
   "deleteTitle": "Excluir gasto",
   "deleteDescription": "Excluir \"{{title}}\"? Essa ação não pode ser desfeita.",
+  "deleteParcelsDescription": "\"{{title}}\" é uma compra parcelada. Excluir remove as {{count}} parcelas. Essa ação não pode ser desfeita.",
   "type": {
     "debito": "Débito",
     "credito": "Crédito",
@@ -19,6 +20,7 @@
   "form": {
     "type": "Tipo",
     "installments": "Parcelas",
+    "installmentsHint": "2 ou mais geram um lançamento por mês a partir da data. O valor é o de cada parcela.",
     "title": "Título",
     "titlePlaceholder": "Ex.: Mercado do mês",
     "value": "Valor (R$)",

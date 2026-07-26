@@ -54,9 +54,11 @@ export function ExpenseList({ expenses, onEdit, onDelete }: ExpenseListProps) {
                 )}
               >
                 {t(`expenses:type.${expense.type}`)}
-                {expense.type === 'credito' && expense.installments
-                  ? ` ${expense.installments}x`
-                  : ''}
+                {expense.parcelNumber && expense.installments
+                  ? ` ${expense.parcelNumber}/${expense.installments}`
+                  : expense.type === 'credito' && expense.installments
+                    ? ` ${expense.installments}x`
+                    : ''}
               </span>
               {expense.category && (
                 <span className="shrink-0 rounded-full bg-surface-subtle px-2 py-0.5 text-xs font-medium text-fg-muted">

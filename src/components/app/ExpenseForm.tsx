@@ -41,6 +41,8 @@ export function ExpenseForm({
   onCancel,
 }: ExpenseFormProps) {
   const { t } = useTranslation(['expenses', 'common']);
+  // Parcela existente (edição): nº de parcelas é fixo, não reeditável.
+  const isParcel = Boolean(initial?.parcelNumber);
   const [type, setType] = useState<ExpenseType>(initial?.type ?? 'debito');
   const [title, setTitle] = useState(initial?.title ?? '');
   const [value, setValue] = useState(initial ? String(initial.value) : '');
@@ -168,21 +170,36 @@ export function ExpenseForm({
             ))}
           </select>
         </Field>
-        {type === 'credito' && (
-          <Field label={t('expenses:form.installments')} htmlFor="exp-inst">
-            <input
-              id="exp-inst"
-              type="number"
-              min={1}
-              step={1}
-              value={installments}
-              onChange={(e) => setInstallments(e.target.value)}
-              placeholder="1"
-              className={inputClass}
-            />
-          </Field>
-        )}
+        {type === 'credito' &&
+          (isParcel ? (
+            <Field label={t('expenses:form.installments')} htmlFor="exp-inst">
+              <p
+                id="exp-inst"
+                className="px-1 py-2 text-sm text-fg-muted"
+              >
+                {initial?.parcelNumber}/{initial?.installments}
+              </p>
+            </Field>
+          ) : (
+            <Field label={t('expenses:form.installments')} htmlFor="exp-inst">
+              <input
+                id="exp-inst"
+                type="number"
+                min={1}
+                step={1}
+                value={installments}
+                onChange={(e) => setInstallments(e.target.value)}
+                placeholder="1"
+                className={inputClass}
+              />
+            </Field>
+          ))}
       </div>
+      {type === 'credito' && !isParcel && (
+        <p className="-mt-2 text-xs text-fg-muted">
+          {t('expenses:form.installmentsHint')}
+        </p>
+      )}
 
       <Field label={t('expenses:form.title')} htmlFor="exp-title">
         <input
